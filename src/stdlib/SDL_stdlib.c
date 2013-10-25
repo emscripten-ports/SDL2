@@ -295,11 +295,13 @@ localexit:
     /* *INDENT-ON* */
 }
 
+#ifndef HAVE_FTOL2_SSE
 void
 _ftol2_sse()
 {
     _ftol();
 }
+#endif /* HAVE_FTOL2_SSE */
 
 /* 64-bit math operators for 32-bit systems */
 void
