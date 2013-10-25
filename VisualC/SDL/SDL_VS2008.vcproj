@@ -428,6 +428,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_filesystem.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_gamecontroller.h"
 				>
 			</File>
@@ -865,14 +869,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\SDL_fatal.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\SDL_fatal.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\video\SDL_fillrect.c"
 			>
 		</File>
@@ -1094,6 +1090,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\events\SDL_sysevents.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\filesystem\windows\SDL_sysfilesystem.c"
 			>
 		</File>
 		<File

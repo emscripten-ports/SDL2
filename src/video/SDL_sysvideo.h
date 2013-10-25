@@ -73,6 +73,7 @@ struct SDL_Window
     const void *magic;
     Uint32 id;
     char *title;
+    SDL_Surface *icon;
     int x, y;
     int w, h;
     int min_w, min_h;
@@ -223,6 +224,7 @@ struct SDL_VideoDevice
     void (*GL_UnloadLibrary) (_THIS);
       SDL_GLContext(*GL_CreateContext) (_THIS, SDL_Window * window);
     int (*GL_MakeCurrent) (_THIS, SDL_Window * window, SDL_GLContext context);
+    void (*GL_GetDrawableSize) (_THIS, SDL_Window * window, int *w, int *h);
     int (*GL_SetSwapInterval) (_THIS, int interval);
     int (*GL_GetSwapInterval) (_THIS);
     void (*GL_SwapWindow) (_THIS, SDL_Window * window);
@@ -290,8 +292,8 @@ struct SDL_VideoDevice
         int minor_version;
         int flags;
         int profile_mask;
-        int use_egl;
         int share_with_current_context;
+        int framebuffer_srgb_capable;
         int retained_backing;
         int driver_loaded;
         char driver_path[256];
@@ -300,6 +302,9 @@ struct SDL_VideoDevice
 
     /* * * */
     /* Cache current GL context; don't call the OS when it hasn't changed. */
+    /* We have the global pointers here so Cocoa continues to work the way
+       it always has, and the thread-local storage for the general case.
+     */
     SDL_Window *current_glwin;
     SDL_GLContext current_glctx;
     SDL_TLSID current_glwin_tls;
@@ -309,7 +314,11 @@ struct SDL_VideoDevice
     /* Data private to this driver */
     void *driverdata;
     struct SDL_GLDriverData *gl_data;
-
+    
+#if SDL_VIDEO_OPENGL_EGL
+    struct SDL_EGL_VideoData *egl_data;
+#endif
+    
 #if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     struct SDL_PrivateGLESData *gles_data;
 #endif
@@ -354,6 +363,9 @@ extern VideoBootStrap Android_bootstrap;
 #if SDL_VIDEO_DRIVER_PSP
 extern VideoBootStrap PSP_bootstrap;
 #endif
+#if SDL_VIDEO_DRIVER_RPI
+extern VideoBootStrap RPI_bootstrap;
+#endif
 #if SDL_VIDEO_DRIVER_DUMMY
 extern VideoBootStrap DUMMY_bootstrap;
 #endif
@@ -363,6 +375,7 @@ extern int SDL_AddBasicVideoDisplay(const SDL_DisplayMode * desktop_mode);
 extern int SDL_AddVideoDisplay(const SDL_VideoDisplay * display);
 extern SDL_bool SDL_AddDisplayMode(SDL_VideoDisplay *display, const SDL_DisplayMode * mode);
 extern SDL_VideoDisplay *SDL_GetDisplayForWindow(SDL_Window *window);
+extern void *SDL_GetDisplayDriverData( int displayIndex );
 
 extern int SDL_RecreateWindow(SDL_Window * window, Uint32 flags);
 

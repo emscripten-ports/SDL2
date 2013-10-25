@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2011 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -42,21 +42,15 @@ static int iterations = -1;
 static void
 quit(int rc)
 {
-    if (sprites) {
-        SDL_free(sprites);
-    }
-    if (positions) {
-        SDL_free(positions);
-    }
-    if (velocities) {
-        SDL_free(velocities);
-    }
+    SDL_free(sprites);
+    SDL_free(positions);
+    SDL_free(velocities);
     SDLTest_CommonQuit(state);
     exit(rc);
 }
 
 int
-LoadSprite(char *file)
+LoadSprite(const char *file)
 {
     int i;
     SDL_Surface *temp;
@@ -64,7 +58,7 @@ LoadSprite(char *file)
     /* Load the sprite image */
     temp = SDL_LoadBMP(file);
     if (temp == NULL) {
-        fprintf(stderr, "Couldn't load %s: %s", file, SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s", file, SDL_GetError());
         return (-1);
     }
     sprite_w = temp->w;
@@ -95,7 +89,7 @@ LoadSprite(char *file)
         SDL_Renderer *renderer = state->renderers[i];
         sprites[i] = SDL_CreateTextureFromSurface(renderer, temp);
         if (!sprites[i]) {
-            fprintf(stderr, "Couldn't create texture: %s\n", SDL_GetError());
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture: %s\n", SDL_GetError());
             SDL_FreeSurface(temp);
             return (-1);
         }
@@ -243,6 +237,7 @@ main(int argc, char *argv[])
     SDL_Event event;
     Uint32 then, now, frames;
 	Uint64 seed;
+    const char *icon = "icon.bmp";
 
     /* Initialize parameters */
     num_sprites = NUM_SPRITES;
@@ -292,11 +287,13 @@ main(int argc, char *argv[])
             } else if (SDL_isdigit(*argv[i])) {
                 num_sprites = SDL_atoi(argv[i]);
                 consumed = 1;
+            } else if (argv[i][0] != '-') {
+                icon = argv[i];
+                consumed = 1;
             }
         }
         if (consumed < 0) {
-            fprintf(stderr,
-                    "Usage: %s %s [--blend none|blend|add|mod] [--cyclecolor] [--cyclealpha] [--iterations N]\n",
+            SDL_Log("Usage: %s %s [--blend none|blend|add|mod] [--cyclecolor] [--cyclealpha] [--iterations N] [num_sprites] [icon.bmp]\n",
                     argv[0], SDLTest_CommonUsage(state));
             quit(1);
         }
@@ -310,7 +307,7 @@ main(int argc, char *argv[])
     sprites =
         (SDL_Texture **) SDL_malloc(state->num_windows * sizeof(*sprites));
     if (!sprites) {
-        fprintf(stderr, "Out of memory!\n");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Out of memory!\n");
         quit(2);
     }
     for (i = 0; i < state->num_windows; ++i) {
@@ -318,7 +315,7 @@ main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
         SDL_RenderClear(renderer);
     }
-    if (LoadSprite("icon.bmp") < 0) {
+    if (LoadSprite(icon) < 0) {
         quit(2);
     }
 
@@ -326,7 +323,7 @@ main(int argc, char *argv[])
     positions = (SDL_Rect *) SDL_malloc(num_sprites * sizeof(SDL_Rect));
     velocities = (SDL_Rect *) SDL_malloc(num_sprites * sizeof(SDL_Rect));
     if (!positions || !velocities) {
-        fprintf(stderr, "Out of memory!\n");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Out of memory!\n");
         quit(2);
     }
 
@@ -363,6 +360,8 @@ main(int argc, char *argv[])
             SDLTest_CommonEvent(state, &event, &done);
         }
         for (i = 0; i < state->num_windows; ++i) {
+            if (state->windows[i] == NULL)
+                continue;
             MoveSprites(state->renderers[i], sprites[i]);
         }
     }
@@ -371,7 +370,7 @@ main(int argc, char *argv[])
     now = SDL_GetTicks();
     if (now > then) {
         double fps = ((double) frames * 1000) / (now - then);
-        printf("%2.2f frames per second\n", fps);
+        SDL_Log("%2.2f frames per second\n", fps);
     }
     quit(0);
     return 0;

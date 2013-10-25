@@ -1293,13 +1293,20 @@ int SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
 }
 #else
  /* FIXME: implement more of the format specifiers */
+typedef enum
+{
+    SDL_CASE_NOCHANGE,
+    SDL_CASE_LOWER,
+    SDL_CASE_UPPER
+} SDL_letter_case;
+
 typedef struct
 {
     SDL_bool left_justify;
     SDL_bool force_sign;
     SDL_bool force_type;
     SDL_bool pad_zeroes;
-    SDL_bool do_lowercase;
+    SDL_letter_case force_case;
     int width;
     int radix;
     int precision;
@@ -1308,7 +1315,28 @@ typedef struct
 static size_t
 SDL_PrintString(char *text, size_t maxlen, SDL_FormatInfo *info, const char *string)
 {
-    return SDL_strlcpy(text, string, maxlen);
+    size_t length = 0;
+
+    if (info && info->width && (size_t)info->width > SDL_strlen(string)) {
+        char fill = info->pad_zeroes ? '0' : ' ';
+        size_t width = info->width - SDL_strlen(string);
+        while (width-- > 0 && maxlen > 0) {
+            *text++ = fill;
+            ++length;
+            --maxlen;
+        }
+    }
+
+    length += SDL_strlcpy(text, string, maxlen);
+
+    if (info) {
+        if (info->force_case == SDL_CASE_LOWER) {
+            SDL_strlwr(text);
+        } else if (info->force_case == SDL_CASE_UPPER) {
+            SDL_strupr(text);
+        }
+    }
+    return length;
 }
 
 static size_t
@@ -1350,14 +1378,13 @@ SDL_PrintUnsignedLongLong(char *text, size_t maxlen, SDL_FormatInfo *info, Uint6
 static size_t
 SDL_PrintFloat(char *text, size_t maxlen, SDL_FormatInfo *info, double arg)
 {
-    int i, width;
+    int width;
     size_t len;
     size_t left = maxlen;
     char *textstart = text;
 
     if (arg) {
         /* This isn't especially accurate, but hey, it's easy. :) */
-        double precision = 1.0;
         unsigned long value;
 
         if (arg < 0) {
@@ -1385,9 +1412,6 @@ SDL_PrintFloat(char *text, size_t maxlen, SDL_FormatInfo *info, double arg)
         arg -= value;
         if (info->precision < 0) {
             info->precision = 6;
-        }
-        for (i = 0; i < info->precision; ++i) {
-            precision *= 0.1;
         }
         if (info->force_type || info->precision > 0) {
             int mult = 10;
@@ -1560,9 +1584,12 @@ SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                     break;
                 case 'p':
                 case 'x':
-                    info.do_lowercase = SDL_TRUE;
+                    info.force_case = SDL_CASE_LOWER;
                     /* Fall through to 'X' handling */
                 case 'X':
+                    if (info.force_case == SDL_CASE_NOCHANGE) {
+                        info.force_case = SDL_CASE_UPPER;
+                    }
                     if (info.radix == 10) {
                         info.radix = 16;
                     }
@@ -1576,6 +1603,7 @@ SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                     }
                     /* Fall through to unsigned handling */
                 case 'u':
+                    info.pad_zeroes = SDL_TRUE;
                     switch (inttype) {
                     case DO_INT:
                         len = SDL_PrintUnsignedLong(text, left, &info,
@@ -1590,12 +1618,6 @@ SDL_vsnprintf(char *text, size_t maxlen, const char *fmt, va_list ap)
                         len = SDL_PrintUnsignedLongLong(text, left, &info,
                                                         va_arg(ap, Uint64));
                         break;
-                    }
-                    if (info.do_lowercase) {
-                        size_t i;
-                        for (i = 0; i < len && i < left; ++i) {
-                            text[i] = SDL_tolower((unsigned char)text[i]);
-                        }
                     }
                     done = SDL_TRUE;
                     break;

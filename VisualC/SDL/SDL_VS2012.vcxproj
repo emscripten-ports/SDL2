@@ -233,6 +233,7 @@
     <ClInclude Include="..\..\include\SDL_endian.h" />
     <ClInclude Include="..\..\include\SDL_error.h" />
     <ClInclude Include="..\..\include\SDL_events.h" />
+    <ClInclude Include="..\..\include\SDL_filesystem.h" />
     <ClInclude Include="..\..\include\SDL_gesture.h" />
     <ClInclude Include="..\..\include\SDL_haptic.h" />
     <ClInclude Include="..\..\include\SDL_hints.h" />
@@ -306,7 +307,6 @@
     <ClInclude Include="..\..\src\SDL_error_c.h" />
     <ClInclude Include="..\..\src\SDL_hints_c.h" />
     <ClInclude Include="..\..\src\events\SDL_events_c.h" />
-    <ClInclude Include="..\..\src\SDL_fatal.h" />
     <ClInclude Include="..\..\src\video\SDL_glesfuncs.h" />
     <ClInclude Include="..\..\src\video\SDL_glfuncs.h" />
     <ClInclude Include="..\..\src\joystick\SDL_joystick_c.h" />
@@ -410,7 +410,6 @@
     <ClCompile Include="..\..\src\joystick\windows\SDL_dxjoystick.c" />
     <ClCompile Include="..\..\src\SDL_error.c" />
     <ClCompile Include="..\..\src\events\SDL_events.c" />
-    <ClCompile Include="..\..\src\SDL_fatal.c" />
     <ClCompile Include="..\..\src\video\SDL_fillrect.c" />
     <ClCompile Include="..\..\src\stdlib\SDL_getenv.c" />
     <ClCompile Include="..\..\src\haptic\SDL_haptic.c" />
@@ -435,6 +434,7 @@
     <ClCompile Include="..\..\src\stdlib\SDL_string.c" />
     <ClCompile Include="..\..\src\video\SDL_surface.c" />
     <ClCompile Include="..\..\src\thread\generic\SDL_syscond.c" />
+    <ClCompile Include="..\..\src\filesystem\windows\SDL_sysfilesystem.c" />
     <ClCompile Include="..\..\src\haptic\windows\SDL_syshaptic.c" />
     <ClCompile Include="..\..\src\loadso\windows\SDL_sysloadso.c" />
     <ClCompile Include="..\..\src\thread\windows\SDL_sysmutex.c" />

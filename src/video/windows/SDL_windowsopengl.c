@@ -22,6 +22,8 @@
 
 #if SDL_VIDEO_DRIVER_WINDOWS
 
+#include "SDL_assert.h"
+#include "SDL_loadso.h"
 #include "SDL_windowsvideo.h"
 
 /* WGL implementation of SDL OpenGL support */
@@ -66,6 +68,11 @@
 #define WGL_CONTEXT_ES_PROFILE_BIT_EXT            0x00000004
 #endif
 
+#ifndef WGL_ARB_framebuffer_sRGB
+#define WGL_ARB_framebuffer_sRGB
+#define WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB                0x20A9
+#endif
+
 typedef HGLRC(APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC,
                                                             HGLRC
                                                             hShareContext,
@@ -75,8 +82,7 @@ typedef HGLRC(APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC,
 int
 WIN_GL_LoadLibrary(_THIS, const char *path)
 {
-    LPTSTR wpath;
-    HANDLE handle;
+    void *handle;
 
     if (path == NULL) {
         path = SDL_getenv("SDL_OPENGL_LIBRARY");
@@ -84,23 +90,15 @@ WIN_GL_LoadLibrary(_THIS, const char *path)
     if (path == NULL) {
         path = DEFAULT_OPENGL;
     }
-    wpath = WIN_UTF8ToString(path);
-    _this->gl_config.dll_handle = LoadLibrary(wpath);
-    SDL_free(wpath);
+    _this->gl_config.dll_handle = SDL_LoadObject(path);
     if (!_this->gl_config.dll_handle) {
-        char message[1024];
-        SDL_snprintf(message, SDL_arraysize(message), "LoadLibrary(\"%s\")",
-                     path);
-        return WIN_SetError(message);
+        return -1;
     }
     SDL_strlcpy(_this->gl_config.driver_path, path,
                 SDL_arraysize(_this->gl_config.driver_path));
 
     /* Allocate OpenGL memory */
-    _this->gl_data =
-        (struct SDL_GLDriverData *) SDL_calloc(1,
-                                               sizeof(struct
-                                                      SDL_GLDriverData));
+    _this->gl_data = (struct SDL_GLDriverData *) SDL_calloc(1, sizeof(struct SDL_GLDriverData));
     if (!_this->gl_data) {
         return SDL_OutOfMemory();
     }
@@ -108,21 +106,20 @@ WIN_GL_LoadLibrary(_THIS, const char *path)
     /* Load function pointers */
     handle = _this->gl_config.dll_handle;
     _this->gl_data->wglGetProcAddress = (void *(WINAPI *) (const char *))
-        GetProcAddress(handle, "wglGetProcAddress");
+        SDL_LoadFunction(handle, "wglGetProcAddress");
     _this->gl_data->wglCreateContext = (HGLRC(WINAPI *) (HDC))
-        GetProcAddress(handle, "wglCreateContext");
+        SDL_LoadFunction(handle, "wglCreateContext");
     _this->gl_data->wglDeleteContext = (BOOL(WINAPI *) (HGLRC))
-        GetProcAddress(handle, "wglDeleteContext");
+        SDL_LoadFunction(handle, "wglDeleteContext");
     _this->gl_data->wglMakeCurrent = (BOOL(WINAPI *) (HDC, HGLRC))
-        GetProcAddress(handle, "wglMakeCurrent");
+        SDL_LoadFunction(handle, "wglMakeCurrent");
     _this->gl_data->wglShareLists = (BOOL(WINAPI *) (HGLRC, HGLRC))
-        GetProcAddress(handle, "wglShareLists");
+        SDL_LoadFunction(handle, "wglShareLists");
 
     if (!_this->gl_data->wglGetProcAddress ||
         !_this->gl_data->wglCreateContext ||
         !_this->gl_data->wglDeleteContext ||
         !_this->gl_data->wglMakeCurrent) {
-        SDL_UnloadObject(handle);
         return SDL_SetError("Could not retrieve OpenGL functions");
     }
 
@@ -146,7 +143,7 @@ WIN_GL_GetProcAddress(_THIS, const char *proc)
 void
 WIN_GL_UnloadLibrary(_THIS)
 {
-    FreeLibrary((HMODULE) _this->gl_config.dll_handle);
+    SDL_UnloadObject(_this->gl_config.dll_handle);
     _this->gl_config.dll_handle = NULL;
 
     /* Free OpenGL memory */
@@ -407,7 +404,7 @@ WIN_GL_ChoosePixelFormatARB(_THIS, int *iAttribs, float *fAttribs)
                                                     &matching);
         }
 
-        _this->gl_data->wglMakeCurrent(NULL, NULL);
+        _this->gl_data->wglMakeCurrent(hdc, NULL);
         _this->gl_data->wglDeleteContext(hglrc);
     }
     ReleaseDC(hwnd, hdc);
@@ -417,8 +414,9 @@ WIN_GL_ChoosePixelFormatARB(_THIS, int *iAttribs, float *fAttribs)
     return pixel_format;
 }
 
-int
-WIN_GL_SetupWindow(_THIS, SDL_Window * window)
+/* actual work of WIN_GL_SetupWindow() happens here. */
+static int
+WIN_GL_SetupWindowInternal(_THIS, SDL_Window * window)
 {
     HDC hdc = ((SDL_WindowData *) window->driverdata)->hdc;
     PIXELFORMATDESCRIPTOR pfd;
@@ -493,6 +491,11 @@ WIN_GL_SetupWindow(_THIS, SDL_Window * window)
         *iAttr++ = _this->gl_config.multisamplesamples;
     }
 
+    if (_this->gl_config.framebuffer_srgb_capable) {
+        *iAttr++ = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
+        *iAttr++ = _this->gl_config.framebuffer_srgb_capable;
+    }
+
     /* We always choose either FULL or NO accel on Windows, because of flaky
        drivers. If the app didn't specify, we use FULL, because that's
        probably what they wanted (and if you didn't care and got FULL, that's
@@ -526,6 +529,17 @@ WIN_GL_SetupWindow(_THIS, SDL_Window * window)
         return WIN_SetError("SetPixelFormat()");
     }
     return 0;
+}
+
+int
+WIN_GL_SetupWindow(_THIS, SDL_Window * window)
+{
+    /* The current context is lost in here; save it and reset it. */
+    SDL_Window *current_win = SDL_GL_GetCurrentWindow();
+    SDL_GLContext current_ctx = SDL_GL_GetCurrentContext();
+    const int retval = WIN_GL_SetupWindowInternal(_this, window);
+    WIN_GL_MakeCurrent(_this, current_win, current_ctx);
+    return retval;
 }
 
 SDL_GLContext
@@ -622,11 +636,22 @@ WIN_GL_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context)
         return SDL_SetError("OpenGL not initialized");
     }
 
-    if (window) {
-        hdc = ((SDL_WindowData *) window->driverdata)->hdc;
-    } else {
-        hdc = NULL;
+    /* sanity check that higher level handled this. */
+    SDL_assert(window || (!window && !context));
+
+    /* Some Windows drivers freak out if hdc is NULL, even when context is
+       NULL, against spec. Since hdc is _supposed_ to be ignored if context
+       is NULL, we either use the current GL window, or do nothing if we
+       already have no current context. */
+    if (!window) {
+        window = SDL_GL_GetCurrentWindow();
+        if (!window) {
+            SDL_assert(SDL_GL_GetCurrentContext() == NULL);
+            return 0;  /* already done. */
+        }
     }
+
+    hdc = ((SDL_WindowData *) window->driverdata)->hdc;
     if (!_this->gl_data->wglMakeCurrent(hdc, (HGLRC) context)) {
         return WIN_SetError("wglMakeCurrent()");
     }
