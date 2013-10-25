@@ -300,9 +300,7 @@ SDL_StreamInit(SDL_AudioStreamer * stream, int max_len, Uint8 silence)
 static void
 SDL_StreamDeinit(SDL_AudioStreamer * stream)
 {
-    if (stream->buffer != NULL) {
-        SDL_free(stream->buffer);
-    }
+    SDL_free(stream->buffer);
 }
 
 #if defined(ANDROID)
@@ -360,9 +358,7 @@ SDL_RunAudio(void *devicep)
                 device->convert.len_mult;
         }
 #endif
-
-        /* stream_len = device->convert.len; */
-        stream_len = device->spec.size;
+        stream_len = device->convert.len;
     } else {
         stream_len = device->spec.size;
     }
@@ -421,7 +417,7 @@ SDL_RunAudio(void *devicep)
                     if (istream == NULL) {
                         istream = device->fake_stream;
                     }
-                    /*SDL_memcpy(istream, device->convert.buf, device->convert.len_cvt); */
+                    /* SDL_memcpy(istream, device->convert.buf, device->convert.len_cvt); */
                     SDL_StreamWrite(&device->streamer, device->convert.buf,
                                     device->convert.len_cvt);
                 } else {
@@ -634,9 +630,7 @@ free_device_list(char ***devices, int *devCount)
         }
     }
 
-    if (*devices != NULL) {
-        SDL_free(*devices);
-    }
+    SDL_free(*devices);
 
     *devices = NULL;
     *devCount = 0;
@@ -763,9 +757,7 @@ close_audio_device(SDL_AudioDevice * device)
     if (device->mixer_lock != NULL) {
         SDL_DestroyMutex(device->mixer_lock);
     }
-    if (device->fake_stream != NULL) {
-        SDL_FreeAudioMem(device->fake_stream);
-    }
+    SDL_FreeAudioMem(device->fake_stream);
     if (device->convert.needed) {
         SDL_FreeAudioMem(device->convert.buf);
     }
@@ -958,12 +950,6 @@ open_audio_device(const char *devname, int iscapture,
         return 0;
     }
 
-    /* If the audio driver changes the buffer size, accept it */
-    if (device->spec.samples != obtained->samples) {
-        obtained->samples = device->spec.samples;
-        SDL_CalculateAudioSpec(obtained);
-    }
-
     /* See if we need to do any conversion */
     build_cvt = SDL_FALSE;
     if (obtained->freq != device->spec.freq) {
@@ -987,6 +973,16 @@ open_audio_device(const char *devname, int iscapture,
             build_cvt = SDL_TRUE;
         }
     }
+
+    /* If the audio driver changes the buffer size, accept it.
+       This needs to be done after the format is modified above,
+       otherwise it might not have the correct buffer size.
+     */
+    if (device->spec.samples != obtained->samples) {
+        obtained->samples = device->spec.samples;
+        SDL_CalculateAudioSpec(obtained);
+    }
+
     if (build_cvt) {
         /* Build an audio conversion block */
         if (SDL_BuildAudioCVT(&device->convert,
@@ -998,7 +994,7 @@ open_audio_device(const char *devname, int iscapture,
             return 0;
         }
         if (device->convert.needed) {
-            device->convert.len = (int) (((double) obtained->size) /
+            device->convert.len = (int) (((double) device->spec.size) /
                                          device->convert.len_ratio);
 
             device->convert.buf =

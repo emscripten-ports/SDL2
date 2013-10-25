@@ -362,6 +362,22 @@ HIDAddElement(CFTypeRef refElement, recDevice * pDevice)
                         }
                     }
                     break;
+                case kHIDPage_Simulation:
+                    switch (usage) {
+                        case kHIDUsage_Sim_Rudder:
+                        case kHIDUsage_Sim_Throttle:
+                            element = (recElement *)
+                                NewPtrClear(sizeof(recElement));
+                            if (element) {
+                                pDevice->axes++;
+                                headElement = &(pDevice->firstAxis);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
                 case kHIDPage_Button:
                     element = (recElement *)
                         NewPtrClear(sizeof(recElement));
@@ -573,7 +589,6 @@ HIDBuildDevice(io_object_t hidDevice)
             if (kIOReturnSuccess == result) {
                 HIDGetDeviceInfo(hidDevice, hidProperties, pDevice);    /* hidDevice used to find parents in registry tree */
                 HIDGetCollectionElements(hidProperties, pDevice);
-                pDevice->instance_id = ++s_joystick_instance_id;
             } else {
                 DisposePtr((Ptr) pDevice);
                 pDevice = NULL;
@@ -661,6 +676,9 @@ AddDeviceHelper( io_object_t ioHIDDeviceObject )
         DisposePtr((Ptr) device);
         return 0;
     }
+
+    /* Allocate an instance ID for this device */
+    device->instance_id = ++s_joystick_instance_id;
 
     /* We have to do some storage of the io_service_t for
      * SDL_HapticOpenFromJoystick */
@@ -755,7 +773,7 @@ SDL_SYS_JoystickInit(void)
             ("Joystick: Failed to get HID CFMutableDictionaryRef via IOServiceMatching.");
     }
 
-    /*/ Now search I/O Registry for matching devices. */
+    /* Now search I/O Registry for matching devices. */
     result =
         IOServiceGetMatchingServices(masterPort, hidMatchDictionary,
                                      &hidObjectIterator);

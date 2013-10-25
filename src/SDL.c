@@ -20,12 +20,15 @@
 */
 #include "SDL_config.h"
 
+#if defined(__WIN32__)
+#include "core/windows/SDL_windows.h"
+#endif
+
 /* Initialization code for SDL */
 
 #include "SDL.h"
 #include "SDL_bits.h"
 #include "SDL_revision.h"
-#include "SDL_fatal.h"
 #include "SDL_assert_c.h"
 #include "events/SDL_events_c.h"
 #include "haptic/SDL_haptic_c.h"
@@ -107,6 +110,15 @@ SDL_InitSubSystem(Uint32 flags)
         SDL_SetError("Application didn't initialize properly, did you include SDL_main.h in the file containing your main() function?");
         return -1;
     }
+
+    /* Clear the error message */
+    SDL_ClearError();
+
+#if SDL_VIDEO_DRIVER_WINDOWS
+    if (SDL_HelperWindowCreate() < 0) {
+        return -1;
+    }
+#endif
 
 #if !SDL_TIMERS_DISABLED
     SDL_InitTicks();
@@ -226,30 +238,7 @@ SDL_InitSubSystem(Uint32 flags)
 int
 SDL_Init(Uint32 flags)
 {
-    if (SDL_AssertionsInit() < 0) {
-        return -1;
-    }
-
-    /* Clear the error message */
-    SDL_ClearError();
-
-#if SDL_VIDEO_DRIVER_WINDOWS
-    if (SDL_HelperWindowCreate() < 0) {
-        return -1;
-    }
-#endif
-
-    /* Initialize the desired subsystems */
-    if (SDL_InitSubSystem(flags) < 0) {
-        return (-1);
-    }
-
-    /* Everything is initialized */
-    if (!(flags & SDL_INIT_NOPARACHUTE)) {
-        SDL_InstallParachute();
-    }
-
-    return (0);
+    return SDL_InitSubSystem(flags);
 }
 
 void
@@ -364,9 +353,6 @@ SDL_Quit(void)
 #endif
     SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
 
-    /* Uninstall any parachute signal handlers */
-    SDL_UninstallParachute();
-
     SDL_ClearHints();
     SDL_AssertionsQuit();
     SDL_LogResetPriorities();
@@ -447,7 +433,7 @@ SDL_GetPlatform()
 #elif __WIN32__
     return "Windows";
 #elif __IPHONEOS__
-    return "iPhone OS";
+    return "iOS";
 #elif __PSP__
     return "PlayStation Portable";
 #else
@@ -459,7 +445,6 @@ SDL_GetPlatform()
 
 #if !defined(HAVE_LIBC) || (defined(__WATCOMC__) && defined(BUILD_DLL))
 /* Need to include DllMain() on Watcom C for some reason.. */
-#include "core/windows/SDL_windows.h"
 
 BOOL APIENTRY
 _DllMainCRTStartup(HANDLE hModule,

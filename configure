@@ -783,6 +783,7 @@ enable_events
 enable_joystick
 enable_haptic
 enable_power
+enable_filesystem
 enable_threads
 enable_timers
 enable_file
@@ -1496,6 +1497,7 @@ Optional Features:
   --enable-haptic         Enable the haptic (force feedback) subsystem
                           [[default=yes]]
   --enable-power          Enable the power subsystem [[default=yes]]
+  --enable-filesystem     Enable the filesystem subsystem [[default=yes]]
   --enable-threads        Enable the threading subsystem [[default=yes]]
   --enable-timers         Enable the timer subsystem [[default=yes]]
   --enable-file           Enable the file subsystem [[default=yes]]
@@ -2259,189 +2261,6 @@ $as_echo "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
 } # ac_fn_c_check_member
-
-# ac_fn_c_compute_int LINENO EXPR VAR INCLUDES
-# --------------------------------------------
-# Tries to find the compile-time value of EXPR in a program that includes
-# INCLUDES, setting VAR accordingly. Returns whether the value could be
-# computed
-ac_fn_c_compute_int ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  if test "$cross_compiling" = yes; then
-    # Depending upon the size, compute the lo and hi bounds.
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-int
-main ()
-{
-static int test_array [1 - 2 * !(($2) >= 0)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_lo=0 ac_mid=0
-  while :; do
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-int
-main ()
-{
-static int test_array [1 - 2 * !(($2) <= $ac_mid)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_hi=$ac_mid; break
-else
-  as_fn_arith $ac_mid + 1 && ac_lo=$as_val
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			as_fn_arith 2 '*' $ac_mid + 1 && ac_mid=$as_val
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  done
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-int
-main ()
-{
-static int test_array [1 - 2 * !(($2) < 0)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_hi=-1 ac_mid=-1
-  while :; do
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-int
-main ()
-{
-static int test_array [1 - 2 * !(($2) >= $ac_mid)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_lo=$ac_mid; break
-else
-  as_fn_arith '(' $ac_mid ')' - 1 && ac_hi=$as_val
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			as_fn_arith 2 '*' $ac_mid && ac_mid=$as_val
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  done
-else
-  ac_lo= ac_hi=
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-# Binary search between lo and hi bounds.
-while test "x$ac_lo" != "x$ac_hi"; do
-  as_fn_arith '(' $ac_hi - $ac_lo ')' / 2 + $ac_lo && ac_mid=$as_val
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-int
-main ()
-{
-static int test_array [1 - 2 * !(($2) <= $ac_mid)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_hi=$ac_mid
-else
-  as_fn_arith '(' $ac_mid ')' + 1 && ac_lo=$as_val
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-done
-case $ac_lo in #((
-?*) eval "$3=\$ac_lo"; ac_retval=0 ;;
-'') ac_retval=1 ;;
-esac
-  else
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-static long int longval () { return $2; }
-static unsigned long int ulongval () { return $2; }
-#include <stdio.h>
-#include <stdlib.h>
-int
-main ()
-{
-
-  FILE *f = fopen ("conftest.val", "w");
-  if (! f)
-    return 1;
-  if (($2) < 0)
-    {
-      long int i = longval ();
-      if (i != ($2))
-	return 1;
-      fprintf (f, "%ld", i);
-    }
-  else
-    {
-      unsigned long int i = ulongval ();
-      if (i != ($2))
-	return 1;
-      fprintf (f, "%lu", i);
-    }
-  /* Do not output a trailing newline, as this causes \r\n confusion
-     on some platforms.  */
-  return ferror (f) || fclose (f) != 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  echo >>conftest.val; read $3 <conftest.val; ac_retval=0
-else
-  ac_retval=1
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-rm -f conftest.val
-
-  fi
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
-
-} # ac_fn_c_compute_int
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -2841,9 +2660,9 @@ orig_CFLAGS="$CFLAGS"
 #
 SDL_MAJOR_VERSION=2
 SDL_MINOR_VERSION=0
-SDL_MICRO_VERSION=0
+SDL_MICRO_VERSION=1
 SDL_INTERFACE_AGE=0
-SDL_BINARY_AGE=0
+SDL_BINARY_AGE=1
 SDL_VERSION=$SDL_MAJOR_VERSION.$SDL_MINOR_VERSION.$SDL_MICRO_VERSION
 
 
@@ -15791,7 +15610,14 @@ else
 fi
 
 
-srcdir=`cd $srcdir && pwd`
+case "$host" in
+    *-*-mingw32*)
+        # Except on msys, where make can't handle full pathnames (bug 1972)
+        ;;
+    *)
+        srcdir=`cd $srcdir && pwd`
+        ;;
+esac
 
 INCLUDE="-I$srcdir/include"
 if test x$srcdir != x.; then
@@ -15802,15 +15628,45 @@ elif test -d .hg; then
     separate directory so you don't clobber SDL_config.h, SDL_revision.h
 " "$LINENO" 5
 fi
+BASE_CFLAGS=""
+BASE_LDFLAGS=""
 case "$host" in
     *-*-cygwin*)
         # We build SDL on cygwin without the UNIX emulation layer
-        BASE_CFLAGS="-I/usr/include/mingw -mno-cygwin"
-        BASE_LDFLAGS="-mno-cygwin"
-        ;;
-    *)
-        BASE_CFLAGS=""
-        BASE_LDFLAGS=""
+        save_CFLAGS="$CFLAGS"
+        have_no_cygwin=no
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCC -mno-cygwin option" >&5
+$as_echo_n "checking for GCC -mno-cygwin option... " >&6; }
+        CFLAGS="$save_CFLAGS -mno-cygwin"
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+
+        have_no_cygwin=yes
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_no_cygwin" >&5
+$as_echo "$have_no_cygwin" >&6; }
+        CFLAGS="$save_CFLAGS"
+
+        if test x$have_no_cygwin = xyes; then
+            BASE_CFLAGS="-mno-cygwin"
+            BASE_LDFLAGS="-mno-cygwin"
+        fi
+        BASE_CFLAGS="$BASE_CFLAGS -I/usr/include/mingw"
         ;;
 esac
 # Uncomment the following line if you want to force SDL and applications
@@ -16823,39 +16679,6 @@ fi
 
 fi
 
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of void*" >&5
-$as_echo_n "checking size of void*... " >&6; }
-if ${ac_cv_sizeof_voidp+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (void*))" "ac_cv_sizeof_voidp"        "$ac_includes_default"; then :
-
-else
-  if test "$ac_cv_type_voidp" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (void*)
-See \`config.log' for more details" "$LINENO" 5; }
-   else
-     ac_cv_sizeof_voidp=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_voidp" >&5
-$as_echo "$ac_cv_sizeof_voidp" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_VOIDP $ac_cv_sizeof_voidp
-_ACEOF
-
-
 
 # Check whether --enable-gcc-atomics was given.
 if test "${enable_gcc_atomics+set}" = set; then :
@@ -16946,6 +16769,7 @@ SOURCES="$SOURCES $srcdir/src/haptic/*.c"
 SOURCES="$SOURCES $srcdir/src/joystick/*.c"
 SOURCES="$SOURCES $srcdir/src/libm/*.c"
 SOURCES="$SOURCES $srcdir/src/power/*.c"
+#SOURCES="$SOURCES $srcdir/src/filesystem/*.c"
 SOURCES="$SOURCES $srcdir/src/render/*.c"
 SOURCES="$SOURCES $srcdir/src/render/*/*.c"
 SOURCES="$SOURCES $srcdir/src/stdlib/*.c"
@@ -17048,6 +16872,18 @@ fi
 if test x$enable_power != xyes; then
 
 $as_echo "#define SDL_POWER_DISABLED 1" >>confdefs.h
+
+fi
+# Check whether --enable-filesystem was given.
+if test "${enable_filesystem+set}" = set; then :
+  enableval=$enable_filesystem;
+else
+  enable_filesystem=yes
+fi
+
+if test x$enable_filesystem != xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_DISABLED 1" >>confdefs.h
 
 fi
 # Check whether --enable-threads was given.
@@ -19562,6 +19398,9 @@ $as_echo "#define SDL_VIDEO_DRIVER_X11 1" >>confdefs.h
             SOURCES="$SOURCES $srcdir/src/video/x11/*.c"
             EXTRA_CFLAGS="$EXTRA_CFLAGS $X_CFLAGS"
 
+            # Needed so SDL applications can include SDL_syswm.h
+            SDL_CFLAGS="$SDL_CFLAGS $X_CFLAGS"
+
             if test x$enable_x11_shared = xmaybe; then
                 enable_x11_shared=$x11_symbols_private
             fi
@@ -20723,9 +20562,9 @@ fi
 CheckOpenGLESX11()
 {
     if test x$enable_video = xyes -a x$enable_video_opengles = xyes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL ES (EGL) support" >&5
-$as_echo_n "checking for OpenGL ES (EGL) support... " >&6; }
-        video_opengles=no
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EGL support" >&5
+$as_echo_n "checking for EGL support... " >&6; }
+        video_opengl_egl=no
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -20742,21 +20581,26 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-        video_opengles=yes
+        video_opengl_egl=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengles" >&5
-$as_echo "$video_opengles" >&6; }
-        if test x$video_opengles = xyes; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL ES v1 headers" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengl_egl" >&5
+$as_echo "$video_opengl_egl" >&6; }
+        if test x$video_opengl_egl = xyes; then
+
+$as_echo "#define SDL_VIDEO_OPENGL_EGL 1" >>confdefs.h
+
+        fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL ES v1 headers" >&5
 $as_echo_n "checking for OpenGL ES v1 headers... " >&6; }
-            video_opengles_v1=no
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        video_opengles_v1=no
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-             #include <GLES/gl.h>
-             #include <GLES/glext.h>
+         #include <GLES/gl.h>
+         #include <GLES/glext.h>
 
 int
 main ()
@@ -20769,28 +20613,29 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-            video_opengles_v1=yes
+        video_opengles_v1=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengles_v1" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengles_v1" >&5
 $as_echo "$video_opengles_v1" >&6; }
-            if test x$video_opengles_v1 = xyes; then
+        if test x$video_opengles_v1 = xyes; then
 
 $as_echo "#define SDL_VIDEO_OPENGL_ES 1" >>confdefs.h
 
 
 $as_echo "#define SDL_VIDEO_RENDER_OGL_ES 1" >>confdefs.h
 
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL ES v2 headers" >&5
+        fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL ES v2 headers" >&5
 $as_echo_n "checking for OpenGL ES v2 headers... " >&6; }
-            video_opengles_v2=no
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        video_opengles_v2=no
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-             #include <GLES2/gl2.h>
-             #include <GLES2/gl2ext.h>
+         #include <GLES2/gl2.h>
+         #include <GLES2/gl2ext.h>
 
 int
 main ()
@@ -20803,20 +20648,19 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-            video_opengles_v2=yes
+        video_opengles_v2=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengles_v2" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $video_opengles_v2" >&5
 $as_echo "$video_opengles_v2" >&6; }
-            if test x$video_opengles_v2 = xyes; then
+        if test x$video_opengles_v2 = xyes; then
 
 $as_echo "#define SDL_VIDEO_OPENGL_ES2 1" >>confdefs.h
 
 
 $as_echo "#define SDL_VIDEO_RENDER_OGL_ES2 1" >>confdefs.h
 
-            fi
         fi
     fi
 }
@@ -20908,6 +20752,45 @@ $as_echo "$use_input_events" >&6; }
 $as_echo "#define SDL_INPUT_LINUXEV 1" >>confdefs.h
 
         fi
+}
+
+CheckInputKD()
+{
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Linux kd.h" >&5
+$as_echo_n "checking for Linux kd.h... " >&6; }
+    use_input_kd=no
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+      #include <linux/kd.h>
+      #include <linux/keyboard.h>
+
+int
+main ()
+{
+
+        struct kbentry kbe;
+        kbe.kb_table = KG_CTRL;
+        ioctl(0, KDGKBENT, &kbe);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+
+    use_input_kd=yes
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $use_input_kd" >&5
+$as_echo "$use_input_kd" >&6; }
+    if test x$use_input_kd = xyes; then
+
+$as_echo "#define SDL_INPUT_LINUXKD 1" >>confdefs.h
+
+    fi
 }
 
 CheckLibUDev()
@@ -21601,9 +21484,8 @@ int
 main ()
 {
 
-         #if defined(MAC_OS_X_VERSION_MIN_REQUIRED) && MAC_OS_X_VERSION_MIN_REQUIRED <= 1020
-         #error Use dlcompat for Mac OS X 10.2 compatibility
-         #endif
+         void *handle = dlopen("", RTLD_NOW);
+         const char *loaderror = (char *) dlerror();
 
   ;
   return 0;
@@ -21752,8 +21634,10 @@ $as_echo "#define SDL_LOADSO_DLOPEN 1" >>confdefs.h
 
 CheckUSBHID()
 {
-    if test x$enable_joystick = xyes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for hid_init in -lusbhid" >&5
+    case "$host" in
+        *-*-*bsd*)
+            if test x$enable_joystick = xyes; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for hid_init in -lusbhid" >&5
 $as_echo_n "checking for hid_init in -lusbhid... " >&6; }
 if ${ac_cv_lib_usbhid_hid_init+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -21793,34 +21677,34 @@ if test "x$ac_cv_lib_usbhid_hid_init" = xyes; then :
   have_libusbhid=yes
 fi
 
-        if test x$have_libusbhid = xyes; then
-            ac_fn_c_check_header_mongrel "$LINENO" "usbhid.h" "ac_cv_header_usbhid_h" "$ac_includes_default"
+                if test x$have_libusbhid = xyes; then
+                    ac_fn_c_check_header_mongrel "$LINENO" "usbhid.h" "ac_cv_header_usbhid_h" "$ac_includes_default"
 if test "x$ac_cv_header_usbhid_h" = xyes; then :
   USB_CFLAGS="-DHAVE_USBHID_H"
 fi
 
 
-            ac_fn_c_check_header_mongrel "$LINENO" "libusbhid.h" "ac_cv_header_libusbhid_h" "$ac_includes_default"
+                    ac_fn_c_check_header_mongrel "$LINENO" "libusbhid.h" "ac_cv_header_libusbhid_h" "$ac_includes_default"
 if test "x$ac_cv_header_libusbhid_h" = xyes; then :
   USB_CFLAGS="-DHAVE_LIBUSBHID_H"
 fi
 
 
-            USB_LIBS="$USB_LIBS -lusbhid"
-        else
-            ac_fn_c_check_header_mongrel "$LINENO" "usb.h" "ac_cv_header_usb_h" "$ac_includes_default"
+                    USB_LIBS="$USB_LIBS -lusbhid"
+                else
+                    ac_fn_c_check_header_mongrel "$LINENO" "usb.h" "ac_cv_header_usb_h" "$ac_includes_default"
 if test "x$ac_cv_header_usb_h" = xyes; then :
   USB_CFLAGS="-DHAVE_USB_H"
 fi
 
 
-            ac_fn_c_check_header_mongrel "$LINENO" "libusb.h" "ac_cv_header_libusb_h" "$ac_includes_default"
+                    ac_fn_c_check_header_mongrel "$LINENO" "libusb.h" "ac_cv_header_libusb_h" "$ac_includes_default"
 if test "x$ac_cv_header_libusb_h" = xyes; then :
   USB_CFLAGS="-DHAVE_LIBUSB_H"
 fi
 
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for hid_init in -lusb" >&5
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for hid_init in -lusb" >&5
 $as_echo_n "checking for hid_init in -lusb... " >&6; }
 if ${ac_cv_lib_usb_hid_init+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -21860,43 +21744,43 @@ if test "x$ac_cv_lib_usb_hid_init" = xyes; then :
   USB_LIBS="$USB_LIBS -lusb"
 fi
 
-        fi
+                fi
 
-        save_CFLAGS="$CFLAGS"
-        CFLAGS="$CFLAGS $USB_CFLAGS"
+                save_CFLAGS="$CFLAGS"
+                CFLAGS="$CFLAGS $USB_CFLAGS"
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for usbhid" >&5
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for usbhid" >&5
 $as_echo_n "checking for usbhid... " >&6; }
-        have_usbhid=no
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+                have_usbhid=no
+                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-          #include <sys/types.h>
-          #if defined(HAVE_USB_H)
-          #include <usb.h>
-          #endif
-          #ifdef __DragonFly__
-          # include <bus/usb/usb.h>
-          # include <bus/usb/usbhid.h>
-          #else
-          # include <dev/usb/usb.h>
-          # include <dev/usb/usbhid.h>
-          #endif
-          #if defined(HAVE_USBHID_H)
-          #include <usbhid.h>
-          #elif defined(HAVE_LIBUSB_H)
-          #include <libusb.h>
-          #elif defined(HAVE_LIBUSBHID_H)
-          #include <libusbhid.h>
-          #endif
+                  #include <sys/types.h>
+                  #if defined(HAVE_USB_H)
+                  #include <usb.h>
+                  #endif
+                  #ifdef __DragonFly__
+                  # include <bus/usb/usb.h>
+                  # include <bus/usb/usbhid.h>
+                  #else
+                  # include <dev/usb/usb.h>
+                  # include <dev/usb/usbhid.h>
+                  #endif
+                  #if defined(HAVE_USBHID_H)
+                  #include <usbhid.h>
+                  #elif defined(HAVE_LIBUSB_H)
+                  #include <libusb.h>
+                  #elif defined(HAVE_LIBUSBHID_H)
+                  #include <libusbhid.h>
+                  #endif
 
 int
 main ()
 {
 
-          struct report_desc *repdesc;
-          struct usb_ctl_report *repbuf;
-          hid_kind_t hidkind;
+                  struct report_desc *repdesc;
+                  struct usb_ctl_report *repbuf;
+                  hid_kind_t hidkind;
 
   ;
   return 0;
@@ -21904,45 +21788,45 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-        have_usbhid=yes
+                have_usbhid=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid" >&5
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid" >&5
 $as_echo "$have_usbhid" >&6; }
 
-        if test x$have_usbhid = xyes; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ucr_data member of usb_ctl_report" >&5
+                if test x$have_usbhid = xyes; then
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ucr_data member of usb_ctl_report" >&5
 $as_echo_n "checking for ucr_data member of usb_ctl_report... " >&6; }
-            have_usbhid_ucr_data=no
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+                    have_usbhid_ucr_data=no
+                    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-              #include <sys/types.h>
-              #if defined(HAVE_USB_H)
-              #include <usb.h>
-              #endif
-              #ifdef __DragonFly__
-              # include <bus/usb/usb.h>
-              # include <bus/usb/usbhid.h>
-              #else
-              # include <dev/usb/usb.h>
-              # include <dev/usb/usbhid.h>
-              #endif
-              #if defined(HAVE_USBHID_H)
-              #include <usbhid.h>
-              #elif defined(HAVE_LIBUSB_H)
-              #include <libusb.h>
-              #elif defined(HAVE_LIBUSBHID_H)
-              #include <libusbhid.h>
-              #endif
+                      #include <sys/types.h>
+                      #if defined(HAVE_USB_H)
+                      #include <usb.h>
+                      #endif
+                      #ifdef __DragonFly__
+                      # include <bus/usb/usb.h>
+                      # include <bus/usb/usbhid.h>
+                      #else
+                      # include <dev/usb/usb.h>
+                      # include <dev/usb/usbhid.h>
+                      #endif
+                      #if defined(HAVE_USBHID_H)
+                      #include <usbhid.h>
+                      #elif defined(HAVE_LIBUSB_H)
+                      #include <libusb.h>
+                      #elif defined(HAVE_LIBUSBHID_H)
+                      #include <libusbhid.h>
+                      #endif
 
 int
 main ()
 {
 
-              struct usb_ctl_report buf;
-              if (buf.ucr_data) { }
+                      struct usb_ctl_report buf;
+                      if (buf.ucr_data) { }
 
   ;
   return 0;
@@ -21950,47 +21834,47 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-            have_usbhid_ucr_data=yes
+                    have_usbhid_ucr_data=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            if test x$have_usbhid_ucr_data = xyes; then
-                USB_CFLAGS="$USB_CFLAGS -DUSBHID_UCR_DATA"
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid_ucr_data" >&5
+                    if test x$have_usbhid_ucr_data = xyes; then
+                        USB_CFLAGS="$USB_CFLAGS -DUSBHID_UCR_DATA"
+                    fi
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid_ucr_data" >&5
 $as_echo "$have_usbhid_ucr_data" >&6; }
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for new usbhid API" >&5
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for new usbhid API" >&5
 $as_echo_n "checking for new usbhid API... " >&6; }
-            have_usbhid_new=no
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+                    have_usbhid_new=no
+                    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-              #include <sys/types.h>
-              #if defined(HAVE_USB_H)
-              #include <usb.h>
-              #endif
-              #ifdef __DragonFly__
-              #include <bus/usb/usb.h>
-              #include <bus/usb/usbhid.h>
-              #else
-              #include <dev/usb/usb.h>
-              #include <dev/usb/usbhid.h>
-              #endif
-              #if defined(HAVE_USBHID_H)
-              #include <usbhid.h>
-              #elif defined(HAVE_LIBUSB_H)
-              #include <libusb.h>
-              #elif defined(HAVE_LIBUSBHID_H)
-              #include <libusbhid.h>
-              #endif
+                      #include <sys/types.h>
+                      #if defined(HAVE_USB_H)
+                      #include <usb.h>
+                      #endif
+                      #ifdef __DragonFly__
+                      #include <bus/usb/usb.h>
+                      #include <bus/usb/usbhid.h>
+                      #else
+                      #include <dev/usb/usb.h>
+                      #include <dev/usb/usbhid.h>
+                      #endif
+                      #if defined(HAVE_USBHID_H)
+                      #include <usbhid.h>
+                      #elif defined(HAVE_LIBUSB_H)
+                      #include <libusb.h>
+                      #elif defined(HAVE_LIBUSBHID_H)
+                      #include <libusbhid.h>
+                      #endif
 
 int
 main ()
 {
 
-              report_desc_t d;
-              hid_start_parse(d, 1, 1);
+                      report_desc_t d;
+                      hid_start_parse(d, 1, 1);
 
   ;
   return 0;
@@ -21998,29 +21882,29 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-            have_usbhid_new=yes
+                    have_usbhid_new=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            if test x$have_usbhid_new = xyes; then
-                USB_CFLAGS="$USB_CFLAGS -DUSBHID_NEW"
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid_new" >&5
+                    if test x$have_usbhid_new = xyes; then
+                        USB_CFLAGS="$USB_CFLAGS -DUSBHID_NEW"
+                    fi
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_usbhid_new" >&5
 $as_echo "$have_usbhid_new" >&6; }
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for struct joystick in machine/joystick.h" >&5
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for struct joystick in machine/joystick.h" >&5
 $as_echo_n "checking for struct joystick in machine/joystick.h... " >&6; }
-            have_machine_joystick=no
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+                    have_machine_joystick=no
+                    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-              #include <machine/joystick.h>
+                      #include <machine/joystick.h>
 
 int
 main ()
 {
 
-              struct joystick t;
+                      struct joystick t;
 
   ;
   return 0;
@@ -22028,28 +21912,30 @@ main ()
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-            have_machine_joystick=yes
+                    have_machine_joystick=yes
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            if test x$have_machine_joystick = xyes; then
+                    if test x$have_machine_joystick = xyes; then
 
 $as_echo "#define SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H 1" >>confdefs.h
 
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_machine_joystick" >&5
+                    fi
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_machine_joystick" >&5
 $as_echo "$have_machine_joystick" >&6; }
 
 
 $as_echo "#define SDL_JOYSTICK_USBHID 1" >>confdefs.h
 
-            SOURCES="$SOURCES $srcdir/src/joystick/bsd/*.c"
-            EXTRA_CFLAGS="$EXTRA_CFLAGS $USB_CFLAGS"
-            EXTRA_LDFLAGS="$EXTRA_LDFLAGS $USB_LIBS"
-            have_joystick=yes
-        fi
-        CFLAGS="$save_CFLAGS"
-    fi
+                    SOURCES="$SOURCES $srcdir/src/joystick/bsd/*.c"
+                    EXTRA_CFLAGS="$EXTRA_CFLAGS $USB_CFLAGS"
+                    EXTRA_LDFLAGS="$EXTRA_LDFLAGS $USB_LIBS"
+                    have_joystick=yes
+                fi
+                CFLAGS="$save_CFLAGS"
+            fi
+        ;;
+    esac
 }
 
 CheckClockGettime()
@@ -22185,6 +22071,21 @@ fi
 case "$host" in
     *-*-linux*|*-*-uclinux*|*-*-gnu*|*-*-k*bsd*-gnu|*-*-bsdi*|*-*-freebsd*|*-*-dragonfly*|*-*-netbsd*|*-*-openbsd*|*-*-sysv5*|*-*-solaris*|*-*-hpux*|*-*-aix*|*-*-minix*)
         case "$host" in
+            *-raspberry-linux*)
+                # Raspberry Pi
+                ARCH=linux
+                RPI_CFLAGS="-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux"
+                RPI_LDFLAGS="-L/opt/vc/lib -lbcm_host"
+                CFLAGS="$CFLAGS $RPI_CFLAGS"
+                SDL_CFLAGS="$SDL_CFLAGS $RPI_CFLAGS"
+                EXTRA_CFLAGS="$EXTRA_CFLAGS $RPI_CFLAGS"
+                SDL_LIBS="$SDL_LIBS $RPI_LDFLAGS"
+
+                if test x$enable_video = xyes; then
+                    SOURCES="$SOURCES $srcdir/src/video/raspberry/*.c"
+                    $as_echo "#define SDL_VIDEO_DRIVER_RPI 1" >>confdefs.h
+                fi
+                ;;
             *-*-linux*)         ARCH=linux ;;
             *-*-uclinux*)       ARCH=linux ;;
             *-*-kfreebsd*-gnu)  ARCH=kfreebsd-gnu ;;
@@ -22222,6 +22123,7 @@ case "$host" in
         CheckLibUDev
         CheckDBus
         CheckInputEvents
+        CheckInputKD
         CheckTslib
         CheckUSBHID
         CheckPTHREAD
@@ -22292,6 +22194,14 @@ $as_echo "#define SDL_POWER_LINUX 1" >>confdefs.h
                ;;
              esac
         fi
+        # Set up files for the filesystem library
+        if test x$enable_filesystem = xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_UNIX 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/filesystem/unix/*.c"
+            have_filesystem=yes
+        fi
         # Set up files for the timer library
         if test x$enable_timers = xyes; then
 
@@ -22299,6 +22209,14 @@ $as_echo "#define SDL_TIMER_UNIX 1" >>confdefs.h
 
             SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
             have_timers=yes
+        fi
+        # Set up files for udev hotplugging support
+        if test x$enable_libudev = xyes && test x$have_libudev_h_hdr = xyes; then
+            SOURCES="$SOURCES $srcdir/src/core/linux/SDL_udev.c"
+        fi
+        # Set up files for evdev input
+        if test x$use_input_events = xyes; then
+            SOURCES="$SOURCES $srcdir/src/input/evdev/*.c"
         fi
         ;;
     *-*-cygwin* | *-*-mingw32*)
@@ -22394,6 +22312,13 @@ $as_echo "#define SDL_POWER_WINDOWS 1" >>confdefs.h
             SOURCES="$SOURCES $srcdir/src/power/windows/SDL_syspower.c"
             have_power=yes
         fi
+        if test x$enable_filesystem = xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_WINDOWS 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/filesystem/windows/SDL_sysfilesystem.c"
+            have_filesystem=yes
+        fi
         # Set up files for the thread library
         if test x$enable_threads = xyes; then
 
@@ -22425,7 +22350,49 @@ $as_echo "#define SDL_LOADSO_WINDOWS 1" >>confdefs.h
         VERSION_SOURCES="$srcdir/src/main/windows/*.rc"
         SDLMAIN_SOURCES="$srcdir/src/main/windows/*.c"
         SDL_CFLAGS="$SDL_CFLAGS -Dmain=SDL_main"
-        SDL_LIBS="-lmingw32 -lSDL2main $SDL_LIBS -mwindows"
+        SDL_LIBS="-lSDL2main $SDL_LIBS -mwindows"
+
+        # Check to see if this is a mingw or cygwin build
+        have_mingw32=
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmingw32" >&5
+$as_echo_n "checking for main in -lmingw32... " >&6; }
+if ${ac_cv_lib_mingw32_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmingw32  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_mingw32_main=yes
+else
+  ac_cv_lib_mingw32_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mingw32_main" >&5
+$as_echo "$ac_cv_lib_mingw32_main" >&6; }
+if test "x$ac_cv_lib_mingw32_main" = xyes; then :
+  have_mingw32=yes
+fi
+
+        if test x$have_mingw32 = xyes; then
+            SDL_LIBS="-lmingw32 $SDL_LIBS"
+        else
+            SDL_LIBS="-lcygwin $SDL_LIBS"
+        fi
         ;;
     *-*-beos* | *-*-haiku*)
         ARCH=beos
@@ -22485,6 +22452,14 @@ $as_echo "#define SDL_POWER_BEOS 1" >>confdefs.h
             SOURCES="$SOURCES $srcdir/src/power/beos/*.c"
             have_power=yes
         fi
+        # Set up files for the system filesystem library
+        if test x$enable_filesystem = xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_BEOS 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/filesystem/beos/*.cc"
+            have_filesystem=yes
+        fi
         # The BeOS platform requires special setup.
         SOURCES="$srcdir/src/main/beos/*.cc $SOURCES"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lroot -lbe -lmedia -lgame -ldevice -ltextencoding"
@@ -22523,6 +22498,11 @@ $as_echo "#define SDL_POWER_BEOS 1" >>confdefs.h
         if test x$enable_power = xyes; then
             SOURCES="$SOURCES $srcdir/src/power/uikit/*.m"
             have_power=yes
+        fi
+        # Set up files for the filesystem library
+        if test x$enable_filesystem = xyes; then
+            SOURCES="$SOURCES $srcdir/src/filesystem/cocoa/*.m"
+            have_filesystem=yes
         fi
         # Set up files for the timer library
         if test x$enable_timers = xyes; then
@@ -22605,6 +22585,14 @@ $as_echo "#define SDL_POWER_MACOSX 1" >>confdefs.h
             SOURCES="$SOURCES $srcdir/src/power/macosx/*.c"
             have_power=yes
         fi
+        # Set up files for the filesystem library
+        if test x$enable_filesystem = xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_COCOA 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/filesystem/cocoa/*.m"
+            have_filesystem=yes
+        fi
         # Set up files for the timer library
         if test x$enable_timers = xyes; then
 
@@ -22670,6 +22658,14 @@ $as_echo "#define SDL_TIMERS_DISABLED 1" >>confdefs.h
 
     fi
     SOURCES="$SOURCES $srcdir/src/timer/dummy/*.c"
+fi
+if test x$have_filesystem != xyes; then
+    if test x$enable_filesystem = xyes; then
+
+$as_echo "#define SDL_FILESYSTEM_DISABLED 1" >>confdefs.h
+
+    fi
+    SOURCES="$SOURCES $srcdir/src/filesystem/dummy/*.c"
 fi
 if test x$have_loadso != xyes; then
     if test x$enable_loadso = xyes; then

@@ -196,7 +196,7 @@ explodeEmitter(struct particle *emitter)
         float speed = randomFloat(0.00, powf(0.17, exponent));
         speed = powf(speed, 1.0f / exponent);
 
-        /*select the particle at the end of our array */
+        /* select the particle at the end of our array */
         struct particle *p = &particles[num_active_particles];
 
         /* set the particles properties */
@@ -389,7 +389,7 @@ main(int argc, char *argv[])
 
     /* create main window and renderer */
     window = SDL_CreateWindow(NULL, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
-                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN |
+                                SDL_WINDOW_OPENGL |
                                 SDL_WINDOW_BORDERLESS);
     context = SDL_GL_CreateContext(window);
 

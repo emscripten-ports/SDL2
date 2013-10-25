@@ -49,11 +49,12 @@ typedef struct SDL_Thread SDL_Thread;
 typedef unsigned long SDL_threadID;
 
 /* Thread local storage ID, 0 is the invalid ID */
-typedef unsigned SDL_TLSID;
+typedef unsigned int SDL_TLSID;
 
-/* The SDL thread priority
+/**
+ *  The SDL thread priority.
  *
- * Note: On many systems you require special privileges to set high priority.
+ *  \note On many systems you require special privileges to set high priority.
  */
 typedef enum {
     SDL_THREAD_PRIORITY_LOW,
@@ -61,8 +62,9 @@ typedef enum {
     SDL_THREAD_PRIORITY_HIGH
 } SDL_ThreadPriority;
 
-/* The function passed to SDL_CreateThread()
-   It is passed a void* user context parameter and returns an int.
+/**
+ *  The function passed to SDL_CreateThread().
+ *  It is passed a void* user context parameter and returns an int.
  */
 typedef int (SDLCALL * SDL_ThreadFunction) (void *data);
 
@@ -109,7 +111,7 @@ SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data,
 /**
  *  Create a thread.
  */
-#define SDL_CreateThread(fn, name, data) SDL_CreateThread(fn, name, data, _beginthreadex, _endthreadex)
+#define SDL_CreateThread(fn, name, data) SDL_CreateThread(fn, name, data, (pfnSDL_CurrentBeginThread)_beginthreadex, (pfnSDL_CurrentEndThread)_endthreadex)
 
 #else
 

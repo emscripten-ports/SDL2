@@ -23,6 +23,8 @@
 #ifndef _SDL_thread_c_h
 #define _SDL_thread_c_h
 
+#include "SDL_thread.h"
+
 /* Need the definitions of SYS_ThreadHandle */
 #if SDL_THREADS_DISABLED
 #include "generic/SDL_systhread_c.h"
@@ -58,7 +60,7 @@ extern void SDL_RunThread(void *data);
 
 /* This is the system-independent thread local storage structure */
 typedef struct {
-    int limit;
+    unsigned int limit;
     struct {
         void *data;
         void (*destructor)(void*);
