@@ -835,6 +835,7 @@ enable_video_x11_vm
 enable_video_cocoa
 enable_video_directfb
 enable_directfb_shared
+enable_video_emscripten
 enable_fusionsound
 enable_fusionsound_shared
 enable_video_dummy
@@ -1564,6 +1565,8 @@ Optional Features:
   --enable-video-directfb use DirectFB video driver [[default=no]]
   --enable-directfb-shared
                           dynamically load directfb support [[default=yes]]
+  --enable-video-emscripten
+                          use Emscripten video driver [[default=no]]
   --enable-fusionsound    use FusionSound audio driver [[default=no]]
   --enable-fusionsound-shared
                           dynamically load fusionsound audio support
@@ -20807,6 +20810,25 @@ $as_echo "$directfb_shared" >&6; }
     fi
 }
 
+CheckEmscripten()
+{
+    # Check whether --enable-video-emscripten was given.
+if test "${enable_video_emscripten+set}" = set; then :
+  enableval=$enable_video_emscripten;
+else
+  enable_video_emscripten=no
+fi
+
+    if test x$enable_video = xyes -a x$enable_video_emscripten = xyes; then
+
+$as_echo "#define SDL_VIDEO_DRIVER_EMSCRIPTEN 1" >>confdefs.h
+
+        SOURCES="$SOURCES $srcdir/src/video/emscripten/*.c"
+        have_video=yes
+        SUMMARY_video="${SUMMARY_video} emscripten"
+    fi
+}
+
 CheckFusionSound()
 {
     # Check whether --enable-fusionsound was given.
@@ -22673,6 +22695,7 @@ case "$host" in
         CheckSNDIO
         CheckX11
         CheckDirectFB
+        CheckEmscripten
         CheckFusionSound
         CheckOpenGLX11
         CheckOpenGLESX11

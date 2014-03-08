@@ -1,0 +1,215 @@
+/*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+*/
+#include "../../SDL_internal.h"
+
+#if SDL_VIDEO_DRIVER_EMSCRIPTEN
+
+#include "SDL_video.h"
+#include "SDL_mouse.h"
+#include "../SDL_sysvideo.h"
+#include "../SDL_pixels_c.h"
+#include "../SDL_egl_c.h"
+#include "../../events/SDL_events_c.h"
+
+#include "SDL_emscriptenvideo.h"
+#include "SDL_emscriptenopengles.h"
+#include "../dummy/SDL_nullevents_c.h"
+#include "../dummy/SDL_nullframebuffer_c.h"
+
+#define EMSCRIPTENVID_DRIVER_NAME "emscripten"
+
+/* Initialization/Query functions */
+static int Emscripten_VideoInit(_THIS);
+static int Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode);
+static void Emscripten_VideoQuit(_THIS);
+
+static int Emscripten_CreateWindow(_THIS, SDL_Window * window);
+static void Emscripten_DestroyWindow(_THIS, SDL_Window * window);
+
+
+/* Emscripten driver bootstrap functions */
+
+static int
+Emscripten_Available(void)
+{
+    return (1);
+}
+
+static void
+Emscripten_DeleteDevice(SDL_VideoDevice * device)
+{
+    SDL_free(device);
+}
+
+static SDL_VideoDevice *
+Emscripten_CreateDevice(int devindex)
+{
+    SDL_VideoDevice *device;
+
+    /* Initialize all variables that we clean on shutdown */
+    device = (SDL_VideoDevice *) SDL_calloc(1, sizeof(SDL_VideoDevice));
+    if (!device) {
+        SDL_OutOfMemory();
+        SDL_free(device);
+        return (0);
+    }
+
+    /* Set the function pointers */
+    device->VideoInit = Emscripten_VideoInit;
+    device->VideoQuit = Emscripten_VideoQuit;
+    device->SetDisplayMode = Emscripten_SetDisplayMode;
+
+    device->PumpEvents = DUMMY_PumpEvents;
+
+    device->CreateWindow = Emscripten_CreateWindow;
+    /*device->CreateWindowFrom = Emscripten_CreateWindowFrom;
+    device->SetWindowTitle = Emscripten_SetWindowTitle;
+    device->SetWindowIcon = Emscripten_SetWindowIcon;
+    device->SetWindowPosition = Emscripten_SetWindowPosition;
+    device->SetWindowSize = Emscripten_SetWindowSize;
+    device->ShowWindow = Emscripten_ShowWindow;
+    device->HideWindow = Emscripten_HideWindow;
+    device->RaiseWindow = Emscripten_RaiseWindow;
+    device->MaximizeWindow = Emscripten_MaximizeWindow;
+    device->MinimizeWindow = Emscripten_MinimizeWindow;
+    device->RestoreWindow = Emscripten_RestoreWindow;
+    device->SetWindowGrab = Emscripten_SetWindowGrab;*/
+    device->DestroyWindow = Emscripten_DestroyWindow;
+
+    device->GL_LoadLibrary = Emscripten_GLES_LoadLibrary;
+    device->GL_GetProcAddress = Emscripten_GLES_GetProcAddress;
+    device->GL_UnloadLibrary = Emscripten_GLES_UnloadLibrary;
+    device->GL_CreateContext = Emscripten_GLES_CreateContext;
+    device->GL_MakeCurrent = Emscripten_GLES_MakeCurrent;
+    device->GL_SetSwapInterval = Emscripten_GLES_SetSwapInterval;
+    device->GL_GetSwapInterval = Emscripten_GLES_GetSwapInterval;
+    device->GL_SwapWindow = Emscripten_GLES_SwapWindow;
+    device->GL_DeleteContext = Emscripten_GLES_DeleteContext;
+
+    device->free = Emscripten_DeleteDevice;
+
+    return device;
+}
+
+VideoBootStrap Emscripten_bootstrap = {
+    EMSCRIPTENVID_DRIVER_NAME, "SDL emscripten video driver",
+    Emscripten_Available, Emscripten_CreateDevice
+};
+
+
+int
+Emscripten_VideoInit(_THIS)
+{
+    SDL_DisplayMode mode;
+    int is_fullscreen;
+
+    /* Use a fake 32-bpp desktop mode */
+    mode.format = SDL_PIXELFORMAT_RGB888;
+
+    emscripten_get_canvas_size(&mode.w, &mode.h, &is_fullscreen);
+
+    mode.refresh_rate = 0;
+    mode.driverdata = NULL;
+    if (SDL_AddBasicVideoDisplay(&mode) < 0) {
+        return -1;
+    }
+
+    SDL_zero(mode);
+    SDL_AddDisplayMode(&_this->displays[0], &mode);
+
+    /* We're done! */
+    return 0;
+}
+
+static int
+Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
+{
+    emscripten_set_canvas_size(mode->w, mode->h);
+    return 0;
+}
+
+static void
+Emscripten_VideoQuit(_THIS)
+{
+}
+
+static int
+Emscripten_CreateWindow(_THIS, SDL_Window * window)
+{
+    SDL_WindowData *wdata;
+    SDL_VideoDisplay *display;
+
+    /* Allocate window internal data */
+    wdata = (SDL_WindowData *) SDL_calloc(1, sizeof(SDL_WindowData));
+    if (wdata == NULL) {
+        return SDL_OutOfMemory();
+    }
+    display = SDL_GetDisplayForWindow(window);
+
+    /* Windows have one size for now */
+    //window->w = display->desktop_mode.w;
+    //window->h = display->desktop_mode.h;
+    emscripten_set_canvas_size(window->w, window->h);
+
+    /* Only GLES rendering for now */
+    window->flags |= SDL_WINDOW_OPENGL;
+
+    if (!_this->egl_data) {
+        if (SDL_GL_LoadLibrary(NULL) < 0) {
+            return -1;
+        }
+    }
+    wdata->egl_surface = SDL_EGL_CreateSurface(_this, NULL);
+
+    if (wdata->egl_surface == EGL_NO_SURFACE) {
+        return SDL_SetError("Could not create GLES window surface");
+    }
+
+    /* Setup driver data for this window */
+    window->driverdata = wdata;
+    
+    /* One window, it always has focus */
+    SDL_SetMouseFocus(window);
+    SDL_SetKeyboardFocus(window);
+
+    /* Window has been successfully created */
+    return 0;
+}
+
+static void
+Emscripten_DestroyWindow(_THIS, SDL_Window * window)
+{
+    SDL_WindowData *data;
+        
+    if(window->driverdata) {
+        data = (SDL_WindowData *) window->driverdata;
+        if (data->egl_surface != EGL_NO_SURFACE) {
+            SDL_EGL_DestroySurface(_this, data->egl_surface);
+            data->egl_surface = EGL_NO_SURFACE;
+        }
+        SDL_free(window->driverdata);
+        window->driverdata = NULL;
+    }
+}
+
+#endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN */
+
+/* vi: set ts=4 sw=4 expandtab: */
