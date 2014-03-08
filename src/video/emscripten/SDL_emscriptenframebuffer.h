@@ -20,21 +20,13 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_emscriptenvideo_h
-#define _SDL_emscriptenvideo_h
+#ifndef _SDL_emscriptenframebuffer_h
+#define _SDL_emscriptenframebuffer_h
 
-#include "../SDL_sysvideo.h"
-#include <emscripten/emscripten.h>
-#include "EGL/egl.h"
+extern int Emscripten_CreateWindowFramebuffer(_THIS, SDL_Window * window, Uint32 * format, void ** pixels, int *pitch);
+extern int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rect * rects, int numrects);
+extern void Emscripten_DestroyWindowFramebuffer(_THIS, SDL_Window * window);
 
-typedef struct SDL_WindowData
-{
-#if SDL_VIDEO_OPENGL_EGL
-    EGLSurface egl_surface;
-#endif
-    SDL_Surface *surface;
-} SDL_WindowData;
-
-#endif /* _SDL_emscriptenvideo_h */
+#endif /* _SDL_emsctiptenframebuffer_h */
 
 /* vi: set ts=4 sw=4 expandtab: */

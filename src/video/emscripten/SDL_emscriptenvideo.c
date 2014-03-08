@@ -32,7 +32,7 @@
 #include "SDL_emscriptenvideo.h"
 #include "SDL_emscriptenopengles.h"
 #include "../dummy/SDL_nullevents_c.h"
-#include "../dummy/SDL_nullframebuffer_c.h"
+#include "SDL_emscriptenframebuffer.h"
 
 #define EMSCRIPTENVID_DRIVER_NAME "emscripten"
 
@@ -77,6 +77,7 @@ Emscripten_CreateDevice(int devindex)
     device->VideoQuit = Emscripten_VideoQuit;
     device->SetDisplayMode = Emscripten_SetDisplayMode;
 
+
     device->PumpEvents = DUMMY_PumpEvents;
 
     device->CreateWindow = Emscripten_CreateWindow;
@@ -93,6 +94,10 @@ Emscripten_CreateDevice(int devindex)
     device->RestoreWindow = Emscripten_RestoreWindow;
     device->SetWindowGrab = Emscripten_SetWindowGrab;*/
     device->DestroyWindow = Emscripten_DestroyWindow;
+
+    device->CreateWindowFramebuffer = Emscripten_CreateWindowFramebuffer;
+    device->UpdateWindowFramebuffer = Emscripten_UpdateWindowFramebuffer;
+    device->DestroyWindowFramebuffer = Emscripten_DestroyWindowFramebuffer;
 
     device->GL_LoadLibrary = Emscripten_GLES_LoadLibrary;
     device->GL_GetProcAddress = Emscripten_GLES_GetProcAddress;
@@ -169,18 +174,18 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     //window->h = display->desktop_mode.h;
     emscripten_set_canvas_size(window->w, window->h);
 
-    /* Only GLES rendering for now */
-    window->flags |= SDL_WINDOW_OPENGL;
 
-    if (!_this->egl_data) {
-        if (SDL_GL_LoadLibrary(NULL) < 0) {
-            return -1;
+    if(window->flags & SDL_WINDOW_OPENGL) {
+        if (!_this->egl_data) {
+            if (SDL_GL_LoadLibrary(NULL) < 0) {
+                return -1;
+            }
         }
-    }
-    wdata->egl_surface = SDL_EGL_CreateSurface(_this, NULL);
+        wdata->egl_surface = SDL_EGL_CreateSurface(_this, NULL);
 
-    if (wdata->egl_surface == EGL_NO_SURFACE) {
-        return SDL_SetError("Could not create GLES window surface");
+        if (wdata->egl_surface == EGL_NO_SURFACE) {
+            return SDL_SetError("Could not create GLES window surface");
+        }
     }
 
     /* Setup driver data for this window */
