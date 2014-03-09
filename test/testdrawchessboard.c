@@ -17,7 +17,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef EMSCRIPTEN
+#include <emscripten/emscripten.h>
+#endif
+
 #include "SDL.h"
+
+SDL_Window *window;
+SDL_Renderer *renderer;
+int done;
 
 void
 DrawChessBoard(SDL_Renderer * renderer)
@@ -47,12 +55,33 @@ DrawChessBoard(SDL_Renderer * renderer)
 	}
 }
 
+void
+loop()
+{
+    SDL_Event e;
+	if (SDL_PollEvent(&e)) {
+		if (e.type == SDL_QUIT) {
+			done = 1;
+			return;
+		}
+
+		if(e.key.keysym.sym == SDLK_ESCAPE) {
+			done = 1;
+			return;
+		}
+	}
+	
+	DrawChessBoard(renderer);
+	
+	/* Got everything on rendering surface,
+	   now Update the drawing image on window screen */
+	SDL_UpdateWindowSurface(window);
+}
+
 int
 main(int argc, char *argv[])
 {
-	SDL_Window *window;
 	SDL_Surface *surface;
-	SDL_Renderer *renderer;
 
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -86,24 +115,14 @@ main(int argc, char *argv[])
 
 
 	/* Draw the Image on rendering surface */
-	while(1)
-	{
-		SDL_Event e;
-		if (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT) 
-				break;
-
-			if(e.key.keysym.sym == SDLK_ESCAPE)
-				break;
-		}
-		
-		DrawChessBoard(renderer);
-		
-		/* Got everything on rendering surface,
- 		   now Update the drawing image on window screen */
-		SDL_UpdateWindowSurface(window);
-
-	}
+	done = 0;
+#ifdef EMSCRIPTEN
+    emscripten_set_main_loop(loop, 0, 1);
+#else
+    while (!done) {
+        loop();
+    }
+#endif
 
 	return 0;
 }
