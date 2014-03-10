@@ -31,8 +31,8 @@
 
 #include "SDL_emscriptenvideo.h"
 #include "SDL_emscriptenopengles.h"
-#include "../dummy/SDL_nullevents_c.h"
 #include "SDL_emscriptenframebuffer.h"
+#include "SDL_emscriptenevents.h"
 
 #define EMSCRIPTENVID_DRIVER_NAME "emscripten"
 
@@ -43,6 +43,7 @@ static void Emscripten_VideoQuit(_THIS);
 
 static int Emscripten_CreateWindow(_THIS, SDL_Window * window);
 static void Emscripten_DestroyWindow(_THIS, SDL_Window * window);
+static void Emscripten_PumpEvents(_THIS);
 
 
 /* Emscripten driver bootstrap functions */
@@ -78,7 +79,7 @@ Emscripten_CreateDevice(int devindex)
     device->SetDisplayMode = Emscripten_SetDisplayMode;
 
 
-    device->PumpEvents = DUMMY_PumpEvents;
+    device->PumpEvents = Emscripten_PumpEvents;
 
     device->CreateWindow = Emscripten_CreateWindow;
     /*device->CreateWindowFrom = Emscripten_CreateWindowFrom;
@@ -156,6 +157,12 @@ Emscripten_VideoQuit(_THIS)
 {
 }
 
+static void
+Emscripten_PumpEvents(_THIS)
+{
+    /* do nothing. */
+}
+
 static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
@@ -169,11 +176,7 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     }
     display = SDL_GetDisplayForWindow(window);
 
-    /* Windows have one size for now */
-    //window->w = display->desktop_mode.w;
-    //window->h = display->desktop_mode.h;
     emscripten_set_canvas_size(window->w, window->h);
-
 
     if(window->flags & SDL_WINDOW_OPENGL) {
         if (!_this->egl_data) {
@@ -188,12 +191,16 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
         }
     }
 
+    wdata->window = window;
+
     /* Setup driver data for this window */
     window->driverdata = wdata;
     
     /* One window, it always has focus */
     SDL_SetMouseFocus(window);
     SDL_SetKeyboardFocus(window);
+
+    Emscripten_RegisterEventHandlers(wdata);
 
     /* Window has been successfully created */
     return 0;

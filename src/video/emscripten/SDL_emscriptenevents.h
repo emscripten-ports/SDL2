@@ -18,24 +18,17 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "../../SDL_internal.h"
 
-#ifndef _SDL_emscriptenvideo_h
-#define _SDL_emscriptenvideo_h
 
-#include "../SDL_sysvideo.h"
-#include <emscripten/emscripten.h>
-#include "EGL/egl.h"
+#ifndef _SDL_emscriptenevents_h
+#define _SDL_emscriptenevents_h
 
-typedef struct SDL_WindowData
-{
-#if SDL_VIDEO_OPENGL_EGL
-    EGLSurface egl_surface;
-#endif
-    SDL_Window *window;
-    SDL_Surface *surface;
-} SDL_WindowData;
+#include "SDL_emscriptenvideo.h"
 
-#endif /* _SDL_emscriptenvideo_h */
+extern void
+Emscripten_RegisterEventHandlers(SDL_WindowData *data);
+
+#endif /* _SDL_emscriptenevents_h */
 
 /* vi: set ts=4 sw=4 expandtab: */
+
