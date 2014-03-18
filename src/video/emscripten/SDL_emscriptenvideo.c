@@ -210,9 +210,11 @@ static void
 Emscripten_DestroyWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *data;
-        
+
     if(window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
+
+        Emscripten_UnregisterEventHandlers(data);
         if (data->egl_surface != EGL_NO_SURFACE) {
             SDL_EGL_DestroySurface(_this, data->egl_surface);
             data->egl_surface = EGL_NO_SURFACE;

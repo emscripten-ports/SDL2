@@ -28,6 +28,8 @@
 extern void
 Emscripten_RegisterEventHandlers(SDL_WindowData *data);
 
+extern void
+Emscripten_UnregisterEventHandlers(SDL_WindowData *data);
 #endif /* _SDL_emscriptenevents_h */
 
 /* vi: set ts=4 sw=4 expandtab: */

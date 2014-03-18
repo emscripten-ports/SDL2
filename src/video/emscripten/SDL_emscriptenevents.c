@@ -383,6 +383,21 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_keypress_callback("#window", data, 0, Emscripten_HandleKeyPress);
 }
 
+void
+Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
+{
+    /* only works due to having one window */
+    emscripten_set_mousemove_callback("#canvas", NULL, 0, NULL);
+
+    emscripten_set_mousedown_callback("#canvas", NULL, 0, NULL);
+    emscripten_set_mouseup_callback("#canvas", NULL, 0, NULL);
+
+    emscripten_set_keydown_callback("#window", NULL, 0, NULL);
+    emscripten_set_keyup_callback("#window", NULL, 0, NULL);
+
+    emscripten_set_keypress_callback("#window", NULL, 0, NULL);
+}
+
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN */
 
 /* vi: set ts=4 sw=4 expandtab: */
