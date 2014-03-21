@@ -25,7 +25,9 @@
 
 #include "../SDL_sysvideo.h"
 #include <emscripten/emscripten.h>
-#include "EGL/egl.h"
+#include <emscripten/html5.h>
+
+#include <EGL/egl.h>
 
 typedef struct SDL_WindowData
 {
@@ -34,6 +36,9 @@ typedef struct SDL_WindowData
 #endif
     SDL_Window *window;
     SDL_Surface *surface;
+
+    int windowed_width;
+    int windowed_height;
 } SDL_WindowData;
 
 #endif /* _SDL_emscriptenvideo_h */

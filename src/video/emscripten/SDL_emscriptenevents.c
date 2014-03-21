@@ -33,6 +33,8 @@
 #include "SDL_emscriptenevents.h"
 #include "SDL_emscriptenvideo.h"
 
+#define FULLSCREEN_MASK ( SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_FULLSCREEN )
+
 /*
 .which to scancode
 https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Constants
@@ -367,6 +369,64 @@ Emscripten_HandleKeyPress(int eventType, const EmscriptenKeyboardEvent *keyEvent
     return 1;
 }
 
+int
+Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChangeEvent *fullscreenChangeEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    if(fullscreenChangeEvent->isFullscreen)
+    {
+        /*if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        {
+            emscripten_set_canvas_size(fullscreenChangeEvent->elementWidth, fullscreenChangeEvent->elementHeight);
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, fullscreenChangeEvent->elementWidth, fullscreenChangeEvent->elementHeight);
+        }*/
+        if(!(window_data->window->flags & FULLSCREEN_MASK))
+            window_data->window->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    }
+    else
+    {
+        if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        {
+            emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, window_data->windowed_width, window_data->windowed_height);
+        }
+        window_data->window->flags &= ~FULLSCREEN_MASK;
+    }
+
+    return 0;
+}
+
+int
+Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    if(window_data->window->flags & FULLSCREEN_MASK)
+    {
+        if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        {
+            emscripten_set_canvas_size(uiEvent->windowInnerWidth, uiEvent->windowInnerHeight);
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, uiEvent->windowInnerWidth, uiEvent->windowInnerHeight);
+        }
+    }
+    else
+    {
+        if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        {
+            int w = EM_ASM_INT_V({
+                return Module['canvas'].clientWidth;
+            });
+            int h = EM_ASM_INT_V({
+                return Module['canvas'].clientHeight;
+            });
+
+            emscripten_set_canvas_size(w, h);
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, w, h);
+        }
+    }
+
+    return 0;
+}
+
 void
 Emscripten_RegisterEventHandlers(SDL_WindowData *data)
 {
@@ -381,6 +441,10 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_keyup_callback("#window", data, 0, Emscripten_HandleKey);
 
     emscripten_set_keypress_callback("#window", data, 0, Emscripten_HandleKeyPress);
+
+    emscripten_set_fullscreenchange_callback("#document", data, 0, Emscripten_HandleFullscreenChange);
+
+    emscripten_set_resize_callback("#window", data, 0, Emscripten_HandleResize);
 }
 
 void
@@ -396,6 +460,10 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
     emscripten_set_keyup_callback("#window", NULL, 0, NULL);
 
     emscripten_set_keypress_callback("#window", NULL, 0, NULL);
+
+    emscripten_set_fullscreenchange_callback("#document", NULL, 0, NULL);
+
+    emscripten_set_resize_callback("#window", NULL, 0, NULL);
 }
 
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN */

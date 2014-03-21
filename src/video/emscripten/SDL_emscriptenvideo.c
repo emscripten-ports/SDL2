@@ -42,7 +42,9 @@ static int Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_Disp
 static void Emscripten_VideoQuit(_THIS);
 
 static int Emscripten_CreateWindow(_THIS, SDL_Window * window);
+static void Emscripten_SetWindowSize(_THIS, SDL_Window * window);
 static void Emscripten_DestroyWindow(_THIS, SDL_Window * window);
+static void Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen);
 static void Emscripten_PumpEvents(_THIS);
 
 
@@ -85,9 +87,9 @@ Emscripten_CreateDevice(int devindex)
     /*device->CreateWindowFrom = Emscripten_CreateWindowFrom;
     device->SetWindowTitle = Emscripten_SetWindowTitle;
     device->SetWindowIcon = Emscripten_SetWindowIcon;
-    device->SetWindowPosition = Emscripten_SetWindowPosition;
+    device->SetWindowPosition = Emscripten_SetWindowPosition;*/
     device->SetWindowSize = Emscripten_SetWindowSize;
-    device->ShowWindow = Emscripten_ShowWindow;
+    /*device->ShowWindow = Emscripten_ShowWindow;
     device->HideWindow = Emscripten_HideWindow;
     device->RaiseWindow = Emscripten_RaiseWindow;
     device->MaximizeWindow = Emscripten_MaximizeWindow;
@@ -95,6 +97,7 @@ Emscripten_CreateDevice(int devindex)
     device->RestoreWindow = Emscripten_RestoreWindow;
     device->SetWindowGrab = Emscripten_SetWindowGrab;*/
     device->DestroyWindow = Emscripten_DestroyWindow;
+    device->SetWindowFullscreen = Emscripten_SetWindowFullscreen;
 
     device->CreateWindowFramebuffer = Emscripten_CreateWindowFramebuffer;
     device->UpdateWindowFramebuffer = Emscripten_UpdateWindowFramebuffer;
@@ -148,7 +151,7 @@ Emscripten_VideoInit(_THIS)
 static int
 Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
 {
-    emscripten_set_canvas_size(mode->w, mode->h);
+    /* can't do this */
     return 0;
 }
 
@@ -178,6 +181,9 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
 
     emscripten_set_canvas_size(window->w, window->h);
 
+    wdata->windowed_width = window->w;
+    wdata->windowed_height = window->h;
+
     if(window->flags & SDL_WINDOW_OPENGL) {
         if (!_this->egl_data) {
             if (SDL_GL_LoadLibrary(NULL) < 0) {
@@ -206,6 +212,11 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     return 0;
 }
 
+static void Emscripten_SetWindowSize(_THIS, SDL_Window * window)
+{
+    emscripten_set_canvas_size(window->w, window->h);
+}
+
 static void
 Emscripten_DestroyWindow(_THIS, SDL_Window * window)
 {
@@ -221,6 +232,23 @@ Emscripten_DestroyWindow(_THIS, SDL_Window * window)
         }
         SDL_free(window->driverdata);
         window->driverdata = NULL;
+    }
+}
+
+static void
+Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen)
+{
+    SDL_WindowData *data;
+    if(window->driverdata) {
+        data = (SDL_WindowData *) window->driverdata;
+        if(fullscreen)
+        {
+            int is_fullscreen;
+            emscripten_get_canvas_size(&data->windowed_width, &data->windowed_height, &is_fullscreen);
+            emscripten_request_fullscreen("#canvas", 1);
+        }
+        else
+            emscripten_exit_fullscreen();
     }
 }
 
