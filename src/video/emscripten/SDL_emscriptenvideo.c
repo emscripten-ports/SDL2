@@ -33,6 +33,7 @@
 #include "SDL_emscriptenopengles.h"
 #include "SDL_emscriptenframebuffer.h"
 #include "SDL_emscriptenevents.h"
+#include "SDL_emscriptenmouse.h"
 
 #define EMSCRIPTENVID_DRIVER_NAME "emscripten"
 
@@ -144,6 +145,8 @@ Emscripten_VideoInit(_THIS)
     SDL_zero(mode);
     SDL_AddDisplayMode(&_this->displays[0], &mode);
 
+    Emscripten_InitMouse();
+
     /* We're done! */
     return 0;
 }
@@ -158,6 +161,7 @@ Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * m
 static void
 Emscripten_VideoQuit(_THIS)
 {
+    Emscripten_FiniMouse();
 }
 
 static void
