@@ -24,6 +24,8 @@
 
 #if SDL_VIDEO_DRIVER_EMSCRIPTEN
 
+#include <emscripten/emscripten.h>
+
 #include "SDL_emscriptenmouse.h"
 
 #include "../../events/SDL_mouse_c.h"
@@ -34,9 +36,14 @@ static SDL_Cursor*
 Emscripten_CreateDefaultCursor()
 {
     SDL_Cursor* cursor;
+    Emscripten_CursorData *curdata;
 
     cursor = SDL_calloc(1, sizeof(SDL_Cursor));
     if (cursor) {
+        curdata = (Emscripten_CursorData *) SDL_calloc(1, sizeof(*curdata));
+
+        curdata->system_cursor = "default";
+        cursor->driverdata = curdata;
     }
     else {
         SDL_OutOfMemory();
@@ -54,49 +61,96 @@ Emscripten_CreateCursor(SDL_Surface* sruface, int hot_x, int hot_y)
 static SDL_Cursor*
 Emscripten_CreateSystemCursor(SDL_SystemCursor id)
 {
+    SDL_Cursor *cursor;
+    Emscripten_CursorData *curdata;
+    const char *cursor_name = NULL;
+
     switch(id) {
         case SDL_SYSTEM_CURSOR_ARROW:
+            cursor_name = "default";
             break;
         case SDL_SYSTEM_CURSOR_IBEAM:
+            cursor_name = "text";
             break;
         case SDL_SYSTEM_CURSOR_WAIT:
+            cursor_name = "wait";
             break;
         case SDL_SYSTEM_CURSOR_CROSSHAIR:
+            cursor_name = "crosshair";
             break;
         case SDL_SYSTEM_CURSOR_WAITARROW:
+            cursor_name = "progress";
             break;
         case SDL_SYSTEM_CURSOR_SIZENWSE:
+            cursor_name = "nwse-resize";
             break;
         case SDL_SYSTEM_CURSOR_SIZENESW:
+            cursor_name = "nesw-resize";
             break;
         case SDL_SYSTEM_CURSOR_SIZEWE:
+            cursor_name = "ew-resize";
             break;
         case SDL_SYSTEM_CURSOR_SIZENS:
+            cursor_name = "ns-resize";
             break;
         case SDL_SYSTEM_CURSOR_SIZEALL:
             break;
         case SDL_SYSTEM_CURSOR_NO:
+            cursor_name = "not-allowed";
             break;
         case SDL_SYSTEM_CURSOR_HAND:
+            cursor_name = "pointer";
             break;
         default:
             SDL_assert(0);
             return NULL;
     }
 
-    return Emscripten_CreateDefaultCursor();
+    cursor = (SDL_Cursor *) SDL_calloc(1, sizeof(*cursor));
+    curdata = (Emscripten_CursorData *) SDL_calloc(1, sizeof(*curdata));
+
+    curdata->system_cursor = cursor_name;
+    cursor->driverdata = curdata;
+
+    return cursor;
 }
 
 static void
 Emscripten_FreeCursor(SDL_Cursor* cursor)
 {
-    if (cursor)
-      SDL_free(cursor);
+    Emscripten_CursorData *curdata;
+    if (cursor) {
+        curdata = (Emscripten_CursorData *) cursor->driverdata;
+
+        if (curdata != NULL) {
+            SDL_free(cursor->driverdata);
+        }
+
+        SDL_free(cursor);
+    }
 }
 
 static int
 Emscripten_ShowCursor(SDL_Cursor* cursor)
 {
+    Emscripten_CursorData *curdata;
+    if (SDL_GetMouseFocus() != NULL) {
+        if(cursor && cursor->driverdata) {
+            curdata = (Emscripten_CursorData *) cursor->driverdata;
+
+            if(curdata->system_cursor) {
+                EM_ASM_INT({
+                    Module['canvas'].style['cursor'] = Pointer_stringify($0);
+                    return 0;
+                }, curdata->system_cursor);
+            }
+        }
+        else {
+            EM_ASM(
+                Module['canvas'].style['cursor'] = 'none';
+            );
+        }
+    }
     return 0;
 }
 
