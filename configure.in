@@ -3208,6 +3208,13 @@ AC_HELP_STRING([--enable-render-d3d], [enable the Direct3D render driver [[defau
             SUMMARY_video="${SUMMARY_video} emscripten"
         fi
 
+        if test x$enable_audio = xyes; then
+            AC_DEFINE(SDL_AUDIO_DRIVER_EMSCRIPTEN, 1, [ ])
+            SOURCES="$SOURCES $srcdir/src/audio/emscripten/*.c"
+            have_audio=yes
+            SUMMARY_audio="${SUMMARY_audio} emscripten"
+        fi
+
         CheckVisibilityHidden
         CheckDummyVideo
         CheckDiskAudio

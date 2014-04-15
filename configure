@@ -23311,6 +23311,15 @@ $as_echo "#define SDL_VIDEO_DRIVER_EMSCRIPTEN 1" >>confdefs.h
             SUMMARY_video="${SUMMARY_video} emscripten"
         fi
 
+        if test x$enable_audio = xyes; then
+
+$as_echo "#define SDL_AUDIO_DRIVER_EMSCRIPTEN 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/audio/emscripten/*.c"
+            have_audio=yes
+            SUMMARY_audio="${SUMMARY_audio} emscripten"
+        fi
+
         CheckVisibilityHidden
         CheckDummyVideo
         CheckDiskAudio
