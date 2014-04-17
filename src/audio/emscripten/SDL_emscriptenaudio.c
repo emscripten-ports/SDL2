@@ -81,11 +81,6 @@ HandleAudioProcess(_THIS)
             this->hidden->write_off += this->convert.len_cvt;
             byte_len = this->hidden->write_off - this->hidden->read_off;
 
-            static int dbg = 0;
-
-            if(dbg < 20)
-                EM_ASM_ARGS({console.log('got', $0, 'need', $1, 'r', $2, 'w', $3, 'rgot', $3 - $2);}, byte_len, this->spec.size, this->hidden->read_off, this->hidden->write_off);
-
             /* read more data*/
             while (byte_len < this->spec.size) {
                 (*this->spec.callback) (this->spec.userdata,
@@ -102,8 +97,6 @@ HandleAudioProcess(_THIS)
                 this->hidden->write_off += this->convert.len_cvt;
 
                 byte_len = this->hidden->write_off - this->hidden->read_off;
-                if(dbg < 20)
-                    EM_ASM_ARGS({console.log('more', 'got', $0, 'need', $1, 'r', $2, 'w', $3, 'rgot', $3 - $2);}, byte_len, this->spec.size, this->hidden->read_off, this->hidden->write_off);
             }
 
             dbg++;
@@ -123,18 +116,6 @@ HandleAudioProcess(_THIS)
                                  this->hidden->mixlen);
         buf = this->hidden->mixbuf;
         byte_len = this->hidden->mixlen;
-    }
-
-    static int loggedCVT = 0;
-
-    if (!loggedCVT) {
-        EM_ASM_ARGS({
-            console.log($0, $1, $2, $3, $4, $5, $6, $7, "spec", $8, $9, $10, $11, $12, $13, "bits", $14, $15);
-        }, this->convert.needed, this->convert.src_format, this->convert.dst_format, this->convert.rate_incr,
-           this->convert.len, this->convert.len_cvt, this->convert.len_mult, this->convert.len_ratio,
-           this->spec.freq, this->spec.format, this->spec.channels, this->spec.silence, this->spec.samples, this->spec.size,
-           SDL_AUDIO_BITSIZE(this->convert.src_format), SDL_AUDIO_BITSIZE(this->convert.dst_format));
-        loggedCVT = 1;
     }
 
     if (buf) {
@@ -217,7 +198,6 @@ Emscripten_OpenDevice(_THIS, const char *devname, int iscapture)
 
     /* limit to native freq */
     int sampleRate = EM_ASM_INT_V({
-        console.log(SDL2);
         return SDL2.audioContext['sampleRate'];
     });
 
@@ -229,7 +209,6 @@ Emscripten_OpenDevice(_THIS, const char *devname, int iscapture)
 
     /* setup a ScriptProcessorNode */
     EM_ASM_ARGS({
-        console.log("channels", $0, "samples", $1);
         SDL2.audio.scriptProcessorNode = SDL2.audioContext['createScriptProcessor']($1, 0, $0);
         SDL2.audio.scriptProcessorNode['onaudioprocess'] = function (e) {
             SDL2.audio.currentOutputBuffer = e['outputBuffer'];
