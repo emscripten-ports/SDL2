@@ -35,6 +35,7 @@ HandleAudioProcess(_THIS)
     Uint8 *buf = NULL;
     int byte_len = 0;
     int bytes = SDL_AUDIO_BITSIZE(this->spec.format) / 8;
+    int i;
 
     /* Only do soemthing if audio is enabled */
     if (!this->enabled)
@@ -50,6 +51,67 @@ HandleAudioProcess(_THIS)
         SDL_ConvertAudio(&this->convert);
         buf = this->convert.buf;
         byte_len = this->convert.len_cvt;
+
+        /* size mismatch*/
+        if (byte_len != this->spec.size) {
+            if (!this->hidden->mixbuf) {
+                this->hidden->mixlen = this->spec.size > byte_len ? this->spec.size * 2 : byte_len * 2;
+                this->hidden->mixbuf = SDL_malloc(this->hidden->mixlen);
+            }
+
+            /* copy existing data */
+
+            if (this->hidden->write_off + this->convert.len_cvt > this->hidden->mixlen) {
+
+                if (this->hidden->write_off > this->hidden->read_off) {
+                    SDL_memmove(this->hidden->mixbuf, this->hidden->mixbuf + this->hidden->read_off, this->hidden->mixlen - this->hidden->read_off);
+                    this->hidden->write_off = this->hidden->write_off - this->hidden->read_off;
+                } else {
+                    this->hidden->write_off = 0;
+                }
+                this->hidden->read_off = 0;
+            }
+
+            /* not a multiple (??) */
+            if (this->convert.len_cvt % bytes != 0) {
+                this->convert.len_cvt = (this->convert.len_cvt / bytes) * bytes;
+            }
+
+            SDL_memcpy(this->hidden->mixbuf + this->hidden->write_off, this->convert.buf, this->convert.len_cvt);
+            this->hidden->write_off += this->convert.len_cvt;
+            byte_len = this->hidden->write_off - this->hidden->read_off;
+
+            static int dbg = 0;
+
+            if(dbg < 20)
+                EM_ASM_ARGS({console.log('got', $0, 'need', $1, 'r', $2, 'w', $3, 'rgot', $3 - $2);}, byte_len, this->spec.size, this->hidden->read_off, this->hidden->write_off);
+
+            /* read more data*/
+            while (byte_len < this->spec.size) {
+                (*this->spec.callback) (this->spec.userdata,
+                                         this->convert.buf,
+                                         this->convert.len);
+                SDL_ConvertAudio(&this->convert);
+
+                /* not a multiple (??) */
+                if (this->convert.len_cvt % bytes != 0) {
+                    this->convert.len_cvt = (this->convert.len_cvt / bytes) * bytes;
+                }
+
+                SDL_memcpy(this->hidden->mixbuf + this->hidden->write_off, this->convert.buf, this->convert.len_cvt);
+                this->hidden->write_off += this->convert.len_cvt;
+
+                byte_len = this->hidden->write_off - this->hidden->read_off;
+                if(dbg < 20)
+                    EM_ASM_ARGS({console.log('more', 'got', $0, 'need', $1, 'r', $2, 'w', $3, 'rgot', $3 - $2);}, byte_len, this->spec.size, this->hidden->read_off, this->hidden->write_off);
+            }
+
+            dbg++;
+
+            byte_len = this->spec.size;
+            buf = this->hidden->mixbuf + this->hidden->read_off;
+            this->hidden->read_off += byte_len;
+        }
 
     } else {
         if (!this->hidden->mixbuf) {
@@ -67,9 +129,11 @@ HandleAudioProcess(_THIS)
 
     if (!loggedCVT) {
         EM_ASM_ARGS({
-            console.log($0, $1, $2, $3, $4, $5, $6, $7);
+            console.log($0, $1, $2, $3, $4, $5, $6, $7, "spec", $8, $9, $10, $11, $12, $13, "bits", $14, $15);
         }, this->convert.needed, this->convert.src_format, this->convert.dst_format, this->convert.rate_incr,
-           this->convert.len, this->convert.len_cvt, this->convert.len_mult, this->convert.len_ratio);
+           this->convert.len, this->convert.len_cvt, this->convert.len_mult, this->convert.len_ratio,
+           this->spec.freq, this->spec.format, this->spec.channels, this->spec.silence, this->spec.samples, this->spec.size,
+           SDL_AUDIO_BITSIZE(this->convert.src_format), SDL_AUDIO_BITSIZE(this->convert.dst_format));
         loggedCVT = 1;
     }
 

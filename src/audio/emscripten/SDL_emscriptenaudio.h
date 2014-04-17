@@ -32,6 +32,8 @@ struct SDL_PrivateAudioData
 {
     Uint8 *mixbuf;
     Uint32 mixlen;
+
+    Uint32 write_off, read_off;
 };
 
 #endif /* _SDL_emscriptenaudio_h */
