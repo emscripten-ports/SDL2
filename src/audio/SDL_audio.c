@@ -71,7 +71,7 @@ extern AudioBootStrap FUSIONSOUND_bootstrap;
 extern AudioBootStrap ANDROIDAUD_bootstrap;
 extern AudioBootStrap PSPAUD_bootstrap;
 extern AudioBootStrap SNDIO_bootstrap;
-extern AudioBootStrap Emscripten_bootstrap;
+extern AudioBootStrap EmscriptenAudio_bootstrap;
 
 
 /* Available audio drivers */
@@ -143,7 +143,7 @@ static const AudioBootStrap *const bootstrap[] = {
     &PSPAUD_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_EMSCRIPTEN
-    &Emscripten_bootstrap,
+    &EmscriptenAudio_bootstrap,
 #endif
     NULL
 };

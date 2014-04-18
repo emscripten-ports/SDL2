@@ -99,8 +99,6 @@ HandleAudioProcess(_THIS)
                 byte_len = this->hidden->write_off - this->hidden->read_off;
             }
 
-            dbg++;
-
             byte_len = this->spec.size;
             buf = this->hidden->mixbuf + this->hidden->read_off;
             this->hidden->read_off += byte_len;
@@ -246,7 +244,7 @@ Emscripten_Init(SDL_AudioDriverImpl * impl)
     return available;
 }
 
-AudioBootStrap Emscripten_bootstrap = {
+AudioBootStrap EmscriptenAudio_bootstrap = {
     "emscripten", "SDL emscripten audio driver", Emscripten_Init, 0
 };
 
