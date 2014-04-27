@@ -33,6 +33,8 @@ struct SDL_PrivateAudioData
     Uint8 *mixbuf;
     Uint32 mixlen;
 
+    Uint32 conv_in_len;
+
     Uint32 write_off, read_off;
 };
 
