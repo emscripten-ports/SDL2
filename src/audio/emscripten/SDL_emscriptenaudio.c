@@ -206,16 +206,13 @@ Emscripten_OpenDevice(_THIS, const char *devname, int iscapture)
     });
 
     if(this->spec.freq != sampleRate) {
-        for (i = 1; i <= this->spec.samples; i++) {
+        for (i = this->spec.samples; i > 0; i--) {
             f = (float)i / (float)sampleRate * (float)this->spec.freq;
             if (SDL_floor(f) == f) {
                 this->hidden->conv_in_len = SDL_floor(f);
+                break;
             }
         }
-
-        EM_ASM_ARGS({
-            console.log($0, $1, $2, $3);
-        }, this->hidden->conv_in_len, this->spec.freq, sampleRate, this->spec.samples);
 
         this->spec.freq = sampleRate;
     }
