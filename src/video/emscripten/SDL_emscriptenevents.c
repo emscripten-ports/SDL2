@@ -325,6 +325,14 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
 }
 
 int
+Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    SDL_SendMouseWheel(window_data->window, 0, wheelEvent->deltaX, wheelEvent->deltaY);
+    return 1;
+}
+
+int
 Emscripten_HandleKey(int eventType, const EmscriptenKeyboardEvent *keyEvent, void *userData)
 {
     Uint32 scancode;
@@ -436,6 +444,8 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_mousedown_callback("#canvas", data, 0, Emscripten_HandleMouseButton);
     emscripten_set_mouseup_callback("#canvas", data, 0, Emscripten_HandleMouseButton);
 
+    emscripten_set_wheel_callback("#canvas", data, 0, Emscripten_HandleWheel);
+
     /* Keyboard events are awkward */
     emscripten_set_keydown_callback("#window", data, 0, Emscripten_HandleKey);
     emscripten_set_keyup_callback("#window", data, 0, Emscripten_HandleKey);
@@ -455,6 +465,8 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
 
     emscripten_set_mousedown_callback("#canvas", NULL, 0, NULL);
     emscripten_set_mouseup_callback("#canvas", NULL, 0, NULL);
+
+    emscripten_set_wheel_callback("#canvas", NULL, 0, NULL);
 
     emscripten_set_keydown_callback("#window", NULL, 0, NULL);
     emscripten_set_keyup_callback("#window", NULL, 0, NULL);
