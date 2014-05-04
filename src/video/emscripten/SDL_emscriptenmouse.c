@@ -140,14 +140,18 @@ Emscripten_ShowCursor(SDL_Cursor* cursor)
 
             if(curdata->system_cursor) {
                 EM_ASM_INT({
-                    Module['canvas'].style['cursor'] = Pointer_stringify($0);
+                    if (Module['canvas']) {
+                        Module['canvas'].style['cursor'] = Pointer_stringify($0);
+                    }
                     return 0;
                 }, curdata->system_cursor);
             }
         }
         else {
             EM_ASM(
-                Module['canvas'].style['cursor'] = 'none';
+                if (Module['canvas']) {
+                    Module['canvas'].style['cursor'] = 'none';
+                }
             );
         }
     }
