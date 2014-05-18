@@ -330,6 +330,7 @@
 #undef SDL_POWER_MACOSX
 #undef SDL_POWER_HAIKU
 #undef SDL_POWER_ANDROID
+#undef SDL_POWER_EMSCRIPTEN
 #undef SDL_POWER_HARDWIRED
 
 /* Enable system filesystem support */

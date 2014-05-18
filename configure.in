@@ -3223,6 +3223,13 @@ AC_HELP_STRING([--enable-render-d3d], [enable the Direct3D render driver [[defau
         CheckClockGettime
         CheckEmscriptenGLES
 
+         # Set up files for the power library
+        if test x$enable_power = xyes; then
+            AC_DEFINE(SDL_POWER_EMSCRIPTEN, 1, [ ])
+            SOURCES="$SOURCES $srcdir/src/power/emscripten/*.c"
+            have_power=yes
+        fi
+
         # Set up files for the filesystem library
         if test x$enable_filesystem = xyes; then
             AC_DEFINE(SDL_FILESYSTEM_UNIX, 1, [ ])
