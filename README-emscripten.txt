@@ -13,7 +13,7 @@ tests: https://dl.dropboxusercontent.com/u/17360362/SDL2-em/index.html
 Some other SDL2 libraries can be easily built (assuming SDL2 is installed somwhere):
 
 SDL_mixer (http://www.libsdl.org/projects/SDL_mixer/)
-    $ EMCONFIGURE_JS=1 ~emconfigure ../configure
+    $ EMCONFIGURE_JS=1 emconfigure ../configure
     build as usual...
 
 SDL_gfx (http://cms.ferzkopp.net/index.php/software/13-sdl-gfx):
