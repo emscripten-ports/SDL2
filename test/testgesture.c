@@ -22,6 +22,10 @@
 #include "SDL_touch.h"
 #include "SDL_gesture.h"
 
+#ifdef EMSCRIPTEN
+#include <emscripten/emscripten.h>
+#endif
+
 /* Make sure we have good macros for printing 32 and 64 bit values */
 #ifndef PRIs32
 #define PRIs32 "d"
@@ -61,6 +65,9 @@ static int eventWrite;
 
 
 static int colors[7] = {0xFF,0xFF00,0xFF0000,0xFFFF00,0x00FFFF,0xFF00FF,0xFFFFFF};
+
+SDL_Surface *screen;
+SDL_bool quitting = SDL_FALSE;
 
 typedef struct {
   float x,y;
@@ -200,31 +207,13 @@ SDL_Surface* initScreen(int width,int height)
   return SDL_GetWindowSurface(window);
 }
 
-int main(int argc, char* argv[])
+void loop()
 {
-  SDL_Surface *screen;
-  SDL_Event event;
-  SDL_bool quitting = SDL_FALSE;
-  SDL_RWops *stream;
+    SDL_Event event;
+    SDL_RWops *stream;
 
-  /* Enable standard application logging */
-  SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
-
-  /* gesture variables */
-  knob.r = .1f;
-  knob.ang = 0;
-
-  if (SDL_Init(SDL_INIT_VIDEO) < 0 ) return 1;
-
-  if (!(screen = initScreen(WIDTH,HEIGHT)))
-    {
-      SDL_Quit();
-      return 1;
-    }
-
-  while(!quitting) {
     while(SDL_PollEvent(&event))
-      {
+    {
     /* Record _all_ events */
     events[eventWrite & (EVENT_BUF_SIZE-1)] = event;
     eventWrite++;
@@ -260,7 +249,7 @@ int main(int argc, char* argv[])
           if (!(screen = initScreen(event.window.data1, event.window.data2)))
           {
         SDL_Quit();
-        return 1;
+        exit(1);
           }
             }
         break;
@@ -307,7 +296,34 @@ int main(int argc, char* argv[])
       }
       }
     DrawScreen(screen);
-  }
+}
+
+int main(int argc, char* argv[])
+{
+
+  /* Enable standard application logging */
+  SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
+  /* gesture variables */
+  knob.r = .1f;
+  knob.ang = 0;
+
+  if (SDL_Init(SDL_INIT_VIDEO) < 0 ) return 1;
+
+  if (!(screen = initScreen(WIDTH,HEIGHT)))
+    {
+      SDL_Quit();
+      return 1;
+    }
+
+#ifdef EMSCRIPTEN
+    emscripten_set_main_loop(loop, 0, 1);
+#else
+    while(!quitting) {
+        loop();
+    }
+#endif
+
   SDL_Quit();
   return 0;
 }
