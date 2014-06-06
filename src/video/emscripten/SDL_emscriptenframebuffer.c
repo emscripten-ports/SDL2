@@ -88,9 +88,9 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             num = data.length;
             while (dst < num) {
                 var val = HEAP32[src]; // This is optimized. Instead, we could do {{{ makeGetValue('buffer', 'dst', 'i32') }}};
-                data[dst  ] = val & 0xff;
+                data[dst  ] = (val >> 16) & 0xff;
                 data[dst+1] = (val >> 8) & 0xff;
-                data[dst+2] = (val >> 16) & 0xff;
+                data[dst+2] = val & 0xff;
                 data[dst+3] = isScreen ? 0xff : ((val >> 24) & 0xff);
                 src++;
                 dst += 4;
