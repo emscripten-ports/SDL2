@@ -3232,8 +3232,8 @@ AC_HELP_STRING([--enable-render-d3d], [enable the Direct3D render driver [[defau
 
         # Set up files for the filesystem library
         if test x$enable_filesystem = xyes; then
-            AC_DEFINE(SDL_FILESYSTEM_UNIX, 1, [ ])
-            SOURCES="$SOURCES $srcdir/src/filesystem/unix/*.c"
+            AC_DEFINE(SDL_FILESYSTEM_EMSCRIPTEN, 1, [ ])
+            SOURCES="$SOURCES $srcdir/src/filesystem/emscripten/*.c"
             have_filesystem=yes
         fi
         # Set up files for the timer library
