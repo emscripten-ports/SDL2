@@ -40,11 +40,11 @@ SDL_GetBasePath(void)
 char *
 SDL_GetPrefPath(const char *org, const char *app)
 {
-  char *retval = "/libsdl";
+  char *retval = "/libsdl/";
   
   int success = EM_ASM_INT_V({
     try {
-      FS.mkdir('/libsdl');
+      FS.mkdir('/libsdl/');
     } catch(e) {
       if (e.errno === ERRNO_CODES.EEXIST) {
         return 0;
