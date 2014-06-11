@@ -24,6 +24,8 @@
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* System dependent filesystem routines                                */
+#include <errno.h>
+#include <sys/stat.h>
 
 #include "SDL_error.h"
 #include "SDL_filesystem.h"
@@ -41,23 +43,9 @@ char *
 SDL_GetPrefPath(const char *org, const char *app)
 {
   char *retval = "/libsdl/";
-  
-  int success = EM_ASM_INT_V({
-    try {
-      FS.mkdir('/libsdl/');
-    } catch(e) {
-      if (e.errno === ERRNO_CODES.EEXIST) {
-        return 0;
-      } else {
-        return 1;
-      }
-    }
 
-    return 0;
-  });
-
-  if (success != 0) {
-    SDL_SetError("Couldn't create directory '%s'", retval);
+  if (mkdir(retval, 0700) != 0 && errno != EEXIST) {
+    SDL_SetError("Couldn't create directory '%s': ", retval, strerror(errno));
     SDL_free(retval);
     return NULL;
   }
