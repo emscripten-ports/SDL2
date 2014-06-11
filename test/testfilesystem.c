@@ -25,6 +25,14 @@ main(int argc, char *argv[])
         return 1;
     }
 
+    char *base_path = SDL_GetBasePath();
+    SDL_Log("base path: '%s'\n", SDL_GetBasePath());
+    SDL_free(base_path);
+
+    char *pref_path = SDL_GetPrefPath("libsdl", "testfilesystem");
+    SDL_Log("pref path: '%s'\n", SDL_GetPrefPath("libsdl", "testfilesystem"));
+    SDL_free(pref_path);
+
     SDL_Log("base path: '%s'\n", SDL_GetBasePath());
     SDL_Log("pref path: '%s'\n", SDL_GetPrefPath("libsdl", "testfilesystem"));
 

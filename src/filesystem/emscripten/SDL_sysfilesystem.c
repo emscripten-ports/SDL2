@@ -34,7 +34,7 @@ char *
 SDL_GetBasePath(void)
 {
   char *retval = "/";
-  return retval;
+  return SDL_strdup(retval);
 }
 
 char *
@@ -62,7 +62,7 @@ SDL_GetPrefPath(const char *org, const char *app)
     return NULL;
   }
 
-  return retval;
+  return SDL_strdup(retval);
 }
 
 #endif /* SDL_FILESYSTEM_EMSCRIPTEN */
