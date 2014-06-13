@@ -22,6 +22,9 @@
 
 #if SDL_VIDEO_DRIVER_EMSCRIPTEN && SDL_VIDEO_OPENGL_EGL
 
+#include <emscripten/emscripten.h>
+#include <GLES2/gl2.h>
+
 #include "SDL_emscriptenvideo.h"
 #include "SDL_emscriptenopengles.h"
 
@@ -72,7 +75,19 @@ Emscripten_GLES_LoadLibrary(_THIS, const char *path) {
     }
     
     return 0;
-    return 0;
+}
+
+void
+Emscripten_GLES_DeleteContext(_THIS, SDL_GLContext context)
+{
+    /*
+    WebGL contexts can't actually be deleted, so we need to reset it.
+    ES2 renderer resets state on init anyway, clearing the canvas should be enough
+    */
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    SDL_EGL_DeleteContext(_this, context);
 }
 
 SDL_EGL_CreateContext_impl(Emscripten)
