@@ -38,9 +38,14 @@ SDL_GetPowerInfo_Emscripten(SDL_PowerState *state, int *seconds, int *percent)
 
     haveBattery = batteryState.level != 1.0 || !batteryState.charging || batteryState.chargingTime != 0.0;
 
-    if (!haveBattery)
+    if (!haveBattery) {
         *state = SDL_POWERSTATE_NO_BATTERY;
-    else if (batteryState.charging)
+        *seconds = -1;
+        *percent = -1;
+        return SDL_TRUE;
+    }
+
+    if (batteryState.charging)
         *state = batteryState.chargingTime == 0.0 ? SDL_POWERSTATE_CHARGED : SDL_POWERSTATE_CHARGING;
     else
         *state = SDL_POWERSTATE_ON_BATTERY;
