@@ -179,11 +179,19 @@ Emscripten_JoyStickAdded(int eventType, const EmscriptenGamepadEvent *gamepadEve
 int
 SDL_SYS_JoystickInit(void)
 {
-
+    int result;
     numjoysticks = emscripten_get_num_gamepads();
 
     // Check if gamepad is supported by browser
     if (numjoysticks == -1 ) {
+        return -1;
+    }
+
+    result = emscripten_set_gamepadconnected_callback(NULL,
+                                                      0,
+                                                      Emscripten_JoyStickAdded);
+
+    if(result == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
         return -1;
     }
 
