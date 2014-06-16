@@ -260,6 +260,13 @@ SDL_SYS_JoystickInit(void)
         return -1;
     }
 
+    retval = emscripten_set_gamepaddisconnected_callback(NULL,
+                                                         0,
+                                                         Emscripten_JoyStickDisconnected);
+    if(retval == -1) {
+        return -1;
+    }
+
     return 0;
 }
 
