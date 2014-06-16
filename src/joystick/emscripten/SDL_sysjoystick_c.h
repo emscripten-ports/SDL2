@@ -46,6 +46,8 @@ typedef enum
     EMSCRIPTEN_CONTROLLER_BUTTON_GUIDE,
 } Emscripten_GameControllerButton;
 
+static int EMSCRIPTEN_MAX_NBUTTONS = 18;
+
 /* A linked list of available joysticks */
 typedef struct SDL_joylist_item
 {
