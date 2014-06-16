@@ -54,6 +54,7 @@ typedef struct SDL_joylist_item
   int index;
   char *name;
   char *mapping;
+  SDL_JoystickID device_instance;
   SDL_Joystick *joystick;
   int nbuttons, naxes;
 
