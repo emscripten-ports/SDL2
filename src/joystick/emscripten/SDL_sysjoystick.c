@@ -119,6 +119,13 @@ keycode_to_SDL(int keycode)
 int
 Emscripten_JoyStickAdded(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
 {
+    /* why are we even doing this? */
+    /* this callback wouldn't even fire unless this was true */
+    if (eventType != EMSCRIPTEN_EVENT_GAMEPADCONNECTED)
+    {
+        return -1;
+    }
+
     SDL_joylist_item *item;
 
 #if !SDL_EVENTS_DISABLED
