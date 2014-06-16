@@ -39,7 +39,7 @@ max_  Simple DirectMedia Layer
 #include "SDL_sysjoystick_c.h"
 #include "../SDL_joystick_c.h"
 
-static SDL_joylist_item * JoystickByDeviceId(int device_id);
+static SDL_joylist_item * JoystickByDeviceId(int index);
 
 static SDL_joylist_item *SDL_joylist = NULL;
 static SDL_joylist_item *SDL_joylist_tail = NULL;
@@ -274,7 +274,7 @@ JoystickByIndex(int index)
 {
     SDL_joylist_item *item = SDL_joylist;
 
-    if ((index < 0) || (index >= numjoysticks)) {
+    if (index < 0) {
         return NULL;
     }
 
@@ -306,10 +306,15 @@ SDL_bool SDL_SYS_JoystickNeedsPolling()
 
 /* Function to get the device-dependent name of a joystick */
 const char *
-SDL_SYS_JoystickNameForDeviceIndex(int device_index)
+SDL_SYS_JoystickNameForDeviceIndex(int index)
 {
-    SDL_SetError("Logic error: No joysticks available");
-    return (NULL);
+    SDL_joylist_item *item = JoystickByIndex(index);
+    if (item == NULL) {
+        SDL_SetError("Joystick with index %d not found", index);
+        return NULL;
+    }
+
+    return item->id;
 }
 
 /* Function to perform the mapping from device index to the instance id for this index */
