@@ -39,7 +39,7 @@ max_  Simple DirectMedia Layer
 #include "SDL_sysjoystick_c.h"
 #include "../SDL_joystick_c.h"
 
-static SDL_joylist_item * JoystickByDeviceId(int index);
+static SDL_joylist_item * JoystickByIndex(int index);
 
 static SDL_joylist_item *SDL_joylist = NULL;
 static SDL_joylist_item *SDL_joylist_tail = NULL;
@@ -326,9 +326,9 @@ SDL_SYS_JoystickNameForDeviceIndex(int index)
 }
 
 /* Function to perform the mapping from device index to the instance id for this index */
-SDL_JoystickID SDL_SYS_GetInstanceIdOfDeviceIndex(int device_index)
+SDL_JoystickID SDL_SYS_GetInstanceIdOfDeviceIndex(int index)
 {
-    return device_index;
+    return index;
 }
 
 /* Function to open a joystick for use.
