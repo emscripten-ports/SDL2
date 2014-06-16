@@ -116,6 +116,56 @@ keycode_to_SDL(int keycode)
     return button;
 }
 
+int
+Emscripten_JoyStickAdded(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
+{
+    SDL_joylist_item *item;
+
+#if !SDL_EVENTS_DISABLED
+    SDL_Event event;
+#endif
+
+    item = (SDL_joylist_item *) SDL_malloc(sizeof (SDL_joylist_item));
+    if (item == NULL) {
+        return -1;
+    }
+
+    SDL_zerop(item);
+    item->index = gamepadEvent->index;
+
+    item->id = gamepadEvent->id;
+    item->mapping = gamepadEvent->mapping;
+
+    item->naxes = gamepadEvent->numAxes;
+    item->nbuttons = gamepadEvent->numButtons;
+
+    if (SDL_joylist_tail == NULL) {
+        SDL_joylist = SDL_joylist_tail = item;
+    } else {
+        SDL_joylist_tail->next = item;
+        SDL_joylist_tail = item;
+    }
+
+    /* Need to increment the joystick count before we post the event */
+    ++numjoysticks;
+
+#if !SDL_EVENTS_DISABLED
+    event.type = SDL_JOYDEVICEADDED;
+
+    if (SDL_GetEventState(event.type) == SDL_ENABLE) {
+        event.jdevice.which = (numjoysticks - 1);
+        if ( (SDL_EventOK == NULL) ||
+             (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
+            SDL_PushEvent(&event);
+        }
+    }
+#endif /* !SDL_EVENTS_DISABLED */
+
+    SDL_Log("Added joystick (index = %d) with device_id %d", index, device_id);
+
+    return numjoysticks;
+}
+
 /* Function to scan the system for joysticks.
  * It should return 0, or -1 on an unrecoverable fatal error.
  */

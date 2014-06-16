@@ -51,15 +51,13 @@ static int EMSCRIPTEN_MAX_NBUTTONS = 18;
 /* A linked list of available joysticks */
 typedef struct SDL_joylist_item
 {
-    int device_instance;
-    int device_id; /* device id */
-    char *name;   /* "SideWinder 3D Pro" or whatever */
-    SDL_JoystickGUID guid;
-    SDL_bool is_accelerometer;
-    SDL_Joystick *joystick;
-    int nbuttons, naxes, nhats, nballs;
+  int index;
+  EM_UTF8 id[64];
+  EM_UTF8 mapping[64];
+  SDL_Joystick *joystick;
+  int nbuttons, naxes;
 
-    struct SDL_joylist_item *next;
+  struct SDL_joylist_item *next;
 } SDL_joylist_item;
 
 typedef SDL_joylist_item joystick_hwdata;
