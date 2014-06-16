@@ -183,7 +183,7 @@ SDL_SYS_JoystickInit(void)
     numjoysticks = emscripten_get_num_gamepads();
 
     // Check if gamepad is supported by browser
-    if (numjoysticks == -1 ) {
+    if (numjoysticks == -1) {
         return -1;
     }
 
@@ -191,7 +191,7 @@ SDL_SYS_JoystickInit(void)
                                                       0,
                                                       Emscripten_JoyStickAdded);
 
-    if(result == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+    if(result == -1) {
         return -1;
     }
 
