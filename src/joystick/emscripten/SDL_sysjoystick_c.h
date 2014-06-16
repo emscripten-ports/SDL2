@@ -52,8 +52,8 @@ static int EMSCRIPTEN_MAX_NBUTTONS = 18;
 typedef struct SDL_joylist_item
 {
   int index;
-  EM_UTF8 id[64];
-  EM_UTF8 mapping[64];
+  char *name;
+  char *mapping;
   SDL_Joystick *joystick;
   int nbuttons, naxes;
 

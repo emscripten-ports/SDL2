@@ -140,9 +140,16 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     SDL_zerop(item);
     item->index = gamepadEvent->index;
 
-    item->id = gamepadEvent->id;
-    item->mapping = gamepadEvent->mapping;
-
+    item->name = SDL_strdup(gamepadEvent->id);
+    if ( item->name == NULL ) {
+         SDL_free(item);
+         return -1;
+    }
+    item->mapping = SDL_strdup(gamepadEvent->mapping);
+    if ( item->mapping == NULL ) {
+         SDL_free(item);
+         return -1;
+    }
     item->naxes = gamepadEvent->numAxes;
     item->nbuttons = gamepadEvent->numButtons;
 
@@ -232,7 +239,8 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
 #endif /* !SDL_EVENTS_DISABLED */
 
     SDL_Log("Removed joystick with index %d", retval);
-
+    SDL_free(item->name);
+    SDL_free(item->mapping);
     SDL_free(item);
     return retval;
 }
@@ -314,7 +322,7 @@ SDL_SYS_JoystickNameForDeviceIndex(int index)
         return NULL;
     }
 
-    return item->id;
+    return item->name;
 }
 
 /* Function to perform the mapping from device index to the instance id for this index */
