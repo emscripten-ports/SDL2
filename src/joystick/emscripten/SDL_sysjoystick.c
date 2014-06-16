@@ -117,7 +117,7 @@ keycode_to_SDL(int keycode)
 }
 
 int
-Emscripten_JoyStickAdded(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
+Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
 {
     /* why are we even doing this? */
     /* this callback wouldn't even fire unless this was true */
@@ -173,13 +173,78 @@ Emscripten_JoyStickAdded(int eventType, const EmscriptenGamepadEvent *gamepadEve
     return numjoysticks;
 }
 
+int
+Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
+{
+    /* why are we even doing this? */
+    /* this callback wouldn't even fire unless this was true */
+    if (eventType != EMSCRIPTEN_EVENT_GAMEPADDISCONNECTED)
+    {
+        return -1;
+    }
+
+    SDL_joylist_item *item = SDL_joylist;
+    SDL_joylist_item *prev = NULL;
+#if !SDL_EVENTS_DISABLED
+    SDL_Event event;
+#endif
+
+    /* Don't call JoystickByDeviceId here or there'll be an infinite loop! */
+    while (item != NULL) {
+        if (item->index == index) {
+            break;
+        }
+        prev = item;
+        item = item->next;
+    }
+
+    if (item == NULL) {
+        return -1;
+    }
+
+    const int retval = item->index;
+    if (item->joystick) {
+        item->joystick->hwdata = NULL;
+    }
+
+    if (prev != NULL) {
+        prev->next = item->next;
+    } else {
+        SDL_assert(SDL_joylist == item);
+        SDL_joylist = item->next;
+    }
+    if (item == SDL_joylist_tail) {
+        SDL_joylist_tail = prev;
+    }
+
+    /* Need to decrement the joystick count before we post the event */
+    --numjoysticks;
+
+#if !SDL_EVENTS_DISABLED
+    event.type = SDL_JOYDEVICEREMOVED;
+
+    if (SDL_GetEventState(event.type) == SDL_ENABLE) {
+        event.jdevice.which = item->device_instance;
+        if ( (SDL_EventOK == NULL) ||
+             (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
+            SDL_PushEvent(&event);
+        }
+    }
+#endif /* !SDL_EVENTS_DISABLED */
+
+    SDL_Log("Removed joystick with index %d", retval);
+
+    SDL_free(item);
+    return retval;
+}
+
 /* Function to scan the system for joysticks.
  * It should return 0, or -1 on an unrecoverable fatal error.
  */
 int
 SDL_SYS_JoystickInit(void)
 {
-    int result;
+    int retval;
     numjoysticks = emscripten_get_num_gamepads();
 
     // Check if gamepad is supported by browser
@@ -187,11 +252,11 @@ SDL_SYS_JoystickInit(void)
         return -1;
     }
 
-    result = emscripten_set_gamepadconnected_callback(NULL,
+    retval = emscripten_set_gamepadconnected_callback(NULL,
                                                       0,
-                                                      Emscripten_JoyStickAdded);
+                                                      Emscripten_JoyStickConnected);
 
-    if(result == -1) {
+    if(retval == -1) {
         return -1;
     }
 
