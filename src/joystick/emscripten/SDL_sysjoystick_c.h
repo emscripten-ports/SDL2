@@ -56,7 +56,12 @@ typedef struct SDL_joylist_item
   char *mapping;
   SDL_JoystickID device_instance;
   SDL_Joystick *joystick;
-  int nbuttons, naxes;
+  int nbuttons;
+  int naxes;
+  double timestamp;
+  double axis[64];
+  double analogButton[64];
+  EM_BOOL digitalButton[64];
 
   struct SDL_joylist_item *next;
 } SDL_joylist_item;

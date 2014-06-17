@@ -157,6 +157,11 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     item->nbuttons = gamepadEvent->numButtons;
     item->device_instance = instance_counter++;
 
+    item->timestamp = gamepadEvent->timestamp;
+    item->axis = gamepadEvent->axis;
+    item->analogButton = gamepadEvent->analogButton;
+    item->digitalButton = gamepadEvent->digitalButton;
+
     if (SDL_joylist_tail == NULL) {
         SDL_joylist = SDL_joylist_tail = item;
     } else {
