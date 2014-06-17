@@ -344,9 +344,30 @@ SDL_JoystickID SDL_SYS_GetInstanceIdOfDeviceIndex(int index)
    It returns 0, or -1 if there is an error.
  */
 int
-SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
+SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int index)
 {
-    return SDL_SetError("Logic error: No joysticks available");
+    SDL_joylist_item *item = JoystickByIndex(index);
+
+    if (item == NULL ) {
+        return SDL_SetError("No such device");
+    }
+
+    if (item->joystick != NULL) {
+        return SDL_SetError("Joystick already opened");
+    }
+
+    joystick->instance_id = item->device_instance;
+    joystick->hwdata = (struct joystick_hwdata *) item;
+    item->joystick = joystick;
+
+    /* HTML5 Gamepad API doesn't say anythong about these */
+    joystick->nhats = 0;
+    joystick->nballs = 0;
+
+    joystick->nbuttons = item->numButtons;
+    joystick->naxes = item->numAxes;
+
+    return (0);
 }
 
 /* Function to determine is this joystick is attached to the system right now */
