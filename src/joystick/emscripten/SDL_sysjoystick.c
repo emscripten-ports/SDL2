@@ -362,7 +362,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int index)
     joystick->hwdata = (struct joystick_hwdata *) item;
     item->joystick = joystick;
 
-    /* HTML5 Gamepad API doesn't say anythong about these */
+    /* HTML5 Gamepad API doesn't say anything about these */
     joystick->nhats = 0;
     joystick->nballs = 0;
 
