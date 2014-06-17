@@ -400,7 +400,20 @@ SDL_SYS_JoystickClose(SDL_Joystick * joystick)
 void
 SDL_SYS_JoystickQuit(void)
 {
-    return;
+    SDL_joylist_item *item = NULL;
+    SDL_joylist_item *next = NULL;
+
+    for (item = SDL_joylist; item; item = next) {
+        next = item->next;
+        SDL_free(item->mapping);
+        SDL_free(item->name);
+        SDL_free(item);
+    }
+
+    SDL_joylist = SDL_joylist_tail = NULL;
+
+    numjoysticks = 0;
+    instance_counter = 0;
 }
 
 SDL_JoystickGUID SDL_SYS_JoystickGetDeviceGUID( int device_index )
