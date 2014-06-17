@@ -420,13 +420,13 @@ SDL_SYS_JoystickQuit(void)
     instance_counter = 0;
 }
 
-SDL_JoystickGUID SDL_SYS_JoystickGetDeviceGUID( int device_index )
+SDL_JoystickGUID SDL_SYS_JoystickGetDeviceGUID(int index)
 {
     SDL_JoystickGUID guid;
     /* the GUID is just the first 16 chars of the name for now */
-    const char *name = SDL_SYS_JoystickNameForDeviceIndex( device_index );
-    SDL_zero( guid );
-    SDL_memcpy( &guid, name, SDL_min( sizeof(guid), SDL_strlen( name ) ) );
+    const char *name = SDL_SYS_JoystickNameForIndex(index);
+    SDL_zero(guid);
+    SDL_memcpy(&guid, name, SDL_min(sizeof(guid), SDL_strlen(name)));
     return guid;
 }
 
@@ -436,8 +436,8 @@ SDL_JoystickGUID SDL_SYS_JoystickGetGUID(SDL_Joystick * joystick)
     SDL_JoystickGUID guid;
     /* the GUID is just the first 16 chars of the name for now */
     const char *name = joystick->name;
-    SDL_zero( guid );
-    SDL_memcpy( &guid, name, SDL_min( sizeof(guid), SDL_strlen( name ) ) );
+    SDL_zero(guid);
+    SDL_memcpy(&guid, name, SDL_min(sizeof(guid), SDL_strlen(name)));
     return guid;
 }
 
