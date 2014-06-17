@@ -142,14 +142,17 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
 
     item->name = SDL_strdup(gamepadEvent->id);
     if ( item->name == NULL ) {
-         SDL_free(item);
-         return -1;
+        SDL_free(item);
+        return -1;
     }
+
     item->mapping = SDL_strdup(gamepadEvent->mapping);
     if ( item->mapping == NULL ) {
-         SDL_free(item);
-         return -1;
+        SDL_free(item->name);
+        SDL_free(item);
+        return -1;
     }
+
     item->naxes = gamepadEvent->numAxes;
     item->nbuttons = gamepadEvent->numButtons;
     item->device_instance = instance_counter++;
@@ -161,14 +164,13 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
         SDL_joylist_tail = item;
     }
 
-    /* Need to increment the joystick count before we post the event */
     ++numjoysticks;
 
 #if !SDL_EVENTS_DISABLED
     event.type = SDL_JOYDEVICEADDED;
 
     if (SDL_GetEventState(event.type) == SDL_ENABLE) {
-        event.jdevice.which = (numjoysticks - 1);
+        event.jdevice.which = item->instance_counter - 1;
         if ( (SDL_EventOK == NULL) ||
              (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
             SDL_PushEvent(&event);
