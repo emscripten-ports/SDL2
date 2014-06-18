@@ -391,7 +391,36 @@ SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 void
 SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 {
-    return;
+    EmscriptenGamepadEvent *gamepadState = NULL;
+    SDL_joylist_item *item = SDL_joylist;
+    int i, button, buttonState;
+
+    while (item != NULL) {
+        if(emscripten_get_gamepad_status(item->index, gamepadState)) {
+            if(gamepadState->timestamp != item->timestamp) {
+                for(i = 0; i < item->numButtons; i++) {
+                    if(item->digitalButton[i] != gamepadState->digitalButton[i]) {
+                        button = keycode_to_SDL(i);
+                        buttonState = gamepadState->digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
+                        SDL_PrivateJoystickButton(item->joystick, button, buttonState);
+                    }
+                }
+
+                for(i = 0; i < item->numAxes; i++) {
+                    if(item->axis[i] != gamepadState->axis[i]) {
+                        // do we need to do conversion?
+                        SDL_PrivateJoystickButton(item->joystick,
+                                                  item->axis[i],
+                                                  (Sint16) (32767.*value));
+                    }
+                }
+                item->timestamp = gamepadState->timestamp;
+                item->digitalButton = gamepadState->digitalButton;
+                item->axis = gamepadState->axis;
+            }
+        }
+        item = item->next;
+    }
 }
 
 /* Function to close a joystick after use */
