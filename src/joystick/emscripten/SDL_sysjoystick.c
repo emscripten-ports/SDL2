@@ -119,6 +119,8 @@ keycode_to_SDL(int keycode)
 int
 Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
 {
+    int i;
+
     /* why are we even doing this? */
     /* this callback wouldn't even fire unless this was true */
     if (eventType != EMSCRIPTEN_EVENT_GAMEPADCONNECTED)
@@ -158,9 +160,15 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     item->device_instance = instance_counter++;
 
     item->timestamp = gamepadEvent->timestamp;
-    item->axis = gamepadEvent->axis;
-    item->analogButton = gamepadEvent->analogButton;
-    item->digitalButton = gamepadEvent->digitalButton;
+
+    for( i = 0; i < item->naxes; i++) {
+        item->axis[i] = gamepadEvent->axis[i];
+    }
+
+    for( i = 0; i < item->nbuttons; i++) {
+        item->analogButton[i] = gamepadEvent->analogButton[i];
+        item->digitalButton[i] = gamepadEvent->digitalButton[i];
+    }
 
     if (SDL_joylist_tail == NULL) {
         SDL_joylist = SDL_joylist_tail = item;
@@ -183,7 +191,7 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     }
 #endif /* !SDL_EVENTS_DISABLED */
 
-    SDL_Log("Added joystick with index %d", index);
+    SDL_Log("Added joystick with index %d", item->index);
 
     return numjoysticks;
 }
@@ -205,7 +213,7 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
 #endif
 
     while (item != NULL) {
-        if (item->index == index) {
+        if (item->index == gamepadEventindex) {
             break;
         }
         prev = item;
@@ -298,7 +306,6 @@ JoystickByIndex(int index)
         if (item->index == index) {
             break;
         }
-        prev = item;
         item = item->next;
     }
 
@@ -371,8 +378,8 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int index)
     joystick->nhats = 0;
     joystick->nballs = 0;
 
-    joystick->nbuttons = item->numButtons;
-    joystick->naxes = item->numAxes;
+    joystick->nbuttons = item->nbuttons;
+    joystick->naxes = item->naxes;
 
     return (0);
 }
@@ -391,32 +398,39 @@ SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 void
 SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 {
-    EmscriptenGamepadEvent *gamepadState = NULL;
+    EmscriptenGamepadEvent gamepadState = NULL;
     SDL_joylist_item *item = SDL_joylist;
-    int i, button, buttonState;
+    int i, result, button, buttonState;
 
     while (item != NULL) {
-        if(emscripten_get_gamepad_status(item->index, gamepadState)) {
-            if(gamepadState->timestamp != item->timestamp) {
+        result = emscripten_get_gamepad_status(item->index, &gamepadState);
+        if( result == EMSCRIPTEN_RESULT_SUCCESS) {
+            if(gamepadState.timestamp == 0 || gamepadState.timestamp != item->timestamp) {
                 for(i = 0; i < item->numButtons; i++) {
-                    if(item->digitalButton[i] != gamepadState->digitalButton[i]) {
+                    if(item->digitalButton[i] != gamepadState.digitalButton[i]) {
                         button = keycode_to_SDL(i);
-                        buttonState = gamepadState->digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
+                        buttonState = gamepadState.digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
                         SDL_PrivateJoystickButton(item->joystick, button, buttonState);
                     }
                 }
 
                 for(i = 0; i < item->numAxes; i++) {
-                    if(item->axis[i] != gamepadState->axis[i]) {
+                    if(item->axis[i] != gamepadState.axis[i]) {
                         // do we need to do conversion?
-                        SDL_PrivateJoystickButton(item->joystick,
-                                                  item->axis[i],
-                                                  (Sint16) (32767.*value));
+                        SDL_PrivateJoystickButton(item->joystick, i,
+                                                  (Sint16) (32767.*gamepadState.axis[i]));
                     }
                 }
-                item->timestamp = gamepadState->timestamp;
-                item->digitalButton = gamepadState->digitalButton;
-                item->axis = gamepadState->axis;
+
+                item->timestamp = gamepadState.timestamp;
+                for( i = 0; i < item->naxes; i++) {
+                    item->axis[i] = gamepadEvent->axis[i];
+                }
+
+                for( i = 0; i < item->nbuttons; i++) {
+                    item->analogButton[i] = gamepadEvent->analogButton[i];
+                    item->digitalButton[i] = gamepadEvent->digitalButton[i];
+                }
             }
         }
         item = item->next;
@@ -458,7 +472,7 @@ SDL_JoystickGUID SDL_SYS_JoystickGetDeviceGUID(int index)
 {
     SDL_JoystickGUID guid;
     /* the GUID is just the first 16 chars of the name for now */
-    const char *name = SDL_SYS_JoystickNameForIndex(index);
+    const char *name = SDL_SYS_JoystickNameForDeviceIndex(index);
     SDL_zero(guid);
     SDL_memcpy(&guid, name, SDL_min(sizeof(guid), SDL_strlen(name)));
     return guid;
