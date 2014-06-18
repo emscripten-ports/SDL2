@@ -183,7 +183,7 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     event.type = SDL_JOYDEVICEADDED;
 
     if (SDL_GetEventState(event.type) == SDL_ENABLE) {
-        event.jdevice.which = item->instance_counter - 1;
+        event.jdevice.which = item->device_instance - 1;
         if ( (SDL_EventOK == NULL) ||
              (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
             SDL_PushEvent(&event);
@@ -213,7 +213,7 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
 #endif
 
     while (item != NULL) {
-        if (item->index == gamepadEventindex) {
+        if (item->index == gamepadEvent->index) {
             break;
         }
         prev = item;
@@ -398,7 +398,7 @@ SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 void
 SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 {
-    EmscriptenGamepadEvent gamepadState = NULL;
+    EmscriptenGamepadEvent gamepadState;
     SDL_joylist_item *item = SDL_joylist;
     int i, result, button, buttonState;
 
@@ -406,7 +406,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
         result = emscripten_get_gamepad_status(item->index, &gamepadState);
         if( result == EMSCRIPTEN_RESULT_SUCCESS) {
             if(gamepadState.timestamp == 0 || gamepadState.timestamp != item->timestamp) {
-                for(i = 0; i < item->numButtons; i++) {
+                for(i = 0; i < item->nbuttons; i++) {
                     if(item->digitalButton[i] != gamepadState.digitalButton[i]) {
                         button = keycode_to_SDL(i);
                         buttonState = gamepadState.digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
@@ -414,7 +414,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
                     }
                 }
 
-                for(i = 0; i < item->numAxes; i++) {
+                for(i = 0; i < item->naxes; i++) {
                     if(item->axis[i] != gamepadState.axis[i]) {
                         // do we need to do conversion?
                         SDL_PrivateJoystickButton(item->joystick, i,
@@ -424,12 +424,12 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 
                 item->timestamp = gamepadState.timestamp;
                 for( i = 0; i < item->naxes; i++) {
-                    item->axis[i] = gamepadEvent->axis[i];
+                    item->axis[i] = gamepadState.axis[i];
                 }
 
                 for( i = 0; i < item->nbuttons; i++) {
-                    item->analogButton[i] = gamepadEvent->analogButton[i];
-                    item->digitalButton[i] = gamepadEvent->digitalButton[i];
+                    item->analogButton[i] = gamepadState.analogButton[i];
+                    item->digitalButton[i] = gamepadState.digitalButton[i];
                 }
             }
         }
