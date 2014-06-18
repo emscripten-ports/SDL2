@@ -18,6 +18,10 @@
 
 #include "SDL.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 #ifndef SDL_JOYSTICK_DISABLED
 
 #ifdef __IPHONEOS__
@@ -28,6 +32,9 @@
 #define SCREEN_HEIGHT   480
 #endif
 
+SDL_Renderer *screen = NULL;
+SDL_bool retval = SDL_FALSE;
+SDL_bool done = SDL_FALSE;
 
 static void
 DrawRect(SDL_Renderer *r, const int x, const int y, const int w, const int h)
@@ -36,16 +43,141 @@ DrawRect(SDL_Renderer *r, const int x, const int y, const int w, const int h)
     SDL_RenderFillRect(r, &area);
 }
 
+void
+loop(void *arg)
+{
+    SDL_Event event;
+    int i;
+    SDL_Joystick *joystick = (SDL_Joystick *)arg;
+
+    /* blank screen, set up for drawing this frame. */
+    SDL_SetRenderDrawColor(screen, 0x0, 0x0, 0x0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(screen);
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_JOYAXISMOTION:
+            SDL_Log("Joystick %d axis %d value: %d\n",
+                   event.jaxis.which,
+                   event.jaxis.axis, event.jaxis.value);
+            break;
+        case SDL_JOYHATMOTION:
+            SDL_Log("Joystick %d hat %d value:",
+                   event.jhat.which, event.jhat.hat);
+            if (event.jhat.value == SDL_HAT_CENTERED)
+                SDL_Log(" centered");
+            if (event.jhat.value & SDL_HAT_UP)
+                SDL_Log(" up");
+            if (event.jhat.value & SDL_HAT_RIGHT)
+                SDL_Log(" right");
+            if (event.jhat.value & SDL_HAT_DOWN)
+                SDL_Log(" down");
+            if (event.jhat.value & SDL_HAT_LEFT)
+                SDL_Log(" left");
+            SDL_Log("\n");
+            break;
+        case SDL_JOYBALLMOTION:
+            SDL_Log("Joystick %d ball %d delta: (%d,%d)\n",
+                   event.jball.which,
+                   event.jball.ball, event.jball.xrel, event.jball.yrel);
+            break;
+        case SDL_JOYBUTTONDOWN:
+            SDL_Log("Joystick %d button %d down\n",
+                   event.jbutton.which, event.jbutton.button);
+            break;
+        case SDL_JOYBUTTONUP:
+            SDL_Log("Joystick %d button %d up\n",
+                   event.jbutton.which, event.jbutton.button);
+            break;
+        case SDL_KEYDOWN:
+            if ((event.key.keysym.sym != SDLK_ESCAPE) &&
+                (event.key.keysym.sym != SDLK_AC_BACK)) {
+                break;
+            }
+            /* Fall through to signal quit */
+        case SDL_FINGERDOWN:
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_QUIT:
+            done = SDL_TRUE;
+            break;
+        default:
+            break;
+        }
+    }
+
+    /* Update visual joystick state */
+    SDL_SetRenderDrawColor(screen, 0x00, 0xFF, 0x00, SDL_ALPHA_OPAQUE);
+    for (i = 0; i < SDL_JoystickNumButtons(joystick); ++i) {
+        if (SDL_JoystickGetButton(joystick, i) == SDL_PRESSED) {
+            DrawRect(screen, (i%20) * 34, SCREEN_HEIGHT - 68 + (i/20) * 34, 32, 32);
+        }
+    }
+
+    SDL_SetRenderDrawColor(screen, 0xFF, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+    for (i = 0; i < SDL_JoystickNumAxes(joystick); ++i) {
+        /* Draw the X/Y axis */
+        int x, y;
+        x = (((int) SDL_JoystickGetAxis(joystick, i)) + 32768);
+        x *= SCREEN_WIDTH;
+        x /= 65535;
+        if (x < 0) {
+            x = 0;
+        } else if (x > (SCREEN_WIDTH - 16)) {
+            x = SCREEN_WIDTH - 16;
+        }
+        ++i;
+        if (i < SDL_JoystickNumAxes(joystick)) {
+            y = (((int) SDL_JoystickGetAxis(joystick, i)) + 32768);
+        } else {
+            y = 32768;
+        }
+        y *= SCREEN_HEIGHT;
+        y /= 65535;
+        if (y < 0) {
+            y = 0;
+        } else if (y > (SCREEN_HEIGHT - 16)) {
+            y = SCREEN_HEIGHT - 16;
+        }
+
+        DrawRect(screen, x, y, 16, 16);
+    }
+
+    SDL_SetRenderDrawColor(screen, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
+    for (i = 0; i < SDL_JoystickNumHats(joystick); ++i) {
+        /* Derive the new position */
+        int x = SCREEN_WIDTH/2;
+        int y = SCREEN_HEIGHT/2;
+        const Uint8 hat_pos = SDL_JoystickGetHat(joystick, i);
+
+        if (hat_pos & SDL_HAT_UP) {
+            y = 0;
+        } else if (hat_pos & SDL_HAT_DOWN) {
+            y = SCREEN_HEIGHT-8;
+        }
+
+        if (hat_pos & SDL_HAT_LEFT) {
+            x = 0;
+        } else if (hat_pos & SDL_HAT_RIGHT) {
+            x = SCREEN_WIDTH-8;
+        }
+
+        DrawRect(screen, x, y, 8, 8);
+    }
+
+    SDL_RenderPresent(screen);
+
+    if (SDL_JoystickGetAttached( joystick ) == 0) {
+        done = SDL_TRUE;
+        retval = SDL_TRUE;  /* keep going, wait for reattach. */
+    }
+}
+
 static SDL_bool
 WatchJoystick(SDL_Joystick * joystick)
 {
     SDL_Window *window = NULL;
-    SDL_Renderer *screen = NULL;
     const char *name = NULL;
-    SDL_bool retval = SDL_FALSE;
-    SDL_bool done = SDL_FALSE;
-    SDL_Event event;
-    int i;
+
 
     /* Create a window to display joystick axis position */
     window = SDL_CreateWindow("Joystick Test", SDL_WINDOWPOS_CENTERED,
@@ -77,127 +209,13 @@ WatchJoystick(SDL_Joystick * joystick)
            SDL_JoystickNumBalls(joystick), SDL_JoystickNumButtons(joystick));
 
     /* Loop, getting joystick events! */
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop_arg(loop, joystick, 0, 1);
+#else
     while (!done) {
-        /* blank screen, set up for drawing this frame. */
-        SDL_SetRenderDrawColor(screen, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(screen);
-
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_JOYAXISMOTION:
-                SDL_Log("Joystick %d axis %d value: %d\n",
-                       event.jaxis.which,
-                       event.jaxis.axis, event.jaxis.value);
-                break;
-            case SDL_JOYHATMOTION:
-                SDL_Log("Joystick %d hat %d value:",
-                       event.jhat.which, event.jhat.hat);
-                if (event.jhat.value == SDL_HAT_CENTERED)
-                    SDL_Log(" centered");
-                if (event.jhat.value & SDL_HAT_UP)
-                    SDL_Log(" up");
-                if (event.jhat.value & SDL_HAT_RIGHT)
-                    SDL_Log(" right");
-                if (event.jhat.value & SDL_HAT_DOWN)
-                    SDL_Log(" down");
-                if (event.jhat.value & SDL_HAT_LEFT)
-                    SDL_Log(" left");
-                SDL_Log("\n");
-                break;
-            case SDL_JOYBALLMOTION:
-                SDL_Log("Joystick %d ball %d delta: (%d,%d)\n",
-                       event.jball.which,
-                       event.jball.ball, event.jball.xrel, event.jball.yrel);
-                break;
-            case SDL_JOYBUTTONDOWN:
-                SDL_Log("Joystick %d button %d down\n",
-                       event.jbutton.which, event.jbutton.button);
-                break;
-            case SDL_JOYBUTTONUP:
-                SDL_Log("Joystick %d button %d up\n",
-                       event.jbutton.which, event.jbutton.button);
-                break;
-            case SDL_KEYDOWN:
-                if ((event.key.keysym.sym != SDLK_ESCAPE) &&
-                    (event.key.keysym.sym != SDLK_AC_BACK)) {
-                    break;
-                }
-                /* Fall through to signal quit */
-            case SDL_FINGERDOWN:
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_QUIT:
-                done = SDL_TRUE;
-                break;
-            default:
-                break;
-            }
-        }
-        /* Update visual joystick state */
-        SDL_SetRenderDrawColor(screen, 0x00, 0xFF, 0x00, SDL_ALPHA_OPAQUE);
-        for (i = 0; i < SDL_JoystickNumButtons(joystick); ++i) {
-            if (SDL_JoystickGetButton(joystick, i) == SDL_PRESSED) {
-                DrawRect(screen, (i%20) * 34, SCREEN_HEIGHT - 68 + (i/20) * 34, 32, 32);
-            }
-        }
-
-        SDL_SetRenderDrawColor(screen, 0xFF, 0x00, 0x00, SDL_ALPHA_OPAQUE);
-        for (i = 0; i < SDL_JoystickNumAxes(joystick); ++i) {
-            /* Draw the X/Y axis */
-            int x, y;
-            x = (((int) SDL_JoystickGetAxis(joystick, i)) + 32768);
-            x *= SCREEN_WIDTH;
-            x /= 65535;
-            if (x < 0) {
-                x = 0;
-            } else if (x > (SCREEN_WIDTH - 16)) {
-                x = SCREEN_WIDTH - 16;
-            }
-            ++i;
-            if (i < SDL_JoystickNumAxes(joystick)) {
-                y = (((int) SDL_JoystickGetAxis(joystick, i)) + 32768);
-            } else {
-                y = 32768;
-            }
-            y *= SCREEN_HEIGHT;
-            y /= 65535;
-            if (y < 0) {
-                y = 0;
-            } else if (y > (SCREEN_HEIGHT - 16)) {
-                y = SCREEN_HEIGHT - 16;
-            }
-
-            DrawRect(screen, x, y, 16, 16);
-        }
-
-        SDL_SetRenderDrawColor(screen, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
-        for (i = 0; i < SDL_JoystickNumHats(joystick); ++i) {
-            /* Derive the new position */
-            int x = SCREEN_WIDTH/2;
-            int y = SCREEN_HEIGHT/2;
-            const Uint8 hat_pos = SDL_JoystickGetHat(joystick, i);
-
-            if (hat_pos & SDL_HAT_UP) {
-                y = 0;
-            } else if (hat_pos & SDL_HAT_DOWN) {
-                y = SCREEN_HEIGHT-8;
-            }
-
-            if (hat_pos & SDL_HAT_LEFT) {
-                x = 0;
-            } else if (hat_pos & SDL_HAT_RIGHT) {
-                x = SCREEN_WIDTH-8;
-            }
-
-            DrawRect(screen, x, y, 8, 8);
-        }
-
-        SDL_RenderPresent(screen);
-
-        if (SDL_JoystickGetAttached( joystick ) == 0) {
-            done = SDL_TRUE;
-            retval = SDL_TRUE;  /* keep going, wait for reattach. */
-        }
+        loop(joystick);
     }
+#endif
 
     SDL_DestroyRenderer(screen);
     SDL_DestroyWindow(window);
