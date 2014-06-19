@@ -36,29 +36,29 @@ DrawRects(SDL_Renderer * renderer, SDL_Rect * rect)
 
 static void
 loop(){
-  /* Check for events */
-  while (SDL_PollEvent(&event)) {
-    SDLTest_CommonEvent(state, &event, &done);
-    switch(event.type) {
-    case SDL_MOUSEMOTION:
-      {
-        rect.x += event.motion.xrel;
-        rect.y += event.motion.yrel;
-      }
-      break;
+    /* Check for events */
+    while (SDL_PollEvent(&event)) {
+        SDLTest_CommonEvent(state, &event, &done);
+        switch(event.type) {
+        case SDL_MOUSEMOTION:
+            {
+                rect.x += event.motion.xrel;
+                rect.y += event.motion.yrel;
+            }
+            break;
+        }
     }
-  }
-  for (i = 0; i < state->num_windows; ++i) {
-    SDL_Renderer *renderer = state->renderers[i];
-    if (state->windows[i] == NULL)
-      continue;
-    SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
-    SDL_RenderClear(renderer);
+    for (i = 0; i < state->num_windows; ++i) {
+        SDL_Renderer *renderer = state->renderers[i];
+        if (state->windows[i] == NULL)
+            continue;
+        SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
+        SDL_RenderClear(renderer);
 
-    DrawRects(renderer, &rect);
+        DrawRects(renderer, &rect);
 
-    SDL_RenderPresent(renderer);
-  }
+        SDL_RenderPresent(renderer);
+    }
 }
 
 int
