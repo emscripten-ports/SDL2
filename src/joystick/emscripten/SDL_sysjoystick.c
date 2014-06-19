@@ -130,6 +130,10 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
 
     SDL_joylist_item *item;
 
+    if (JoystickByIndex(gamepadEvent->index) != NULL) {
+      return -1;
+    }
+
 #if !SDL_EVENTS_DISABLED
     SDL_Event event;
 #endif
@@ -430,7 +434,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
                 for(i = 0; i < item->naxes; i++) {
                     if(item->axis[i] != gamepadState.axis[i]) {
                         // do we need to do conversion?
-                        SDL_PrivateJoystickButton(item->joystick, i,
+                        SDL_PrivateJoystickAxis(item->joystick, i,
                                                   (Sint16) (32767.*gamepadState.axis[i]));
                     }
                 }
