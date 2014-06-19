@@ -91,6 +91,9 @@ static ControllerMapping_t *s_pSupportedControllers = NULL;
 #if defined(SDL_JOYSTICK_DINPUT) || defined(SDL_JOYSTICK_XINPUT)
 static ControllerMapping_t *s_pXInputMapping = NULL;
 #endif
+#if defined(SDL_JOYSTICK_EMSCRIPTEN)
+static ControllerMapping_t *s_pEmscriptenMapping = NULL;
+#endif
 
 /* The SDL game controller structure */
 struct _SDL_GameController
@@ -263,6 +266,12 @@ ControllerMapping_t *SDL_PrivateGetControllerMapping(int device_index)
 #if defined(SDL_JOYSTICK_DINPUT) || defined(SDL_JOYSTICK_XINPUT)
     if (SDL_SYS_IsXInputDeviceIndex(device_index) && s_pXInputMapping) {
         return s_pXInputMapping;
+    }
+    else
+#endif
+#if defined(SDL_JOYSTICK_EMSCRIPTEN)
+    if (s_pEmscriptenMapping) {
+        return s_pEmscriptenMapping;
     }
     else
 #endif
@@ -672,6 +681,9 @@ SDL_GameControllerAddMapping(const char *mappingString)
 #if defined(SDL_JOYSTICK_DINPUT) || defined(SDL_JOYSTICK_XINPUT)
     SDL_bool is_xinput_mapping = SDL_FALSE;
 #endif
+#if defined(SDL_JOYSTICK_EMSCRIPTEN)
+    SDL_bool is_emscripten_mapping = SDL_FALSE;
+#endif
 
     pchGUID = SDL_PrivateGetControllerGUIDFromMappingString(mappingString);
     if (!pchGUID) {
@@ -680,6 +692,11 @@ SDL_GameControllerAddMapping(const char *mappingString)
 #if defined(SDL_JOYSTICK_DINPUT) || defined(SDL_JOYSTICK_XINPUT)
     if (!SDL_strcasecmp(pchGUID, "xinput")) {
         is_xinput_mapping = SDL_TRUE;
+    }
+#endif
+#if defined(SDL_JOYSTICK_EMSCRIPTEN)
+    if (!SDL_strcasecmp(pchGUID, "emscripten")) {
+        is_emscripten_mapping = SDL_TRUE;
     }
 #endif
     jGUID = SDL_JoystickGetGUIDFromString(pchGUID);
@@ -717,6 +734,11 @@ SDL_GameControllerAddMapping(const char *mappingString)
 #if defined(SDL_JOYSTICK_DINPUT) || defined(SDL_JOYSTICK_XINPUT)
         if (is_xinput_mapping) {
             s_pXInputMapping = pControllerMapping;
+        }
+#endif
+#if defined(SDL_JOYSTICK_EMSCRIPTEN)
+        if (is_emscripten_mapping) {
+            s_pEmscriptenMapping = pControllerMapping;
         }
 #endif
         pControllerMapping->guid = jGUID;
