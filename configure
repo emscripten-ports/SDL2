@@ -23337,6 +23337,15 @@ $as_echo "#define SDL_POWER_EMSCRIPTEN 1" >>confdefs.h
             have_power=yes
         fi
 
+        # Set up files for the power library
+        if test x$enable_joystick = xyes; then
+
+$as_echo "#define SDL_JOYSTICK_EMSCRIPTEN 1" >>confdefs.h
+
+            SOURCES="$SOURCES $srcdir/src/joystick/emscripten/*.c"
+            have_joystick=yes
+        fi
+
         # Set up files for the filesystem library
         if test x$enable_filesystem = xyes; then
 
