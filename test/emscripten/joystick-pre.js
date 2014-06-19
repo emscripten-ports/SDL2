@@ -9,4 +9,17 @@ Module['preRun'].push(function()
         //OK, got one
         Module['removeRunDependency']("gamepad");
     }, false);
+
+    //chrome
+    if(!!navigator.webkitGetGamepads)
+    {
+        var timeout = function()
+        {
+            if(navigator.webkitGetGamepads()[0] !== undefined)
+                Module['removeRunDependency']("gamepad");
+            else
+                setTimeout(timeout, 100);
+        }
+        setTimeout(timeout, 100);
+    }
 });
