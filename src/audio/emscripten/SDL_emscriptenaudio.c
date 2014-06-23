@@ -171,6 +171,11 @@ Emscripten_OpenDevice(_THIS, const char *devname, int iscapture)
         test_format = SDL_NextAudioFormat();
     }
 
+    if (!valid_format) {
+        /* Didn't find a compatible format :( */
+        return SDL_SetError("No compatible audio format!");
+    }
+
     /* Initialize all variables that we clean on shutdown */
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
