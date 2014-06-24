@@ -46,76 +46,6 @@ static SDL_joylist_item *SDL_joylist_tail = NULL;
 static int numjoysticks = 0;
 static int instance_counter = 0;
 
-static int
-keycode_to_SDL(int keycode)
-{
-    /* see http://www.w3.org/TR/gamepad/#remapping for more info */
-    int button = 0;
-    switch(keycode)
-    {
-        /* Some gamepad buttons (API 9) */
-        case EMSCRIPTEN_CONTROLLER_BUTTON_A:
-            button = SDL_CONTROLLER_BUTTON_A;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_B:
-            button = SDL_CONTROLLER_BUTTON_B;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_X:
-            button = SDL_CONTROLLER_BUTTON_X;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_Y:
-            button = SDL_CONTROLLER_BUTTON_Y;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_L1:
-            button = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_R1:
-            button = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_LEFTSTICK:
-            button = SDL_CONTROLLER_BUTTON_LEFTSTICK;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_RIGHTSTICK:
-            button = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_BACK:
-            button = SDL_CONTROLLER_BUTTON_BACK;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_START:
-            button = SDL_CONTROLLER_BUTTON_START;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_GUIDE:
-            button = SDL_CONTROLLER_BUTTON_GUIDE;
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_L2:
-            button = SDL_CONTROLLER_BUTTON_MAX; /* Not supported by GameController */
-            break;
-        case EMSCRIPTEN_CONTROLLER_BUTTON_R2:
-            button = SDL_CONTROLLER_BUTTON_MAX+1; /* Not supported by GameController */
-            break;
-
-        case EMSCRIPTEN_CONTROLLER_DPAD_UP:
-            button = SDL_CONTROLLER_BUTTON_DPAD_UP;
-            break;
-        case EMSCRIPTEN_CONTROLLER_DPAD_DOWN:
-            button = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
-            break;
-        case EMSCRIPTEN_CONTROLLER_DPAD_LEFT:
-            button = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
-            break;
-        case EMSCRIPTEN_CONTROLLER_DPAD_RIGHT:
-            button = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-            break;
-
-        default:
-            return -1;
-            break;
-    }
-
-    SDL_assert(button < EMSCRIPTEN_MAX_NBUTTONS);
-    return button;
-}
-
 int
 Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
 {
@@ -425,9 +355,8 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
             if(gamepadState.timestamp == 0 || gamepadState.timestamp != item->timestamp) {
                 for(i = 0; i < item->nbuttons; i++) {
                     if(item->digitalButton[i] != gamepadState.digitalButton[i]) {
-                        button = keycode_to_SDL(i);
                         buttonState = gamepadState.digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
-                        SDL_PrivateJoystickButton(item->joystick, button, buttonState);
+                        SDL_PrivateJoystickButton(item->joystick, i, buttonState);
                     }
                 }
 
