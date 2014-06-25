@@ -29,6 +29,32 @@
 
 #include <emscripten/emscripten.h>
 
+static int
+copyData(_THIS)
+{
+    int byte_len;
+
+    if (this->hidden->write_off + this->convert.len_cvt > this->hidden->mixlen) {
+        if (this->hidden->write_off > this->hidden->read_off) {
+            SDL_memmove(this->hidden->mixbuf,
+                        this->hidden->mixbuf + this->hidden->read_off,
+                        this->hidden->mixlen - this->hidden->read_off);
+            this->hidden->write_off = this->hidden->write_off - this->hidden->read_off;
+        } else {
+            this->hidden->write_off = 0;
+        }
+        this->hidden->read_off = 0;
+    }
+
+    SDL_memcpy(this->hidden->mixbuf + this->hidden->write_off,
+               this->convert.buf,
+               this->convert.len_cvt);
+    this->hidden->write_off += this->convert.len_cvt;
+    byte_len = this->hidden->write_off - this->hidden->read_off;
+
+    return byte_len;
+}
+
 static void
 HandleAudioProcess(_THIS)
 {
@@ -65,20 +91,7 @@ HandleAudioProcess(_THIS)
             }
 
             /* copy existing data */
-
-            if (this->hidden->write_off + this->convert.len_cvt > this->hidden->mixlen) {
-                if (this->hidden->write_off > this->hidden->read_off) {
-                    SDL_memmove(this->hidden->mixbuf, this->hidden->mixbuf + this->hidden->read_off, this->hidden->mixlen - this->hidden->read_off);
-                    this->hidden->write_off = this->hidden->write_off - this->hidden->read_off;
-                } else {
-                    this->hidden->write_off = 0;
-                }
-                this->hidden->read_off = 0;
-            }
-
-            SDL_memcpy(this->hidden->mixbuf + this->hidden->write_off, this->convert.buf, this->convert.len_cvt);
-            this->hidden->write_off += this->convert.len_cvt;
-            byte_len = this->hidden->write_off - this->hidden->read_off;
+            byte_len = copyData(this);
 
             /* read more data*/
             while (byte_len < this->spec.size) {
@@ -86,21 +99,7 @@ HandleAudioProcess(_THIS)
                                          this->convert.buf,
                                          this->convert.len);
                 SDL_ConvertAudio(&this->convert);
-
-                if (this->hidden->write_off + this->convert.len_cvt > this->hidden->mixlen) {
-                    if (this->hidden->write_off > this->hidden->read_off) {
-                        SDL_memmove(this->hidden->mixbuf, this->hidden->mixbuf + this->hidden->read_off, this->hidden->mixlen - this->hidden->read_off);
-                        this->hidden->write_off = this->hidden->write_off - this->hidden->read_off;
-                    } else {
-                        this->hidden->write_off = 0;
-                    }
-                    this->hidden->read_off = 0;
-                }
-
-                SDL_memcpy(this->hidden->mixbuf + this->hidden->write_off, this->convert.buf, this->convert.len_cvt);
-                this->hidden->write_off += this->convert.len_cvt;
-
-                byte_len = this->hidden->write_off - this->hidden->read_off;
+                byte_len = copyData(this);
             }
 
             byte_len = this->spec.size;
@@ -169,6 +168,11 @@ Emscripten_OpenDevice(_THIS, const char *devname, int iscapture)
             break;
         }
         test_format = SDL_NextAudioFormat();
+    }
+
+    if (!valid_format) {
+        /* Didn't find a compatible format :( */
+        return SDL_SetError("No compatible audio format!");
     }
 
     /* Initialize all variables that we clean on shutdown */

@@ -174,14 +174,12 @@ static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *wdata;
-    SDL_VideoDisplay *display;
 
     /* Allocate window internal data */
     wdata = (SDL_WindowData *) SDL_calloc(1, sizeof(SDL_WindowData));
     if (wdata == NULL) {
         return SDL_OutOfMemory();
     }
-    display = SDL_GetDisplayForWindow(window);
 
     emscripten_set_canvas_size(window->w, window->h);
 
