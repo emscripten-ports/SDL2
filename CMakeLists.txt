@@ -117,6 +117,12 @@ else()
   set(UNIX_OR_MAC_SYS OFF)
 endif()
 
+if (UNIX_OR_MAC_SYS AND NOT EMSCRIPTEN) # JavaScript does not yet have threading support, so disable pthreads when building for Emscripten.
+  set(PTHREADS_ENABLED_BY_DEFAULT ON)
+else()
+  set(PTHREADS_ENABLED_BY_DEFAULT OFF)
+endif()
+
 # Default option knobs
 if(APPLE OR ARCH_64)
   set(OPT_DEF_SSEMATH ON)
@@ -216,7 +222,7 @@ dep_option(FUSIONSOUND_SHARED  "Dynamically load fusionsound audio support" ON "
 set_option(VIDEO_DUMMY         "Use dummy video driver" ON)
 set_option(VIDEO_OPENGL        "Include OpenGL support" ON)
 set_option(VIDEO_OPENGLES      "Include OpenGL ES support" ON)
-set_option(PTHREADS            "Use POSIX threads for multi-threading" ${UNIX_OR_MAC_SYS})
+set_option(PTHREADS            "Use POSIX threads for multi-threading" ${PTHREADS_ENABLED_BY_DEFAULT})
 dep_option(PTHREADS_SEM        "Use pthread semaphores" ON "PTHREADS" OFF)
 set_option(SDL_DLOPEN          "Use dlopen for shared object loading" ON)
 set_option(OSS                 "Support the OSS audio API" ${UNIX_SYS})
