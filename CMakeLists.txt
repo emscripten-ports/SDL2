@@ -641,6 +641,9 @@ endif()
 
 # Platform-specific options and settings
 if(EMSCRIPTEN)
+  # Hide noisy warnings that intend to aid mostly during initial stages of porting a new
+  # project. Uncomment at will for verbose cross-compiling -I/../ path info.
+  add_definitions(-Wno-warn-absolute-paths)
   if(SDL_AUDIO)
     file(GLOB EM_AUDIO_SOURCES ${SDL2_SOURCE_DIR}/src/audio/emscripten/*.c)
     set(SOURCE_FILES ${SOURCE_FILES} ${EM_AUDIO_SOURCES})
