@@ -176,13 +176,19 @@ endif()
 set(SDL_LIBS "-lSDL2")
 set(SDL_CFLAGS "")
 
+# Emscripten toolchain has a nonempty default value for this, and the checks 
+# in this file need to change that, so remember the original value, and 
+# restore back to that afterwards. For check_function_exists() to work in
+# Emscripten, this value must be at its default value.
+set(ORIG_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+
 if(CYGWIN)
   # We build SDL on cygwin without the UNIX emulation layer
   include_directories("-I/usr/include/mingw")
   set(CMAKE_REQUIRED_FLAGS "-mno-cygwin")
   check_c_source_compiles("int main(int argc, char **argv) {}"
     HAVE_GCC_NO_CYGWIN)
-  set(CMAKE_REQUIRED_FLAGS)
+  set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
   if(HAVE_GCC_NO_CYGWIN)
     list(APPEND EXTRA_LDFLAGS "-mno-cygwin")
     list(APPEND SDL_LIBS "-mno-cygwin")
@@ -321,7 +327,7 @@ if(USE_GCC OR USE_CLANG)
   set(CMAKE_REQUIRED_FLAGS "-mpreferred-stack-boundary=2")
   check_c_source_compiles("int x = 0; int main(int argc, char **argv) {}"
     HAVE_GCC_PREFERRED_STACK_BOUNDARY)
-  set(CMAKE_REQUIRED_FLAGS)
+  set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
 
   set(CMAKE_REQUIRED_FLAGS "-fvisibility=hidden -Werror")
   check_c_source_compiles("
@@ -332,7 +338,7 @@ if(USE_GCC OR USE_CLANG)
   if(HAVE_GCC_FVISIBILITY)
     list(APPEND EXTRA_CFLAGS "-fvisibility=hidden")
   endif()
-  set(CMAKE_REQUIRED_FLAGS)
+  set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
 
   check_c_compiler_flag(-Wall HAVE_GCC_WALL)
   if(HAVE_GCC_WALL)
@@ -368,7 +374,7 @@ if(ASSEMBLY)
       if(HAVE_MMX)
         list(APPEND EXTRA_CFLAGS "-mmmx")
       endif()
-      set(CMAKE_REQUIRED_FLAGS)
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
     endif()
 
     if(3DNOW)
@@ -385,7 +391,7 @@ if(ASSEMBLY)
       if(HAVE_3DNOW)
         list(APPEND EXTRA_CFLAGS "-m3dnow")
       endif()
-      set(CMAKE_REQUIRED_FLAGS)
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
     endif()
 
     if(SSE)
@@ -408,7 +414,7 @@ if(ASSEMBLY)
       if(HAVE_SSE)
         list(APPEND EXTRA_CFLAGS "-msse")
       endif()
-      set(CMAKE_REQUIRED_FLAGS)
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
     endif()
 
     if(SSE2)
@@ -431,7 +437,7 @@ if(ASSEMBLY)
       if(HAVE_SSE2)
         list(APPEND EXTRA_CFLAGS "-msse2")
       endif()
-      set(CMAKE_REQUIRED_FLAGS)
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
     endif()
 
     if(SSEMATH)
@@ -456,7 +462,7 @@ if(ASSEMBLY)
               return vec_splat_u32(0);
           }
           int main(int argc, char **argv) { }" HAVE_ALTIVEC)
-      set(CMAKE_REQUIRED_FLAGS)
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
       if(HAVE_ALTIVEC OR HAVE_ALTIVEC_H_HDR)
         set(HAVE_ALTIVEC TRUE) # if only HAVE_ALTIVEC_H_HDR is set
         list(APPEND EXTRA_CFLAGS "-maltivec")
@@ -838,7 +844,7 @@ elseif(WINDOWS)
       link_directories($ENV{DXSDK_DIR}\\lib\\${PROCESSOR_ARCH})
       include_directories($ENV{DXSDK_DIR}\\Include)
     endif()
-    set(CMAKE_REQUIRED_FLAGS)
+    set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
   endif()
 
   if(SDL_AUDIO)
