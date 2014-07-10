@@ -200,12 +200,35 @@ add_definitions(-DUSING_GENERATED_CONFIG_H)
 # General includes
 include_directories(${SDL2_BINARY_DIR}/include ${SDL2_SOURCE_DIR}/include)
 
+if(EMSCRIPTEN)
+  # Set up default values for the currently supported set of subsystems:
+  # Emscripten/Javascript does not have assembly support, a dynamic library 
+  # loading architecture, low-level CPU inspection or multithreading.
+  set(OPT_DEF_ASM FALSE)
+  set(SDL_SHARED_ENABLED_BY_DEFAULT OFF)
+  set(SDL_ATOMIC_ENABLED_BY_DEFAULT OFF)
+  set(SDL_THREADS_ENABLED_BY_DEFAULT OFF)
+  set(SDL_LOADSO_ENABLED_BY_DEFAULT OFF)
+  set(SDL_CPUINFO_ENABLED_BY_DEFAULT OFF)
+  set(DLOPEN_ENABLED_BY_DEFAULT OFF)
+else()
+  set(SDL_SHARED_ENABLED_BY_DEFAULT ON)
+  set(SDL_ATOMIC_ENABLED_BY_DEFAULT ON)
+  set(SDL_THREADS_ENABLED_BY_DEFAULT ON)
+  set(SDL_LOADSO_ENABLED_BY_DEFAULT ON)
+  set(SDL_CPUINFO_ENABLED_BY_DEFAULT ON)
+  set(DLOPEN_ENABLED_BY_DEFAULT ON)
+endif()
+
 set(SDL_SUBSYSTEMS
     Atomic Audio Video Render Events Joystick Haptic Power Threads Timers
     File Loadso CPUinfo Filesystem)
 foreach(_SUB ${SDL_SUBSYSTEMS})
   string(TOUPPER ${_SUB} _OPT)
-  option(SDL_${_OPT} "Enable the ${_SUB} subsystem" ON)
+  if (NOT DEFINED SDL_${_OPT}_ENABLED_BY_DEFAULT)
+    set(SDL_${_OPT}_ENABLED_BY_DEFAULT ON)
+  endif()
+  option(SDL_${_OPT} "Enable the ${_SUB} subsystem" ${SDL_${_OPT}_ENABLED_BY_DEFAULT})
 endforeach()
 
 option_string(ASSERTIONS "Enable internal sanity checks (auto/disabled/release/enabled/paranoid)" "auto")
@@ -230,7 +253,7 @@ set_option(VIDEO_OPENGL        "Include OpenGL support" ON)
 set_option(VIDEO_OPENGLES      "Include OpenGL ES support" ON)
 set_option(PTHREADS            "Use POSIX threads for multi-threading" ${PTHREADS_ENABLED_BY_DEFAULT})
 dep_option(PTHREADS_SEM        "Use pthread semaphores" ON "PTHREADS" OFF)
-set_option(SDL_DLOPEN          "Use dlopen for shared object loading" ON)
+set_option(SDL_DLOPEN          "Use dlopen for shared object loading" ${DLOPEN_ENABLED_BY_DEFAULT})
 set_option(OSS                 "Support the OSS audio API" ${UNIX_SYS})
 set_option(ALSA                "Support the ALSA audio API" ${UNIX_SYS})
 dep_option(ALSA_SHARED         "Dynamically load ALSA audio support" ON "ALSA" OFF)
@@ -261,7 +284,7 @@ set_option(RENDER_D3D          "Enable the Direct3D render driver" ${WINDOWS})
 
 # TODO: We should (should we?) respect cmake's ${BUILD_SHARED_LIBS} flag here
 # The options below are for compatibility to configure's default behaviour.
-set(SDL_SHARED ON CACHE BOOL "Build a shared version of the library")
+set(SDL_SHARED ${SDL_SHARED_ENABLED_BY_DEFAULT} CACHE BOOL "Build a shared version of the library")
 set(SDL_STATIC ON CACHE BOOL "Build a static version of the library")
 
 # General source files
