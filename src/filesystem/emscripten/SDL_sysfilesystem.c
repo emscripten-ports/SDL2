@@ -35,21 +35,32 @@
 char *
 SDL_GetBasePath(void)
 {
-  char *retval = "/";
-  return SDL_strdup(retval);
+    char *retval = "/";
+    return SDL_strdup(retval);
 }
 
 char *
 SDL_GetPrefPath(const char *org, const char *app)
 {
-  char *retval = "/libsdl/";
+    const char *append = "/libsdl/";
+    char *retval;
+    size_t len = 0;
 
-  if (mkdir(retval, 0700) != 0 && errno != EEXIST) {
-    SDL_SetError("Couldn't create directory '%s': ", retval, strerror(errno));
-    return NULL;
-  }
+    len = SDL_strlen(append) + SDL_strlen(org) + SDL_strlen(app) + 3;
+    retval = (char *) SDL_malloc(len);
+    if (!retval) {
+        SDL_OutOfMemory();
+        return NULL;
+    }
 
-  return SDL_strdup(retval);
+    SDL_snprintf(retval, len, "%s%s/%s/", append, org, app);
+
+    if (mkdir(retval, 0700) != 0 && errno != EEXIST) {
+        SDL_SetError("Couldn't create directory '%s': '%s'", retval, strerror(errno));
+        return NULL;
+    }
+
+    return retval;
 }
 
 #endif /* SDL_FILESYSTEM_EMSCRIPTEN */
