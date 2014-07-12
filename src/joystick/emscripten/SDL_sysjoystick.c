@@ -201,18 +201,19 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
 int
 SDL_SYS_JoystickInit(void)
 {
-    int retval, i;
+    int retval, i, numjs;
     EmscriptenGamepadEvent gamepadState;
 
-    numjoysticks = emscripten_get_num_gamepads();
+    numjoysticks = 0;
+    numjs = emscripten_get_num_gamepads();
 
     // Check if gamepad is supported by browser
-    if (numjoysticks == -1) {
+    if (numjs == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
         return -1;
     }
 
-    if (numjoysticks > 0) {
-        for(i = 0; i < numjoysticks; i++) {
+    if (numjs > 0) {
+        for(i = 0; i < numjs; i++) {
             retval = emscripten_get_gamepad_status(i, &gamepadState);
             if (retval == EMSCRIPTEN_RESULT_SUCCESS) {
                 Emscripten_JoyStickConnected(EMSCRIPTEN_EVENT_GAMEPADCONNECTED,
