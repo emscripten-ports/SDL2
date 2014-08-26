@@ -333,6 +333,14 @@ Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, vo
 }
 
 int
+Emscripten_HandleFocus(int eventType, const EmscriptenFocusEvent *wheelEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    SDL_SendWindowEvent(window_data->window, eventType == EMSCRIPTEN_EVENT_FOCUS ? SDL_WINDOWEVENT_FOCUS_GAINED : SDL_WINDOWEVENT_FOCUS_LOST, 0, 0);
+    return 1;
+}
+
+int
 Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 {
     /*SDL_WindowData *window_data = userData;*/
@@ -482,6 +490,9 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
 
     emscripten_set_wheel_callback("#canvas", data, 0, Emscripten_HandleWheel);
 
+    emscripten_set_focus_callback("#canvas", data, 0, Emscripten_HandleFocus);
+    emscripten_set_blur_callback("#canvas", data, 0, Emscripten_HandleFocus);
+
     emscripten_set_touchstart_callback("#canvas", data, 0, Emscripten_HandleTouch);
     emscripten_set_touchend_callback("#canvas", data, 0, Emscripten_HandleTouch);
     emscripten_set_touchmove_callback("#canvas", data, 0, Emscripten_HandleTouch);
@@ -508,6 +519,9 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
     emscripten_set_mouseup_callback("#canvas", NULL, 0, NULL);
 
     emscripten_set_wheel_callback("#canvas", NULL, 0, NULL);
+
+    emscripten_set_focus_callback("#canvas", NULL, 0, NULL);
+    emscripten_set_blur_callback("#canvas", NULL, 0, NULL);
 
     emscripten_set_touchstart_callback("#canvas", NULL, 0, NULL);
     emscripten_set_touchend_callback("#canvas", NULL, 0, NULL);
