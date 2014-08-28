@@ -492,7 +492,7 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
             emscripten_set_canvas_size(w * window_data->pixel_ratio, h * window_data->pixel_ratio);
 
             /* set_canvas_size unsets this */
-            if (window_data->external_size && window_data->pixel_ratio != 1.0f) {
+            if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
                 EM_ASM_ARGS({
                     Module['canvas'].style.width = $0 + "px";
                     Module['canvas'].style.height = $1 + "px";
