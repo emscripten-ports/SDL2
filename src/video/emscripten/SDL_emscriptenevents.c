@@ -439,8 +439,18 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
     {
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
         {
+            int unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
+            int unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
             emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
-            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, window_data->windowed_width, window_data->windowed_height);
+
+            if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
+                EM_ASM_ARGS({
+                    Module['canvas'].style.width = $0 + "px";
+                    Module['canvas'].style.height = $1 + "px";
+                }, unscaled_w, unscaled_h);
+            }
+
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, unscaled_w, unscaled_h);
         }
         window_data->window->flags &= ~FULLSCREEN_MASK;
     }
@@ -456,22 +466,39 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
     {
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
         {
-            emscripten_set_canvas_size(uiEvent->windowInnerWidth, uiEvent->windowInnerHeight);
+            emscripten_set_canvas_size(uiEvent->windowInnerWidth * window_data->pixel_ratio, uiEvent->windowInnerHeight * window_data->pixel_ratio);
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, uiEvent->windowInnerWidth, uiEvent->windowInnerHeight);
         }
     }
     else
     {
+        /* this will only work if the canvas size is set through css */
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
         {
-            int w = EM_ASM_INT_V({
-                return Module['canvas'].clientWidth;
-            });
-            int h = EM_ASM_INT_V({
-                return Module['canvas'].clientHeight;
-            });
+            int w = window_data->window->w;
+            int h = window_data->window->h;
 
-            emscripten_set_canvas_size(w, h);
+            if(window_data->external_size)
+            {
+                w = EM_ASM_INT_V({
+                    return Module['canvas'].clientWidth;
+                });
+
+                h = EM_ASM_INT_V({
+                    return Module['canvas'].clientHeight;
+                });
+            }
+
+            emscripten_set_canvas_size(w * window_data->pixel_ratio, h * window_data->pixel_ratio);
+
+            /* set_canvas_size unsets this */
+            if (window_data->external_size && window_data->pixel_ratio != 1.0f) {
+                EM_ASM_ARGS({
+                    Module['canvas'].style.width = $0 + "px";
+                    Module['canvas'].style.height = $1 + "px";
+                }, w, h);
+            }
+
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, w, h);
         }
     }

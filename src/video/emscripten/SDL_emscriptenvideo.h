@@ -39,6 +39,10 @@ typedef struct SDL_WindowData
 
     int windowed_width;
     int windowed_height;
+
+    float pixel_ratio;
+
+    SDL_bool external_size;
 } SDL_WindowData;
 
 #endif /* _SDL_emscriptenvideo_h */

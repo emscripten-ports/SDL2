@@ -113,6 +113,7 @@ Emscripten_CreateDevice(int devindex)
     device->GL_GetSwapInterval = Emscripten_GLES_GetSwapInterval;
     device->GL_SwapWindow = Emscripten_GLES_SwapWindow;
     device->GL_DeleteContext = Emscripten_GLES_DeleteContext;
+    device->GL_GetDrawableSize = Emscripten_GLES_GetDrawableSize;
 
     device->free = Emscripten_DeleteDevice;
 
@@ -129,12 +130,16 @@ int
 Emscripten_VideoInit(_THIS)
 {
     SDL_DisplayMode mode;
-    int is_fullscreen;
 
     /* Use a fake 32-bpp desktop mode */
     mode.format = SDL_PIXELFORMAT_RGB888;
 
-    emscripten_get_canvas_size(&mode.w, &mode.h, &is_fullscreen);
+    mode.w = EM_ASM_INT_V({
+        return Module['canvas'].clientWidth;
+    });
+    mode.h = EM_ASM_INT_V({
+        return Module['canvas'].clientHeight;
+    });
 
     mode.refresh_rate = 0;
     mode.driverdata = NULL;
@@ -174,6 +179,8 @@ static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *wdata;
+    int scaled_w, scaled_h;
+    int client_w, client_h;
 
     /* Allocate window internal data */
     wdata = (SDL_WindowData *) SDL_calloc(1, sizeof(SDL_WindowData));
@@ -181,12 +188,52 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
         return SDL_OutOfMemory();
     }
 
-    emscripten_set_canvas_size(window->w, window->h);
+    if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
+        wdata->pixel_ratio = EM_ASM_DOUBLE_V({
+            return window.devicePixelRatio || 1.0;
+        });
+    } else {
+        wdata->pixel_ratio = 1.0f;
+    }
 
-    wdata->windowed_width = window->w;
-    wdata->windowed_height = window->h;
+    scaled_w = window->w * wdata->pixel_ratio;
+    scaled_h = window->h * wdata->pixel_ratio;
 
-    if(window->flags & SDL_WINDOW_OPENGL) {
+    emscripten_set_canvas_size(scaled_w, scaled_h);
+
+    client_w = EM_ASM_INT_V({
+        return Module['canvas'].clientWidth;
+    });
+    client_h = EM_ASM_INT_V({
+        return Module['canvas'].clientHeight;
+    });
+
+    wdata->external_size = client_w != scaled_w || client_h != scaled_h;
+
+    if ((window->flags & SDL_WINDOW_RESIZABLE) && wdata->external_size) {
+        /* external css has resized us */
+        scaled_w = client_w * wdata->pixel_ratio;
+        scaled_h = client_h * wdata->pixel_ratio;
+
+        emscripten_set_canvas_size(scaled_w, scaled_h);
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, client_w, client_h);
+    }
+
+    /* if the size is not being controlled by css, we need to scale down for hidpi */
+    if (!wdata->external_size) {
+        if (wdata->pixel_ratio != 1.0f) {
+            /*scale canvas down*/
+            EM_ASM_ARGS({
+                Module['canvas'].style.width = $0 + "px";
+                Module['canvas'].style.height = $1 + "px";
+            }, window->w, window->h);
+        }
+    }
+
+    wdata->windowed_width = scaled_w;
+    wdata->windowed_height = scaled_h;
+
+    if (window->flags & SDL_WINDOW_OPENGL) {
         if (!_this->egl_data) {
             if (SDL_GL_LoadLibrary(NULL) < 0) {
                 return -1;
@@ -203,7 +250,7 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
 
     /* Setup driver data for this window */
     window->driverdata = wdata;
-    
+
     /* One window, it always has focus */
     SDL_SetMouseFocus(window);
     SDL_SetKeyboardFocus(window);
@@ -216,7 +263,20 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
 
 static void Emscripten_SetWindowSize(_THIS, SDL_Window * window)
 {
-    emscripten_set_canvas_size(window->w, window->h);
+    SDL_WindowData *data;
+
+    if (window->driverdata) {
+        data = (SDL_WindowData *) window->driverdata;
+        emscripten_set_canvas_size(window->w * data->pixel_ratio, window->h * data->pixel_ratio);
+
+        /*scale canvas down*/
+        if (!data->external_size && data->pixel_ratio != 1.0f) {
+            EM_ASM_ARGS({
+                Module['canvas'].style.width = $0 + "px";
+                Module['canvas'].style.height = $1 + "px";
+            }, window->w, window->h);
+        }
+    }
 }
 
 static void

@@ -94,6 +94,23 @@ SDL_EGL_CreateContext_impl(Emscripten)
 SDL_EGL_SwapWindow_impl(Emscripten)
 SDL_EGL_MakeCurrent_impl(Emscripten)
 
+void
+Emscripten_GLES_GetDrawableSize(_THIS, SDL_Window * window, int * w, int * h)
+{
+    SDL_WindowData *data;
+    if (window->driverdata) {
+        data = (SDL_WindowData *) window->driverdata;
+
+        if (w) {
+            *w = window->w * data->pixel_ratio;
+        }
+
+        if (h) {
+            *h = window->h * data->pixel_ratio;
+        }
+    }
+}
+
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN && SDL_VIDEO_OPENGL_EGL */
 
 /* vi: set ts=4 sw=4 expandtab: */
