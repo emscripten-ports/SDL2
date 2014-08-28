@@ -431,13 +431,17 @@ void loop()
                 case SDL_WINDOWEVENT_RESIZED:
                     for (i = 0; i < state->num_windows; ++i) {
                         if (event.window.windowID == SDL_GetWindowID(state->windows[i])) {
+                            int w, h;
                             status = SDL_GL_MakeCurrent(state->windows[i], context[i]);
                             if (status) {
                                 SDL_Log("SDL_GL_MakeCurrent(): %s\n", SDL_GetError());
                                 break;
                             }
                             /* Change view port to the new window dimensions */
-                            ctx.glViewport(0, 0, event.window.data1, event.window.data2);
+                            SDL_GL_GetDrawableSize(state->windows[i], &w, &h);
+                            ctx.glViewport(0, 0, w, h);
+                            state->window_w = event.window.data1;
+                            state->window_h = event.window.data2;
                             /* Update window content */
                             Render(event.window.data1, event.window.data2, &datas[i]);
                             SDL_GL_SwapWindow(state->windows[i]);
@@ -636,6 +640,7 @@ main(int argc, char *argv[])
     /* Set rendering settings for each context */
     for (i = 0; i < state->num_windows; ++i) {
 
+        int w, h;
         status = SDL_GL_MakeCurrent(state->windows[i], context[i]);
         if (status) {
             SDL_Log("SDL_GL_MakeCurrent(): %s\n", SDL_GetError());
@@ -643,7 +648,8 @@ main(int argc, char *argv[])
             /* Continue for next window */
             continue;
         }
-        ctx.glViewport(0, 0, state->window_w, state->window_h);
+        SDL_GL_GetDrawableSize(state->windows[i], &w, &h);
+        ctx.glViewport(0, 0, w, h);
 
         data = &datas[i];
         data->angle_x = 0; data->angle_y = 0; data->angle_z = 0;
