@@ -130,16 +130,15 @@ int
 Emscripten_VideoInit(_THIS)
 {
     SDL_DisplayMode mode;
+    double css_w, css_h;
 
     /* Use a fake 32-bpp desktop mode */
     mode.format = SDL_PIXELFORMAT_RGB888;
 
-    mode.w = EM_ASM_INT_V({
-        return Module['canvas'].clientWidth;
-    });
-    mode.h = EM_ASM_INT_V({
-        return Module['canvas'].clientHeight;
-    });
+    emscripten_get_element_css_size(NULL, &css_w, &css_h);
+
+    mode.w = css_w;
+    mode.h = css_h;
 
     mode.refresh_rate = 0;
     mode.driverdata = NULL;
@@ -179,8 +178,8 @@ static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *wdata;
-    int scaled_w, scaled_h;
-    int client_w, client_h;
+    double scaled_w, scaled_h;
+    double css_w, css_h;
 
     /* Allocate window internal data */
     wdata = (SDL_WindowData *) SDL_calloc(1, sizeof(SDL_WindowData));
@@ -189,44 +188,34 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     }
 
     if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
-        wdata->pixel_ratio = EM_ASM_DOUBLE_V({
-            return window.devicePixelRatio || 1.0;
-        });
+        wdata->pixel_ratio = emscripten_get_device_pixel_ratio();
     } else {
         wdata->pixel_ratio = 1.0f;
     }
 
-    scaled_w = window->w * wdata->pixel_ratio;
-    scaled_h = window->h * wdata->pixel_ratio;
+    scaled_w = SDL_floor(window->w * wdata->pixel_ratio);
+    scaled_h = SDL_floor(window->h * wdata->pixel_ratio);
 
     emscripten_set_canvas_size(scaled_w, scaled_h);
 
-    client_w = EM_ASM_INT_V({
-        return Module['canvas'].clientWidth;
-    });
-    client_h = EM_ASM_INT_V({
-        return Module['canvas'].clientHeight;
-    });
+    emscripten_get_element_css_size(NULL, &css_w, &css_h);
 
-    wdata->external_size = client_w != scaled_w || client_h != scaled_h;
+    wdata->external_size = css_w != scaled_w || css_h != scaled_h;
 
     if ((window->flags & SDL_WINDOW_RESIZABLE) && wdata->external_size) {
         /* external css has resized us */
-        scaled_w = client_w * wdata->pixel_ratio;
-        scaled_h = client_h * wdata->pixel_ratio;
+        scaled_w = css_w * wdata->pixel_ratio;
+        scaled_h = css_h * wdata->pixel_ratio;
 
         emscripten_set_canvas_size(scaled_w, scaled_h);
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, client_w, client_h);
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, css_w, css_h);
     }
 
     /* if the size is not being controlled by css, we need to scale down for hidpi */
     if (!wdata->external_size) {
         if (wdata->pixel_ratio != 1.0f) {
             /*scale canvas down*/
-            EM_ASM_ARGS({
-                Module['canvas'].style.width = $0 + "px";
-                Module['canvas'].style.height = $1 + "px";
-            }, window->w, window->h);
+            emscripten_set_element_css_size(NULL, window->w, window->h);
         }
     }
 
@@ -271,10 +260,7 @@ static void Emscripten_SetWindowSize(_THIS, SDL_Window * window)
 
         /*scale canvas down*/
         if (!data->external_size && data->pixel_ratio != 1.0f) {
-            EM_ASM_ARGS({
-                Module['canvas'].style.width = $0 + "px";
-                Module['canvas'].style.height = $1 + "px";
-            }, window->w, window->h);
+            emscripten_set_element_css_size(NULL, window->w, window->h);
         }
     }
 }

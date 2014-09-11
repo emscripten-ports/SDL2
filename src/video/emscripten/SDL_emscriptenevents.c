@@ -439,15 +439,12 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
     {
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
         {
-            int unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
-            int unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
+            double unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
+            double unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
             emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
 
             if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
-                EM_ASM_ARGS({
-                    Module['canvas'].style.width = $0 + "px";
-                    Module['canvas'].style.height = $1 + "px";
-                }, unscaled_w, unscaled_h);
+                emscripten_set_element_css_size(NULL, unscaled_w, unscaled_h);
             }
 
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, unscaled_w, unscaled_h);
@@ -475,28 +472,18 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
         /* this will only work if the canvas size is set through css */
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
         {
-            int w = window_data->window->w;
-            int h = window_data->window->h;
+            double w = window_data->window->w;
+            double h = window_data->window->h;
 
-            if(window_data->external_size)
-            {
-                w = EM_ASM_INT_V({
-                    return Module['canvas'].clientWidth;
-                });
-
-                h = EM_ASM_INT_V({
-                    return Module['canvas'].clientHeight;
-                });
+            if(window_data->external_size) {
+                emscripten_get_element_css_size(NULL, &w, &h);
             }
 
             emscripten_set_canvas_size(w * window_data->pixel_ratio, h * window_data->pixel_ratio);
 
             /* set_canvas_size unsets this */
             if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
-                EM_ASM_ARGS({
-                    Module['canvas'].style.width = $0 + "px";
-                    Module['canvas'].style.height = $1 + "px";
-                }, w, h);
+                emscripten_set_element_css_size(NULL, w, h);
             }
 
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, w, h);
