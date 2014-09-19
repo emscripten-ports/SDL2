@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
 
@@ -28,7 +28,7 @@ static SDLTest_CommonState *state;
 SDL_Rect viewport;
 int done, j;
 SDL_bool use_target = SDL_FALSE;
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 Uint32 wait_start;
 #endif
 
@@ -91,7 +91,7 @@ DrawOnViewport(SDL_Renderer * renderer, SDL_Rect viewport)
 void
 loop()
 {
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     /* Avoid using delays */
     if(SDL_GetTicks() - wait_start < 1000)
         return;
@@ -187,7 +187,7 @@ main(int argc, char *argv[])
     done = 0;
     j = 0;
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     wait_start = SDL_GetTicks();
     emscripten_set_main_loop(loop, 0, 1);
 #else

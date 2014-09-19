@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
 
@@ -276,7 +276,7 @@ main(int argc, char *argv[])
     then = SDL_GetTicks();
     done = 0;
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop, 0, 1);
 #else
     while (!done) {

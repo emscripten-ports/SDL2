@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
 
@@ -277,7 +277,7 @@ loop()
         }
     }
 
-#ifndef EMSCRIPTEN
+#ifndef __EMSCRIPTEN__
     SDL_Delay(fpsdelay);
 #endif
 
@@ -451,7 +451,7 @@ main(int argc, char **argv)
     SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
     /* Loop, waiting for QUIT or RESIZE */
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop, nodelay ? 0 : fps, 1);
 #else
     while (!done) {
