@@ -2,6 +2,10 @@ Build:
 $ emconfigure ./configure --host=asmjs-unknown-emscripten --disable-assembly --disable-threads --enable-cpuinfo=false CFLAGS="-O2"
 $ emmake make
 
+Or with cmake:
+$ emconfigure cmake ..
+$ make
+
 To build one of the tests -
 $ cd test/
 $ emcc -O2 --js-opts 0 -g4 testdraw2.c -I../include ../build/.libs/libSDL2.a ../build/libSDL2_test.a -o a.html
