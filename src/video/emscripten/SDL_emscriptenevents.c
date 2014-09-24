@@ -493,6 +493,14 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
     return 0;
 }
 
+int
+Emscripten_HandleVisibilityChange(int eventType, const EmscriptenVisibilityChangeEvent *visEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    SDL_SendWindowEvent(window_data->window, visEvent->hidden ? SDL_WINDOWEVENT_HIDDEN : SDL_WINDOWEVENT_SHOWN, 0, 0);
+    return 0;
+}
+
 void
 Emscripten_RegisterEventHandlers(SDL_WindowData *data)
 {
@@ -521,6 +529,8 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_fullscreenchange_callback("#document", data, 0, Emscripten_HandleFullscreenChange);
 
     emscripten_set_resize_callback("#window", data, 0, Emscripten_HandleResize);
+
+    emscripten_set_visibilitychange_callback(data, 0, Emscripten_HandleVisibilityChange);
 }
 
 void
@@ -550,6 +560,8 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
     emscripten_set_fullscreenchange_callback("#document", NULL, 0, NULL);
 
     emscripten_set_resize_callback("#window", NULL, 0, NULL);
+
+    emscripten_set_visibilitychange_callback(NULL, 0, NULL);
 }
 
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN */
