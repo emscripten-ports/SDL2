@@ -408,8 +408,11 @@ Emscripten_HandleKey(int eventType, const EmscriptenKeyboardEvent *keyEvent, voi
         }
     }
 
-    /* if we prevent keydown, we won't get keypress*/
-    return SDL_GetEventState(SDL_TEXTINPUT) != SDL_ENABLE || eventType != EMSCRIPTEN_EVENT_KEYDOWN;
+    /* if we prevent keydown, we won't get keypress
+     * also we need to ALWAYS prevent backspace and tab otherwise chrome takes action and does bad navigation UX
+     */
+    return SDL_GetEventState(SDL_TEXTINPUT) != SDL_ENABLE || eventType != EMSCRIPTEN_EVENT_KEYDOWN
+            || keyEvent->keyCode == 8 /* backspace */ || keyEvent->keyCode == 9 /* tab */;
 }
 
 int
