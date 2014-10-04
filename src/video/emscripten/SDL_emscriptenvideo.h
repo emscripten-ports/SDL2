@@ -43,6 +43,8 @@ typedef struct SDL_WindowData
     float pixel_ratio;
 
     SDL_bool external_size;
+
+    int requested_fullscreen_mode;
 } SDL_WindowData;
 
 #endif /* _SDL_emscriptenvideo_h */

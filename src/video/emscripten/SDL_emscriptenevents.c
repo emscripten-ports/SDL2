@@ -430,28 +430,34 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
     SDL_WindowData *window_data = userData;
     if(fullscreenChangeEvent->isFullscreen)
     {
-        /*if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        window_data->window->flags |= window_data->requested_fullscreen_mode;
+
+        if(!window_data->requested_fullscreen_mode)
+            window_data->window->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP; /*we didn't reqest fullscreen*/
+
+        window_data->requested_fullscreen_mode = 0;
+
+        SDL_bool is_desktop_fullscreen = (window_data->window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+        /*update size*/
+        if(window_data->window->flags & SDL_WINDOW_RESIZABLE || is_desktop_fullscreen)
         {
-            emscripten_set_canvas_size(fullscreenChangeEvent->elementWidth, fullscreenChangeEvent->elementHeight);
-            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, fullscreenChangeEvent->elementWidth, fullscreenChangeEvent->elementHeight);
-        }*/
-        if(!(window_data->window->flags & FULLSCREEN_MASK))
-            window_data->window->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+            emscripten_set_canvas_size(fullscreenChangeEvent->screenWidth, fullscreenChangeEvent->screenHeight);
+            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, fullscreenChangeEvent->screenWidth, fullscreenChangeEvent->screenHeight);
+        }
     }
     else
     {
-        if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
-        {
-            double unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
-            double unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
-            emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
+        double unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
+        double unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
+        emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
 
-            if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
-                emscripten_set_element_css_size(NULL, unscaled_w, unscaled_h);
-            }
-
-            SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, unscaled_w, unscaled_h);
+        if (!window_data->external_size && window_data->pixel_ratio != 1.0f) {
+            emscripten_set_element_css_size(NULL, unscaled_w, unscaled_h);
         }
+
+        SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, unscaled_w, unscaled_h);
+
         window_data->window->flags &= ~FULLSCREEN_MASK;
     }
 
@@ -464,7 +470,9 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
     SDL_WindowData *window_data = userData;
     if(window_data->window->flags & FULLSCREEN_MASK)
     {
-        if(window_data->window->flags & SDL_WINDOW_RESIZABLE)
+        SDL_bool is_desktop_fullscreen = (window_data->window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+        if(window_data->window->flags & SDL_WINDOW_RESIZABLE || is_desktop_fullscreen)
         {
             emscripten_set_canvas_size(uiEvent->windowInnerWidth * window_data->pixel_ratio, uiEvent->windowInnerHeight * window_data->pixel_ratio);
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, uiEvent->windowInnerWidth, uiEvent->windowInnerHeight);
