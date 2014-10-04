@@ -298,7 +298,16 @@ int
 Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
-    SDL_SendMouseMotion(window_data->window, 0, 0, mouseEvent->canvasX, mouseEvent->canvasY);
+    int mx = mouseEvent->canvasX, my = mouseEvent->canvasY;
+
+    /* rescale (in case canvas is being scaled)*/
+    double client_w, client_h;
+    emscripten_get_element_css_size(NULL, &client_w, &client_h);
+
+    mx = mx * (window_data->window->w / (client_w * window_data->pixel_ratio));
+    my = my * (window_data->window->h / (client_h * window_data->pixel_ratio));
+
+    SDL_SendMouseMotion(window_data->window, 0, 0, mx, my);
     return 0;
 }
 
