@@ -334,6 +334,14 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
 }
 
 int
+Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
+{
+    SDL_WindowData *window_data = userData;
+    SDL_SendWindowEvent(window_data->window, eventType == EMSCRIPTEN_EVENT_MOUSEENTER ? SDL_WINDOWEVENT_ENTER : SDL_WINDOWEVENT_LEAVE, 0, 0);
+    return 1;
+}
+
+int
 Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -530,6 +538,9 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_mousedown_callback("#canvas", data, 0, Emscripten_HandleMouseButton);
     emscripten_set_mouseup_callback("#canvas", data, 0, Emscripten_HandleMouseButton);
 
+    emscripten_set_mouseenter_callback("#canvas", data, 0, Emscripten_HandleMouseFocus);
+    emscripten_set_mouseleave_callback("#canvas", data, 0, Emscripten_HandleMouseFocus);
+
     emscripten_set_wheel_callback("#canvas", data, 0, Emscripten_HandleWheel);
 
     emscripten_set_focus_callback("#canvas", data, 0, Emscripten_HandleFocus);
@@ -561,6 +572,9 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
 
     emscripten_set_mousedown_callback("#canvas", NULL, 0, NULL);
     emscripten_set_mouseup_callback("#canvas", NULL, 0, NULL);
+
+    emscripten_set_mouseenter_callback("#canvas", NULL, 0, NULL);
+    emscripten_set_mouseleave_callback("#canvas", NULL, 0, NULL);
 
     emscripten_set_wheel_callback("#canvas", NULL, 0, NULL);
 
