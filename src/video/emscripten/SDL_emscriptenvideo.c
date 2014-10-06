@@ -290,15 +290,25 @@ Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * di
     if(window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
 
-        if(fullscreen)
-        {
+        if(fullscreen) {
             data->requested_fullscreen_mode = window->flags & (SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_FULLSCREEN);
             /*unset the fullscreen flags as we're not actually fullscreen yet*/
             window->flags &= ~(SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_FULLSCREEN);
 
+            EM_ASM({
+                //reparent canvas (similar to Module.requestFullscreen)
+                var canvas = Module['canvas'];
+                if(canvas.parentNode.id != "SDLFullscreenElement") {
+                    var canvasContainer = document.createElement("div");
+                    canvasContainer.id = "SDLFullscreenElement";
+                    canvas.parentNode.insertBefore(canvasContainer, canvas);
+                    canvasContainer.appendChild(canvas);
+                }
+            });
+
             int is_fullscreen;
             emscripten_get_canvas_size(&data->windowed_width, &data->windowed_height, &is_fullscreen);
-            emscripten_request_fullscreen("#canvas", 1);
+            emscripten_request_fullscreen("SDLFullscreenElement", 1);
         }
         else
             emscripten_exit_fullscreen();

@@ -444,9 +444,14 @@ Emscripten_HandleKeyPress(int eventType, const EmscriptenKeyboardEvent *keyEvent
 int
 Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChangeEvent *fullscreenChangeEvent, void *userData)
 {
+    /*make sure this is actually our element going fullscreen*/
+    if(SDL_strcmp(fullscreenChangeEvent->id, "SDLFullscreenElement") != 0)
+        return 0;
+
     SDL_WindowData *window_data = userData;
     if(fullscreenChangeEvent->isFullscreen)
     {
+        SDL_bool is_desktop_fullscreen;
         window_data->window->flags |= window_data->requested_fullscreen_mode;
 
         if(!window_data->requested_fullscreen_mode)
@@ -454,7 +459,7 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
 
         window_data->requested_fullscreen_mode = 0;
 
-        SDL_bool is_desktop_fullscreen = (window_data->window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP;
+        is_desktop_fullscreen = (window_data->window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP;
 
         /*update size*/
         if(window_data->window->flags & SDL_WINDOW_RESIZABLE || is_desktop_fullscreen)
@@ -462,9 +467,26 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
             emscripten_set_canvas_size(fullscreenChangeEvent->screenWidth, fullscreenChangeEvent->screenHeight);
             SDL_SendWindowEvent(window_data->window, SDL_WINDOWEVENT_RESIZED, fullscreenChangeEvent->screenWidth, fullscreenChangeEvent->screenHeight);
         }
+        else
+        {
+            /*preserve ratio*/
+            double w = window_data->window->w;
+            double h = window_data->window->h;
+            double factor = SDL_min(fullscreenChangeEvent->screenWidth / w, fullscreenChangeEvent->screenHeight / h);
+            emscripten_set_element_css_size(NULL, w * factor, h * factor);
+        }
     }
     else
     {
+        EM_ASM({
+            //un-reparent canvas (similar to Module.requestFullscreen)
+            var canvas = Module['canvas'];
+            if(canvas.parentNode.id == "SDLFullscreenElement") {
+                var canvasContainer = canvas.parentNode;
+                canvasContainer.parentNode.insertBefore(canvas, canvasContainer);
+                canvasContainer.parentNode.removeChild(canvasContainer);
+            }
+        });
         double unscaled_w = window_data->windowed_width / window_data->pixel_ratio;
         double unscaled_h = window_data->windowed_height / window_data->pixel_ratio;
         emscripten_set_canvas_size(window_data->windowed_width, window_data->windowed_height);
