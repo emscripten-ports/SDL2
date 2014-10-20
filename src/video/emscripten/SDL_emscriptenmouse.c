@@ -25,6 +25,7 @@
 #if SDL_VIDEO_DRIVER_EMSCRIPTEN
 
 #include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 
 #include "SDL_emscriptenmouse.h"
 
@@ -167,7 +168,17 @@ Emscripten_WarpMouse(SDL_Window* window, int x, int y)
 static int
 Emscripten_SetRelativeMouseMode(SDL_bool enabled)
 {
-    return SDL_Unsupported();
+    /* TODO: pointer lock isn't actually enabled yet */
+    if(enabled) {
+        if(emscripten_request_pointerlock(NULL, 1) >= EMSCRIPTEN_RESULT_SUCCESS) {
+            return 0;
+        }
+    } else {
+        if(emscripten_exit_pointerlock() >= EMSCRIPTEN_RESULT_SUCCESS) {
+            return 0;
+        }
+    }
+    return -1;
 }
 
 void
