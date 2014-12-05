@@ -348,7 +348,8 @@ int
 Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
-    SDL_SendWindowEvent(window_data->window, eventType == EMSCRIPTEN_EVENT_MOUSEENTER ? SDL_WINDOWEVENT_ENTER : SDL_WINDOWEVENT_LEAVE, 0, 0);
+
+    SDL_SetMouseFocus(eventType == EMSCRIPTEN_EVENT_MOUSEENTER ? window_data->window : NULL);
     return 1;
 }
 
