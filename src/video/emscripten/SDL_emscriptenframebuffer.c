@@ -70,13 +70,24 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
     /* Send the data to the display */
 
     EM_ASM_INT({
-        //TODO: don't create context every update
-        var ctx = Module['canvas'].getContext('2d');
+        var w = $0;
+        var h = $1;
+        var pixels = $2;
 
-        //library_sdl.js SDL_UnlockSurface
-        var image = ctx.createImageData($0, $1);
-        var data = image.data;
-        var src = $2 >> 2;
+        if (!Module['SDL2']) Module['SDL2'] = {};
+        var SDL2 = Module['SDL2'];
+        if (SDL2.ctxCanvas !== Module['canvas']) {
+            SDL2.ctx = Module['canvas'].getContext('2d');
+            SDL2.ctxCanvas = Module['canvas'];
+        }
+        if (SDL2.w !== w || SDL2.h !== h || SDL2.imageCtx !== SDL2.ctx) {
+            SDL2.image = SDL2.ctx.createImageData(w, h);
+            SDL2.w = w;
+            SDL2.h = h;
+            SDL2.imageCtx = SDL2.ctx;
+        }
+        var data = SDL2.image.data;
+        var src = pixels >> 2;
         var dst = 0;
         var isScreen = true;
         var num;
@@ -110,7 +121,7 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             }
         }
 
-        ctx.putImageData(image, 0, 0);
+        SDL2.ctx.putImageData(SDL2.image, 0, 0);
         return 0;
     }, surface->w, surface->h, surface->pixels);
 
