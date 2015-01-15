@@ -179,7 +179,7 @@ main(int argc, char *argv[])
 #else
     while (!done) {
         loop();
-    }
+        }
 #endif
     quit(0);
 

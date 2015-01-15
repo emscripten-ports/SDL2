@@ -24,6 +24,8 @@
 
 #include "../SDL_sysvideo.h"
 
+#include "../../events/SDL_mouse_c.h"
+#include "../../events/SDL_keyboard_c.h"
 #include "SDL_naclvideo.h"
 #include "SDL_naclwindow.h"
 
@@ -51,6 +53,9 @@ NACL_CreateWindow(_THIS, SDL_Window * window)
     window->flags |= SDL_WINDOW_INPUT_FOCUS;    /* always has input focus */    
     window->flags |= SDL_WINDOW_OPENGL;
   
+    SDL_SetMouseFocus(window);
+    SDL_SetKeyboardFocus(window);
+    
     return 0;
 }
 

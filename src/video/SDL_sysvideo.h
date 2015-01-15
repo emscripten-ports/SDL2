@@ -93,9 +93,13 @@ struct SDL_Window
     SDL_Surface *surface;
     SDL_bool surface_valid;
 
+    SDL_bool is_hiding;
     SDL_bool is_destroying;
 
     SDL_WindowShaper *shaper;
+
+    SDL_HitTest hit_test;
+    void *hit_test_data;
 
     SDL_WindowUserData *data;
 
@@ -261,6 +265,9 @@ struct SDL_VideoDevice
     /* MessageBox */
     int (*ShowMessageBox) (_THIS, const SDL_MessageBoxData *messageboxdata, int *buttonid);
 
+    /* Hit-testing */
+    int (*SetWindowHitTest)(SDL_Window * window, SDL_bool enabled);
+
     /* * * */
     /* Data common to all drivers */
     SDL_bool suspend_screensaver;
@@ -383,6 +390,9 @@ extern VideoBootStrap Wayland_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_NACL
 extern VideoBootStrap NACL_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_VIVANTE
+extern VideoBootStrap VIVANTE_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_EMSCRIPTEN
 extern VideoBootStrap Emscripten_bootstrap;

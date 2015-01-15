@@ -18,6 +18,11 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+
+#if defined(__clang_analyzer__) && !defined(SDL_DISABLE_ANALYZE_MACROS)
+#define SDL_DISABLE_ANALYZE_MACROS 1
+#endif
+
 #include "../SDL_internal.h"
 
 /* This file contains portable string manipulation functions for SDL */
@@ -1276,6 +1281,9 @@ SDL_snprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, SDL_PRINTF_FORMAT_
 #ifdef HAVE_VSNPRINTF
 int SDL_vsnprintf(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, const char *fmt, va_list ap)
 {
+    if (!fmt) {
+        fmt = "";
+    }
     return vsnprintf(text, maxlen, fmt, ap);
 }
 #else

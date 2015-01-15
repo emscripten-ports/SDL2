@@ -33,6 +33,8 @@
 #include "SDL_emscriptenevents.h"
 #include "SDL_emscriptenvideo.h"
 
+#include "SDL_hints.h"
+
 #define FULLSCREEN_MASK ( SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_FULLSCREEN )
 
 /*
@@ -354,7 +356,7 @@ int
 Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
-    SDL_SendMouseWheel(window_data->window, 0, wheelEvent->deltaX, -wheelEvent->deltaY);
+    SDL_SendMouseWheel(window_data->window, 0, wheelEvent->deltaX, -wheelEvent->deltaY, SDL_MOUSEWHEEL_NORMAL);
     return 1;
 }
 
@@ -583,10 +585,12 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data)
     emscripten_set_touchcancel_callback("#canvas", data, 0, Emscripten_HandleTouch);
 
     /* Keyboard events are awkward */
-    emscripten_set_keydown_callback("#window", data, 0, Emscripten_HandleKey);
-    emscripten_set_keyup_callback("#window", data, 0, Emscripten_HandleKey);
+    const char *keyElement = SDL_GetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT);
+    if (!keyElement) keyElement = "#window";
 
-    emscripten_set_keypress_callback("#window", data, 0, Emscripten_HandleKeyPress);
+    emscripten_set_keydown_callback(keyElement, data, 0, Emscripten_HandleKey);
+    emscripten_set_keyup_callback(keyElement, data, 0, Emscripten_HandleKey);
+    emscripten_set_keypress_callback(keyElement, data, 0, Emscripten_HandleKeyPress);
 
     emscripten_set_fullscreenchange_callback("#document", data, 0, Emscripten_HandleFullscreenChange);
 

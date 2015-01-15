@@ -282,7 +282,7 @@ main(int argc, char *argv[])
     while (!done) {
         ++frames;
         loop();
-    }
+        }
 #endif
 
 

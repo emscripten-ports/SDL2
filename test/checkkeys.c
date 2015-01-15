@@ -165,7 +165,7 @@ int
 main(int argc, char *argv[])
 {
     SDL_Window *window;
-
+	
 	/* Enable standard application logging */
 	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 

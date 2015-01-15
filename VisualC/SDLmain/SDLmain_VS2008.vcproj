@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -56,6 +56,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
 				CompileAs="0"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -123,6 +124,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
 				CompileAs="0"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -282,8 +284,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -316,6 +318,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
 				CompileAs="0"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -381,6 +384,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
 				CompileAs="0"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

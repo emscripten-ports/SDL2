@@ -104,7 +104,7 @@ main(int argc, char *argv[])
 #else
     while (!done) {
         loop();
-    }
+        }
 #endif
     SDLTest_CommonQuit(state);
     return 0;

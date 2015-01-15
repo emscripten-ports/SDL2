@@ -51,17 +51,10 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
 {
     int i;
 
-    /* why are we even doing this? */
-    /* this callback wouldn't even fire unless this was true */
-    if (eventType != EMSCRIPTEN_EVENT_GAMEPADCONNECTED)
-    {
-        return -1;
-    }
-
     SDL_joylist_item *item;
 
     if (JoystickByIndex(gamepadEvent->index) != NULL) {
-      return -1;
+      return 1;
     }
 
 #if !SDL_EVENTS_DISABLED
@@ -70,7 +63,7 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
 
     item = (SDL_joylist_item *) SDL_malloc(sizeof (SDL_joylist_item));
     if (item == NULL) {
-        return -1;
+        return 1;
     }
 
     SDL_zerop(item);
@@ -79,14 +72,14 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
     item->name = SDL_strdup(gamepadEvent->id);
     if ( item->name == NULL ) {
         SDL_free(item);
-        return -1;
+        return 1;
     }
 
     item->mapping = SDL_strdup(gamepadEvent->mapping);
     if ( item->mapping == NULL ) {
         SDL_free(item->name);
         SDL_free(item);
-        return -1;
+        return 1;
     }
 
     item->naxes = gamepadEvent->numAxes;
@@ -127,19 +120,12 @@ Emscripten_JoyStickConnected(int eventType, const EmscriptenGamepadEvent *gamepa
 
     SDL_Log("Added joystick with index %d", item->index);
 
-    return numjoysticks;
+    return 1;
 }
 
 int
 Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData)
 {
-    /* why are we even doing this? */
-    /* this callback wouldn't even fire unless this was true */
-    if (eventType != EMSCRIPTEN_EVENT_GAMEPADDISCONNECTED)
-    {
-        return -1;
-    }
-
     SDL_joylist_item *item = SDL_joylist;
     SDL_joylist_item *prev = NULL;
 #if !SDL_EVENTS_DISABLED
@@ -155,7 +141,7 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
     }
 
     if (item == NULL) {
-        return -1;
+        return 1;
     }
 
     const int retval = item->device_instance;
@@ -192,7 +178,7 @@ Emscripten_JoyStickDisconnected(int eventType, const EmscriptenGamepadEvent *gam
     SDL_free(item->name);
     SDL_free(item->mapping);
     SDL_free(item);
-    return retval;
+    return 1;
 }
 
 /* Function to scan the system for joysticks.
@@ -207,11 +193,12 @@ SDL_SYS_JoystickInit(void)
     numjoysticks = 0;
     numjs = emscripten_get_num_gamepads();
 
-    // Check if gamepad is supported by browser
+    /* Check if gamepad is supported by browser */
     if (numjs == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
         return -1;
     }
 
+    /* handle already connected gamepads */
     if (numjs > 0) {
         for(i = 0; i < numjs; i++) {
             retval = emscripten_get_gamepad_status(i, &gamepadState);
@@ -227,14 +214,14 @@ SDL_SYS_JoystickInit(void)
                                                       0,
                                                       Emscripten_JoyStickConnected);
 
-    if(retval == -1) {
+    if(retval != EMSCRIPTEN_RESULT_SUCCESS) {
         return -1;
     }
 
     retval = emscripten_set_gamepaddisconnected_callback(NULL,
                                                          0,
                                                          Emscripten_JoyStickDisconnected);
-    if(retval == -1) {
+    if(retval != EMSCRIPTEN_RESULT_SUCCESS) {
         return -1;
     }
 
@@ -294,7 +281,7 @@ SDL_JoystickID SDL_SYS_GetInstanceIdOfDeviceIndex(int index)
     SDL_joylist_item *item = JoystickByIndex(index);
     if (item == NULL) {
         SDL_SetError("Joystick with index %d not found", index);
-        return NULL;
+        return 0;
     }
 
     return item->device_instance;
@@ -348,7 +335,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 {
     EmscriptenGamepadEvent gamepadState;
     SDL_joylist_item *item = SDL_joylist;
-    int i, result, button, buttonState;
+    int i, result, buttonState;
 
     while (item != NULL) {
         result = emscripten_get_gamepad_status(item->index, &gamepadState);

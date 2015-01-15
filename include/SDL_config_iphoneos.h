@@ -113,7 +113,7 @@
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
 /* Enable the stub haptic driver (src/haptic/dummy/\*.c) */
-#define SDL_HAPTIC_DISABLED 1
+#define SDL_HAPTIC_DUMMY 1
 
 /* Enable Unix style SO loading */
 /* Technically this works, but it violates the iPhone developer agreement */
@@ -134,6 +134,7 @@
 #define SDL_VIDEO_DRIVER_DUMMY  1
 
 /* enable OpenGL ES */
+#define SDL_VIDEO_OPENGL_ES2 1
 #define SDL_VIDEO_OPENGL_ES 1
 #define SDL_VIDEO_RENDER_OGL_ES 1
 #define SDL_VIDEO_RENDER_OGL_ES2    1
@@ -148,7 +149,7 @@
 #define SDL_JOYSTICK_DISABLED 0
 
 /* Set max recognized G-force from accelerometer
-   See src/joystick/uikit/SDLUIAccelerationDelegate.m for notes on why this is needed
+   See src/joystick/uikit/SDL_sysjoystick.m for notes on why this is needed
  */
 #define SDL_IPHONE_MAX_GFORCE 5.0
 

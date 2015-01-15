@@ -27,16 +27,6 @@
 #include "../../events/SDL_events_c.h"
 #include "SDL_assert.h"
 
-#if !defined(UsrActivity) && defined(__LP64__) && !defined(__POWER__)
-/*
- * Workaround for a bug in the 10.5 SDK: By accident, OSService.h does
- * not include Power.h at all when compiling in 64bit mode. This has
- * been fixed in 10.6, but for 10.5, we manually define UsrActivity
- * to ensure compilation works.
- */
-#define UsrActivity 1
-#endif
-
 @interface SDLApplication : NSApplication
 
 - (void)terminate:(id)sender;
@@ -58,7 +48,7 @@
 - (void)setAppleMenu:(NSMenu *)menu;
 @end
 
-@interface SDLAppDelegate : NSObject {
+@interface SDLAppDelegate : NSObject <NSApplicationDelegate> {
 @public
     BOOL seenFirstActivate;
 }
@@ -70,7 +60,6 @@
 - (id)init
 {
     self = [super init];
-
     if (self) {
         seenFirstActivate = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -101,15 +90,12 @@
     }
 
     SDL_VideoDevice *device = SDL_GetVideoDevice();
-    if (device && device->windows)
-    {
+    if (device && device->windows) {
         SDL_Window *window = device->windows;
         int i;
-        for (i = 0; i < device->num_displays; ++i)
-        {
+        for (i = 0; i < device->num_displays; ++i) {
             SDL_Window *fullscreen_window = device->displays[i].fullscreen_window;
-            if (fullscreen_window)
-            {
+            if (fullscreen_window) {
                 if (fullscreen_window->flags & SDL_WINDOW_MINIMIZED) {
                     SDL_RestoreWindow(fullscreen_window);
                 }
@@ -140,11 +126,13 @@ GetApplicationName(void)
 
     /* Determine the application name */
     appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-    if (!appName)
+    if (!appName) {
         appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
+    }
 
-    if (![appName length])
+    if (![appName length]) {
         appName = [[NSProcessInfo processInfo] processName];
+    }
 
     return appName;
 }
@@ -260,17 +248,16 @@ CreateApplicationMenus(void)
 
 void
 Cocoa_RegisterApp(void)
+{ @autoreleasepool
 {
     /* This can get called more than once! Be careful what you initialize! */
     ProcessSerialNumber psn;
-    NSAutoreleasePool *pool;
 
     if (!GetCurrentProcess(&psn)) {
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);
         SetFrontProcess(&psn);
     }
 
-    pool = [[NSAutoreleasePool alloc] init];
     if (NSApp == nil) {
         [SDLApplication sharedApplication];
         SDL_assert(NSApp != nil);
@@ -294,19 +281,17 @@ Cocoa_RegisterApp(void)
          * termination into SDL_Quit, and we can't handle application:openFile:
          */
         if (![NSApp delegate]) {
-            [NSApp setDelegate:appDelegate];
+            [(NSApplication *)NSApp setDelegate:appDelegate];
         } else {
             appDelegate->seenFirstActivate = YES;
         }
     }
-    [pool release];
-}
+}}
 
 void
 Cocoa_PumpEvents(_THIS)
+{ @autoreleasepool
 {
-    NSAutoreleasePool *pool;
-
     /* Update activity every 30 seconds to prevent screensaver */
     if (_this->suspend_screensaver) {
         SDL_VideoData *data = (SDL_VideoData *)_this->driverdata;
@@ -318,7 +303,6 @@ Cocoa_PumpEvents(_THIS)
         }
     }
 
-    pool = [[NSAutoreleasePool alloc] init];
     for ( ; ; ) {
         NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES ];
         if ( event == nil ) {
@@ -350,8 +334,7 @@ Cocoa_PumpEvents(_THIS)
         /* Pass through to NSApp to make sure everything stays in sync */
         [NSApp sendEvent:event];
     }
-    [pool release];
-}
+}}
 
 #endif /* SDL_VIDEO_DRIVER_COCOA */
 

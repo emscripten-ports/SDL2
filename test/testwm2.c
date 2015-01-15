@@ -23,18 +23,18 @@ static SDLTest_CommonState *state;
 int done;
 
 static const char *cursorNames[] = {
-    "arrow",
-    "ibeam",
-    "wait",
-    "crosshair",
-    "waitarrow",
-    "sizeNWSE",
-    "sizeNESW",
-    "sizeWE",
-    "sizeNS",
-    "sizeALL",
-    "NO",
-    "hand",
+        "arrow",
+        "ibeam",
+        "wait",
+        "crosshair",
+        "waitarrow",
+        "sizeNWSE",
+        "sizeNESW",
+        "sizeWE",
+        "sizeNS",
+        "sizeALL",
+        "NO",
+        "hand",
 };
 int system_cursor = -1;
 SDL_Cursor *cursor = NULL;
@@ -51,55 +51,55 @@ void
 loop()
 {
     SDL_Event event;
-    /* Check for events */
-    while (SDL_PollEvent(&event)) {
-        SDLTest_CommonEvent(state, &event, &done);
+        /* Check for events */
+        while (SDL_PollEvent(&event)) {
+            SDLTest_CommonEvent(state, &event, &done);
 
-        if (event.type == SDL_WINDOWEVENT) {
-            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
-                if (window) {
-                    SDL_Log("Window %d resized to %dx%d\n",
-                        event.window.windowID,
-                        event.window.data1,
-                        event.window.data2);
+            if (event.type == SDL_WINDOWEVENT) {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
+                    if (window) {
+                        SDL_Log("Window %d resized to %dx%d\n",
+                            event.window.windowID,
+                            event.window.data1,
+                            event.window.data2);
+                    }
+                }
+                if (event.window.event == SDL_WINDOWEVENT_MOVED) {
+                    SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
+                    if (window) {
+                        SDL_Log("Window %d moved to %d,%d (display %s)\n",
+                            event.window.windowID,
+                            event.window.data1,
+                            event.window.data2,
+                            SDL_GetDisplayName(SDL_GetWindowDisplayIndex(window)));
+                    }
                 }
             }
-            if (event.window.event == SDL_WINDOWEVENT_MOVED) {
-                SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
-                if (window) {
-                    SDL_Log("Window %d moved to %d,%d (display %s)\n",
-                        event.window.windowID,
-                        event.window.data1,
-                        event.window.data2,
-                        SDL_GetDisplayName(SDL_GetWindowDisplayIndex(window)));
+            if (event.type == SDL_KEYUP) {
+                SDL_bool updateCursor = SDL_FALSE;
+
+                if (event.key.keysym.sym == SDLK_LEFT) {
+                    --system_cursor;
+                    if (system_cursor < 0) {
+                        system_cursor = SDL_NUM_SYSTEM_CURSORS - 1;
+                    }
+                    updateCursor = SDL_TRUE;
+                } else if (event.key.keysym.sym == SDLK_RIGHT) {
+                    ++system_cursor;
+                    if (system_cursor >= SDL_NUM_SYSTEM_CURSORS) {
+                        system_cursor = 0;
+                    }
+                    updateCursor = SDL_TRUE;
+                }
+                if (updateCursor) {
+                    SDL_Log("Changing cursor to \"%s\"", cursorNames[system_cursor]);
+                    SDL_FreeCursor(cursor);
+                    cursor = SDL_CreateSystemCursor((SDL_SystemCursor)system_cursor);
+                    SDL_SetCursor(cursor);
                 }
             }
         }
-        if (event.type == SDL_KEYUP) {
-            SDL_bool updateCursor = SDL_FALSE;
-
-            if (event.key.keysym.sym == SDLK_LEFT) {
-                --system_cursor;
-                if (system_cursor < 0) {
-                    system_cursor = SDL_NUM_SYSTEM_CURSORS - 1;
-                }
-                updateCursor = SDL_TRUE;
-            } else if (event.key.keysym.sym == SDLK_RIGHT) {
-                ++system_cursor;
-                if (system_cursor >= SDL_NUM_SYSTEM_CURSORS) {
-                    system_cursor = 0;
-                }
-                updateCursor = SDL_TRUE;
-            }
-            if (updateCursor) {
-                SDL_Log("Changing cursor to \"%s\"", cursorNames[system_cursor]);
-                SDL_FreeCursor(cursor);
-                cursor = SDL_CreateSystemCursor((SDL_SystemCursor)system_cursor);
-                SDL_SetCursor(cursor);
-            }
-        }
-    }
 }
 
 int

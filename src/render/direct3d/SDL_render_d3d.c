@@ -41,6 +41,8 @@
 
 
 #ifdef ASSEMBLE_SHADER
+#pragma comment(lib, "d3dx9.lib")
+
 /**************************************************************************
  * ID3DXBuffer:
  * ------------
@@ -191,6 +193,9 @@ typedef struct
 typedef struct
 {
     SDL_bool dirty;
+    int w, h;
+    DWORD usage;
+    Uint32 format;
     IDirect3DTexture9 *texture;
     IDirect3DTexture9 *staging;
 } D3D_TextureRep;
@@ -689,7 +694,7 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
 
            PS_OUTPUT YUV420( VS_OUTPUT In ) 
            {
-               const float3 offset = {-0.0625, -0.5, -0.5};
+               const float3 offset = {-0.0627451017, -0.501960814, -0.501960814};
                const float3 Rcoeff = {1.164,  0.000,  1.596};
                const float3 Gcoeff = {1.164, -0.391, -0.813};
                const float3 Bcoeff = {1.164,  2.018,  0.000};
@@ -721,7 +726,7 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
         */
         const char *shader_text =
             "ps_2_0\n"
-            "def c0, -0.0625, -0.5, -0.5, 1\n"
+            "def c0, -0.0627451017, -0.501960814, -0.501960814, 1\n"
             "def c1, 1.16400003, 0, 1.59599996, 0\n"
             "def c2, 1.16400003, -0.391000003, -0.813000023, 0\n"
             "def c3, 1.16400003, 2.01799989, 0, 0\n"
@@ -758,7 +763,7 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
         }
 #else
         const DWORD shader_data[] = {
-            0xffff0200, 0x05000051, 0xa00f0000, 0xbd800000, 0xbf000000, 0xbf000000,
+            0xffff0200, 0x05000051, 0xa00f0000, 0xbd808081, 0xbf008081, 0xbf008081,
             0x3f800000, 0x05000051, 0xa00f0001, 0x3f94fdf4, 0x00000000, 0x3fcc49ba,
             0x00000000, 0x05000051, 0xa00f0002, 0x3f94fdf4, 0xbec83127, 0xbf5020c5,
             0x00000000, 0x05000051, 0xa00f0003, 0x3f94fdf4, 0x400126e9, 0x00000000,
@@ -817,6 +822,10 @@ D3D_CreateTextureRep(IDirect3DDevice9 *device, D3D_TextureRep *texture, DWORD us
     HRESULT result;
 
     texture->dirty = SDL_FALSE;
+    texture->w = w;
+    texture->h = h;
+    texture->usage = usage;
+    texture->format = format;
 
     result = IDirect3DDevice9_CreateTexture(device, w, h, 1, usage,
         PixelFormatToD3DFMT(format),
@@ -824,10 +833,18 @@ D3D_CreateTextureRep(IDirect3DDevice9 *device, D3D_TextureRep *texture, DWORD us
     if (FAILED(result)) {
         return D3D_SetError("CreateTexture(D3DPOOL_DEFAULT)", result);
     }
+    return 0;
+}
 
-    if (usage != D3DUSAGE_RENDERTARGET) {
-        result = IDirect3DDevice9_CreateTexture(device, w, h, 1, usage,
-            PixelFormatToD3DFMT(format),
+
+static int
+D3D_CreateStagingTexture(IDirect3DDevice9 *device, D3D_TextureRep *texture)
+{
+    HRESULT result;
+
+    if (texture->staging == NULL) {
+        result = IDirect3DDevice9_CreateTexture(device, texture->w, texture->h, 1, texture->usage,
+            PixelFormatToD3DFMT(texture->format),
             D3DPOOL_SYSTEMMEM, &texture->staging, NULL);
         if (FAILED(result)) {
             return D3D_SetError("CreateTexture(D3DPOOL_SYSTEMMEM)", result);
@@ -843,14 +860,8 @@ D3D_BindTextureRep(IDirect3DDevice9 *device, D3D_TextureRep *texture, DWORD samp
 
     if (texture->dirty && texture->staging) {
         if (!texture->texture) {
-            D3DSURFACE_DESC desc;
-            result = IDirect3DTexture9_GetLevelDesc(texture->staging, 0, &desc);
-            if (FAILED(result)) {
-                return D3D_SetError("GetLevelDesc", result);
-            }
-
-            result = IDirect3DDevice9_CreateTexture(device, desc.Width, desc.Height, 1, 0,
-                desc.Format, D3DPOOL_DEFAULT, &texture->texture, NULL);
+            result = IDirect3DDevice9_CreateTexture(device, texture->w, texture->h, 1, texture->usage,
+                PixelFormatToD3DFMT(texture->format), D3DPOOL_DEFAULT, &texture->texture, NULL);
             if (FAILED(result)) {
                 return D3D_SetError("CreateTexture(D3DPOOL_DEFAULT)", result);
             }
@@ -876,8 +887,10 @@ D3D_RecreateTextureRep(IDirect3DDevice9 *device, D3D_TextureRep *texture, Uint32
         IDirect3DTexture9_Release(texture->texture);
         texture->texture = NULL;
     }
-    IDirect3DTexture9_AddDirtyRect(texture->staging, NULL);
-    texture->dirty = SDL_TRUE;
+    if (texture->staging) {
+        IDirect3DTexture9_AddDirtyRect(texture->staging, NULL);
+        texture->dirty = SDL_TRUE;
+    }
     return 0;
 }
 
@@ -891,10 +904,15 @@ D3D_UpdateTextureRep(IDirect3DDevice9 *device, D3D_TextureRep *texture, Uint32 f
     int row, length;
     HRESULT result;
 
+    if (D3D_CreateStagingTexture(device, texture) < 0) {
+        return -1;
+    }
+
     d3drect.left = x;
     d3drect.right = x + w;
     d3drect.top = y;
     d3drect.bottom = y + h;
+    
     result = IDirect3DTexture9_LockRect(texture->staging, 0, &locked, &d3drect, 0);
     if (FAILED(result)) {
         return D3D_SetError("LockRect()", result);
@@ -1066,7 +1084,9 @@ static int
 D3D_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
                 const SDL_Rect * rect, void **pixels, int *pitch)
 {
+    D3D_RenderData *data = (D3D_RenderData *)renderer->driverdata;
     D3D_TextureData *texturedata = (D3D_TextureData *)texture->driverdata;
+    IDirect3DDevice9 *device = data->device;
 
     if (!texturedata) {
         SDL_SetError("Texture is not currently available");
@@ -1093,6 +1113,10 @@ D3D_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
         D3DLOCKED_RECT locked;
         HRESULT result;
 
+        if (D3D_CreateStagingTexture(device, &texturedata->texture) < 0) {
+            return -1;
+        }
+
         d3drect.left = rect->x;
         d3drect.right = rect->x + rect->w;
         d3drect.top = rect->y;
@@ -1111,7 +1135,7 @@ D3D_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
 static void
 D3D_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture)
 {
-    D3D_RenderData *data = (D3D_RenderData *)renderer->driverdata;
+    /*D3D_RenderData *data = (D3D_RenderData *)renderer->driverdata;*/
     D3D_TextureData *texturedata = (D3D_TextureData *)texture->driverdata;
 
     if (!texturedata) {
@@ -1135,7 +1159,9 @@ D3D_SetRenderTargetInternal(SDL_Renderer * renderer, SDL_Texture * texture)
 {
     D3D_RenderData *data = (D3D_RenderData *) renderer->driverdata;
     D3D_TextureData *texturedata;
+    D3D_TextureRep *texturerep;
     HRESULT result;
+    IDirect3DDevice9 *device = data->device;
 
     /* Release the previous render target if it wasn't the default one */
     if (data->currentRenderTarget != NULL) {
@@ -1152,6 +1178,24 @@ D3D_SetRenderTargetInternal(SDL_Renderer * renderer, SDL_Texture * texture)
     if (!texturedata) {
         SDL_SetError("Texture is not currently available");
         return -1;
+    }
+
+    /* Make sure the render target is updated if it was locked and written to */
+    texturerep = &texturedata->texture;
+    if (texturerep->dirty && texturerep->staging) {
+        if (!texturerep->texture) {
+            result = IDirect3DDevice9_CreateTexture(device, texturerep->w, texturerep->h, 1, texturerep->usage,
+                PixelFormatToD3DFMT(texturerep->format), D3DPOOL_DEFAULT, &texturerep->texture, NULL);
+            if (FAILED(result)) {
+                return D3D_SetError("CreateTexture(D3DPOOL_DEFAULT)", result);
+            }
+        }
+
+        result = IDirect3DDevice9_UpdateTexture(device, (IDirect3DBaseTexture9 *)texturerep->staging, (IDirect3DBaseTexture9 *)texturerep->texture);
+        if (FAILED(result)) {
+            return D3D_SetError("UpdateTexture()", result);
+        }
+        texturerep->dirty = SDL_FALSE;
     }
 
     result = IDirect3DTexture9_GetSurfaceLevel(texturedata->texture.texture, 0, &data->currentRenderTarget);
@@ -1787,9 +1831,10 @@ D3D_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
     D3DLOCKED_RECT locked;
     HRESULT result;
 
-    result = IDirect3DDevice9_GetBackBuffer(data->device, 0, 0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
-    if (FAILED(result)) {
-        return D3D_SetError("GetBackBuffer()", result);
+    if (data->currentRenderTarget) {
+        backBuffer = data->currentRenderTarget;
+    } else {
+        backBuffer = data->defaultRenderTarget;
     }
 
     result = IDirect3DSurface9_GetDesc(backBuffer, &desc);
@@ -1830,7 +1875,6 @@ D3D_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
     IDirect3DSurface9_UnlockRect(surface);
 
     IDirect3DSurface9_Release(surface);
-    IDirect3DSurface9_Release(backBuffer);
 
     return 0;
 }

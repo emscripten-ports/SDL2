@@ -29,9 +29,9 @@ include(${SDL2_SOURCE_DIR}/cmake/sdlchecks.cmake)
 # set SDL_BINARY_AGE and SDL_INTERFACE_AGE to 0.
 set(SDL_MAJOR_VERSION 2)
 set(SDL_MINOR_VERSION 0)
-set(SDL_MICRO_VERSION 3)
-set(SDL_INTERFACE_AGE 1)
-set(SDL_BINARY_AGE 3)
+set(SDL_MICRO_VERSION 4)
+set(SDL_INTERFACE_AGE 0)
+set(SDL_BINARY_AGE 4)
 set(SDL_VERSION "${SDL_MAJOR_VERSION}.${SDL_MINOR_VERSION}.${SDL_MICRO_VERSION}")
 
 # Calculate a libtool-like version number
@@ -200,6 +200,8 @@ add_definitions(-DUSING_GENERATED_CONFIG_H)
 # General includes
 include_directories(${SDL2_BINARY_DIR}/include ${SDL2_SOURCE_DIR}/include)
 
+# All these ENABLED_BY_DEFAULT vars will default to ON if not specified, so
+#  you only need to have a platform override them if they are disabling.
 if(EMSCRIPTEN)
   # Set up default values for the currently supported set of subsystems:
   # Emscripten/Javascript does not have assembly support, a dynamic library 
@@ -211,13 +213,6 @@ if(EMSCRIPTEN)
   set(SDL_LOADSO_ENABLED_BY_DEFAULT OFF)
   set(SDL_CPUINFO_ENABLED_BY_DEFAULT OFF)
   set(DLOPEN_ENABLED_BY_DEFAULT OFF)
-else()
-  set(SDL_SHARED_ENABLED_BY_DEFAULT ON)
-  set(SDL_ATOMIC_ENABLED_BY_DEFAULT ON)
-  set(SDL_THREADS_ENABLED_BY_DEFAULT ON)
-  set(SDL_LOADSO_ENABLED_BY_DEFAULT ON)
-  set(SDL_CPUINFO_ENABLED_BY_DEFAULT ON)
-  set(DLOPEN_ENABLED_BY_DEFAULT ON)
 endif()
 
 set(SDL_SUBSYSTEMS
@@ -272,6 +267,7 @@ set_option(INPUT_TSLIB         "Use the Touchscreen library for input" ${UNIX_SY
 set_option(VIDEO_X11           "Use X11 video driver" ${UNIX_SYS})
 set_option(VIDEO_WAYLAND       "Use Wayland video driver" ${UNIX_SYS})
 set_option(VIDEO_MIR           "Use Mir video driver" ${UNIX_SYS})
+set_option(VIDEO_RPI           "Use Raspberry Pi video driver" ${UNIX_SYS})
 dep_option(X11_SHARED          "Dynamically load X11 support" ON "VIDEO_X11" OFF)
 set(SDL_X11_OPTIONS Xcursor Xinerama XInput Xrandr Xscrnsaver XShape Xvm)
 foreach(_SUB ${SDL_X11_OPTIONS})
@@ -281,6 +277,7 @@ endforeach()
 set_option(VIDEO_COCOA         "Use Cocoa video driver" ${APPLE})
 set_option(DIRECTX             "Use DirectX for Windows audio/video" ${WINDOWS})
 set_option(RENDER_D3D          "Enable the Direct3D render driver" ${WINDOWS})
+set_option(VIDEO_VIVANTE       "Use Vivante EGL video driver" ${UNIX_SYS})
 
 # TODO: We should (should we?) respect cmake's ${BUILD_SHARED_LIBS} flag here
 # The options below are for compatibility to configure's default behaviour.
@@ -365,9 +362,21 @@ if(USE_GCC OR USE_CLANG)
 
   check_c_compiler_flag(-Wall HAVE_GCC_WALL)
   if(HAVE_GCC_WALL)
+    list(APPEND EXTRA_CFLAGS "-Wall")
     if(HAIKU)
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-multichar")
     endif()
+  endif()
+  check_c_compiler_flag(-Wshadow HAVE_GCC_WSHADOW)
+  if(HAVE_GCC_WSHADOW)
+    list(APPEND EXTRA_CFLAGS "-Wshadow")
+  endif()
+
+  set(CMAKE_REQUIRED_FLAGS "-Wl,--no-undefined")
+  check_c_compiler_flag("" HAVE_NO_UNDEFINED)
+  set(CMAKE_REQUIRED_FLAGS)
+  if(HAVE_NO_UNDEFINED)
+    list(APPEND EXTRA_LDFLAGS "-Wl,--no-undefined")
   endif()
 endif()
 
@@ -734,12 +743,15 @@ elseif(UNIX AND NOT APPLE)
   endif()
 
   if(SDL_VIDEO)
+    # Need to check for Raspberry PI first and add platform specific compiler flags, otherwise the test for GLES fails!
+    CheckRPI()
     CheckX11()
     CheckMir()
     CheckDirectFB()
     CheckOpenGLX11()
     CheckOpenGLESX11()
     CheckWayland()
+    CheckVivante()
   endif()
 
   if(LINUX)
@@ -881,6 +893,7 @@ elseif(WINDOWS)
     check_include_file(dsound.h HAVE_DSOUND_H)
     check_include_file(dinput.h HAVE_DINPUT_H)
     check_include_file(xaudio2.h HAVE_XAUDIO2_H)
+    check_include_file(xinput.h HAVE_XINPUT_H)
     check_include_file(dxgi.h HAVE_DXGI_H)
     if(HAVE_D3D_H OR HAVE_D3D11_H OR HAVE_DDRAW_H OR HAVE_DSOUND_H OR HAVE_DINPUT_H OR HAVE_XAUDIO2_H)
       set(HAVE_DIRECTX TRUE)
@@ -986,21 +999,31 @@ elseif(WINDOWS)
   endif()
 
   if(SDL_JOYSTICK)
+    file(GLOB JOYSTICK_SOURCES ${SDL2_SOURCE_DIR}/src/joystick/windows/*.c)
+    set(SOURCE_FILES ${SOURCE_FILES} ${JOYSTICK_SOURCES})
     if(HAVE_DINPUT_H)
       set(SDL_JOYSTICK_DINPUT 1)
-      set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/joystick/windows/SDL_dxjoystick.c)
       list(APPEND EXTRA_LIBS dinput8 dxguid dxerr)
-    else()
+    endif()
+    if(HAVE_XINPUT_H)
+      set(SDL_JOYSTICK_XINPUT 1)
+    endif()
+    if(NOT HAVE_DINPUT_H AND NOT HAVE_XINPUT_H)
       set(SDL_JOYSTICK_WINMM 1)
-      set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/joystick/windows/SDL_mmjoystick.c)
     endif()
     set(HAVE_SDL_JOYSTICK TRUE)
-  endif()
 
-  if(SDL_HAPTIC AND HAVE_DINPUT_H)
-    set(SDL_HAPTIC_DINPUT 1)
-    set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/haptic/windows/SDL_syshaptic.c)
-    set(HAVE_SDL_HAPTIC TRUE)
+    if(SDL_HAPTIC)
+      file(GLOB HAPTIC_SOURCES ${SDL2_SOURCE_DIR}/src/haptic/windows/*.c)
+      set(SOURCE_FILES ${SOURCE_FILES} ${HAPTIC_SOURCES})
+      if(HAVE_DINPUT_H)
+        set(SDL_HAPTIC_DINPUT 1)
+      endif()
+      if(HAVE_XINPUT_H)
+        set(SDL_HAPTIC_XINPUT 1)
+      endif()
+      set(HAVE_SDL_HAPTIC TRUE)
+    endif()
   endif()
 
   file(GLOB VERSION_SOURCES ${SDL2_SOURCE_DIR}/src/main/windows/*.rc)
@@ -1021,6 +1044,7 @@ elseif(APPLE)
     set_source_files_properties(${EXTRA_SOURCES} PROPERTIES LANGUAGE C)
     set(HAVE_SDL_FILE TRUE)
     set(SDL_FRAMEWORK_COCOA 1)
+    set(SDL_FRAMEWORK_COREVIDEO 1)
   else()
     message_error("SDL_FILE must be enabled to build on MacOS X")
   endif()
@@ -1080,6 +1104,10 @@ elseif(APPLE)
   endif()
 
   # Actually load the frameworks at the end so we don't duplicate include.
+  if(SDL_FRAMEWORK_COREVIDEO)
+    find_library(COREVIDEO CoreVideo)
+    list(APPEND EXTRA_LIBS ${COREVIDEO})
+  endif()
   if(SDL_FRAMEWORK_COCOA)
     find_library(COCOA_LIBRARY Cocoa)
     list(APPEND EXTRA_LIBS ${COCOA_LIBRARY})
@@ -1382,6 +1410,17 @@ if(NOT WINDOWS OR CYGWIN)
   # TODO: what about the .spec file? Is it only needed for RPM creation?
   install(FILES "${SDL2_SOURCE_DIR}/sdl2.m4" DESTINATION "share/aclocal")
 else()
-  install(TARGETS SDL2 RUNTIME DESTINATION bin)
+  if(SDL_SHARED)
+    install(TARGETS SDL2 RUNTIME DESTINATION bin)
+  endif()
 endif()
 
+##### Uninstall target #####
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)

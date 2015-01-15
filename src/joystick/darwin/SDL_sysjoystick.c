@@ -364,15 +364,33 @@ GetDeviceInfo(IOHIDDeviceRef hidDevice, recDevice *pDevice)
     return SDL_TRUE;
 }
 
+static SDL_bool
+JoystickAlreadyKnown(IOHIDDeviceRef ioHIDDeviceObject)
+{
+    recDevice *i;
+    for (i = gpDeviceList; i != NULL; i = i->pNext) {
+        if (i->deviceRef == ioHIDDeviceObject) {
+            return SDL_TRUE;
+        }
+    }
+    return SDL_FALSE;
+}
+
 
 static void
 JoystickDeviceWasAddedCallback(void *ctx, IOReturn res, void *sender, IOHIDDeviceRef ioHIDDeviceObject)
 {
+    recDevice *device;
+
     if (res != kIOReturnSuccess) {
         return;
     }
 
-    recDevice *device = (recDevice *) SDL_calloc(1, sizeof(recDevice));
+    if (JoystickAlreadyKnown(ioHIDDeviceObject)) {
+        return;  /* IOKit sent us a duplicate. */
+    }
+
+    device = (recDevice *) SDL_calloc(1, sizeof(recDevice));
 
     if (!device) {
         SDL_OutOfMemory();
@@ -406,17 +424,13 @@ JoystickDeviceWasAddedCallback(void *ctx, IOReturn res, void *sender, IOHIDDevic
     s_bDeviceAdded = SDL_TRUE;
 
     /* Add device to the end of the list */
-    if ( !gpDeviceList )
-    {
+    if ( !gpDeviceList ) {
         gpDeviceList = device;
-    }
-    else
-    {
+    } else {
         recDevice *curdevice;
 
         curdevice = gpDeviceList;
-        while ( curdevice->pNext )
-        {
+        while ( curdevice->pNext ) {
             curdevice = curdevice->pNext;
         }
         curdevice->pNext = device;
@@ -599,15 +613,6 @@ SDL_SYS_JoystickDetect()
             }
         }
     }
-}
-
-SDL_bool
-SDL_SYS_JoystickNeedsPolling()
-{
-    while (CFRunLoopRunInMode(SDL_JOYSTICK_RUNLOOP_MODE,0,TRUE) == kCFRunLoopRunHandledSource) {
-        /* no-op. Pending callbacks will fire in CFRunLoopRunInMode(). */
-    }
-    return s_bDeviceAdded || s_bDeviceRemoved;
 }
 
 /* Function to get the device-dependent name of a joystick */

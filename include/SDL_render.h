@@ -371,7 +371,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureBlendMode(SDL_Texture * texture,
  *  \param rect      A pointer to the rectangle of pixels to update, or NULL to
  *                   update the entire texture.
  *  \param pixels    The raw pixel data.
- *  \param pitch     The number of bytes between rows of pixel data.
+ *  \param pitch     The number of bytes in a row of pixel data, including padding between lines.
  *
  *  \return 0 on success, or -1 if the texture is not valid.
  *
@@ -552,7 +552,7 @@ extern DECLSPEC void SDLCALL SDL_RenderGetClipRect(SDL_Renderer * renderer,
                                                    SDL_Rect * rect);
 
 /**
- *  \brief Get wether clipping is enabled on the given renderer
+ *  \brief Get whether clipping is enabled on the given renderer.
  *
  *  \param renderer The renderer from which clip state should be queried.
  *

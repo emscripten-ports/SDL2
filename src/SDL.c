@@ -421,6 +421,8 @@ SDL_GetPlatform()
     return "MacOS Classic";
 #elif __MACOSX__
     return "Mac OS X";
+#elif __NACL__
+    return "NaCl";
 #elif __NETBSD__
     return "NetBSD";
 #elif __OPENBSD__
@@ -437,6 +439,8 @@ SDL_GetPlatform()
     return "Solaris";
 #elif __WIN32__
     return "Windows";
+#elif __WINRT__
+    return "WinRT";
 #elif __IPHONEOS__
     return "iOS";
 #elif __PSP__

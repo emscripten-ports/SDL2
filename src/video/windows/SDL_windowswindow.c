@@ -637,6 +637,7 @@ WIN_DestroyWindow(_THIS, SDL_Window * window)
         }
         SDL_free(data);
     }
+    window->driverdata = NULL;
 }
 
 SDL_bool
@@ -749,9 +750,7 @@ WIN_UpdateClipCursor(SDL_Window *window)
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
     SDL_Mouse *mouse = SDL_GetMouse();
 
-    /* Don't clip the cursor while we're in the modal resize or move loop */
-    if (data->in_title_click || data->in_modal_loop) {
-        ClipCursor(NULL);
+    if (data->focus_click_pending) {
         return;
     }
 
@@ -783,6 +782,12 @@ WIN_UpdateClipCursor(SDL_Window *window)
     } else {
         ClipCursor(NULL);
     }
+}
+
+int
+WIN_SetWindowHitTest(SDL_Window *window, SDL_bool enabled)
+{
+    return 0;  /* just succeed, the real work is done elsewhere. */
 }
 
 #endif /* SDL_VIDEO_DRIVER_WINDOWS */

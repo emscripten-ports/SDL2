@@ -584,3 +584,10 @@
 #define SDL_sqrtf SDL_sqrtf_REAL
 #define SDL_tan SDL_tan_REAL
 #define SDL_tanf SDL_tanf_REAL
+#define SDL_CaptureMouse SDL_CaptureMouse_REAL
+#define SDL_SetWindowHitTest SDL_SetWindowHitTest_REAL
+#define SDL_GetGlobalMouseState SDL_GetGlobalMouseState_REAL
+#define SDL_HasAVX2 SDL_HasAVX2_REAL
+#define SDL_QueueAudio SDL_QueueAudio_REAL
+#define SDL_GetQueuedAudioSize SDL_GetQueuedAudioSize_REAL
+#define SDL_ClearQueuedAudio SDL_ClearQueuedAudio_REAL

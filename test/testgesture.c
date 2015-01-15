@@ -15,37 +15,10 @@
  *  l to load all touches from "./gestureSave"
  */
 
-#include <stdio.h>
-#include <math.h>
-
 #include "SDL.h"
-#include "SDL_touch.h"
-#include "SDL_gesture.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
-#endif
-
-/* Make sure we have good macros for printing 32 and 64 bit values */
-#ifndef PRIs32
-#define PRIs32 "d"
-#endif
-#ifndef PRIu32
-#define PRIu32 "u"
-#endif
-#ifndef PRIs64
-#ifdef __WIN32__
-#define PRIs64 "I64"
-#else
-#define PRIs64 "lld"
-#endif
-#endif
-#ifndef PRIu64
-#ifdef __WIN32__
-#define PRIu64 "I64u"
-#else
-#define PRIu64 "llu"
-#endif
 #endif
 
 #define WIDTH 640
@@ -59,7 +32,6 @@
 
 #define VERBOSE 0
 
-static SDL_Window *window;
 static SDL_Event events[EVENT_BUF_SIZE];
 static int eventWrite;
 
@@ -67,6 +39,7 @@ static int eventWrite;
 static int colors[7] = {0xFF,0xFF00,0xFF0000,0xFFFF00,0x00FFFF,0xFF00FF,0xFFFFFF};
 
 SDL_Surface *screen;
+SDL_Window *window;
 SDL_bool quitting = SDL_FALSE;
 
 typedef struct {
@@ -79,18 +52,6 @@ typedef struct {
 } Knob;
 
 static Knob knob;
-
-void handler (int sig)
-{
-  SDL_Log ("exiting...(%d)", sig);
-  exit (0);
-}
-
-void perror_exit (char *error)
-{
-  perror (error);
-  handler (9);
-}
 
 void setpix(SDL_Surface *screen, float _x, float _y, unsigned int col)
 {
@@ -133,7 +94,7 @@ void drawCircle(SDL_Surface* screen,float x,float y,float r,unsigned int c)
   float tx,ty;
   float xr;
   for(ty = (float)-SDL_fabs(r);ty <= (float)SDL_fabs((int)r);ty++) {
-    xr = (float)sqrt(r*r - ty*ty);
+    xr = (float)SDL_sqrt(r*r - ty*ty);
     if(r > 0) { /* r > 0 ==> filled circle */
       for(tx=-xr+.5f;tx<=xr-.5;tx++) {
     setpix(screen,x+tx,y+ty,c);
@@ -152,7 +113,7 @@ void drawKnob(SDL_Surface* screen,Knob k) {
                 (k.p.y+k.r/2*SDL_sinf(k.ang))*screen->h,k.r/4*screen->w,0);
 }
 
-void DrawScreen(SDL_Surface* screen)
+void DrawScreen(SDL_Surface* screen, SDL_Window* window)
 {
   int i;
 #if 1
@@ -194,17 +155,15 @@ void DrawScreen(SDL_Surface* screen)
   SDL_UpdateWindowSurface(window);
 }
 
-SDL_Surface* initScreen(int width,int height)
+/* Returns a new SDL_Window if window is NULL or window if not. */
+SDL_Window* initWindow(SDL_Window *window, int width,int height)
 {
   if (!window) {
     window = SDL_CreateWindow("Gesture Test",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               width, height, SDL_WINDOW_RESIZABLE);
   }
-  if (!window) {
-    return NULL;
-  }
-  return SDL_GetWindowSurface(window);
+  return window;
 }
 
 void loop()
@@ -226,6 +185,15 @@ void loop()
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym)
           {
+              case SDLK_i:
+              {
+                  int i;
+                  for (i = 0; i < SDL_GetNumTouchDevices(); ++i) {
+                      SDL_TouchID id = SDL_GetTouchDevice(i);
+                      SDL_Log("Fingers Down on device %"SDL_PRIs64": %d", id, SDL_GetNumTouchFingers(id));
+                  }
+                  break;
+              }
           case SDLK_SPACE:
         SDL_RecordGesture(-1);
         break;
@@ -246,7 +214,8 @@ void loop()
         break;
       case SDL_WINDOWEVENT:
             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-          if (!(screen = initScreen(event.window.data1, event.window.data2)))
+          if (!(window = initWindow(window, event.window.data1, event.window.data2)) ||
+              !(screen = SDL_GetWindowSurface(window)))
           {
         SDL_Quit();
         exit(1);
@@ -255,19 +224,19 @@ void loop()
         break;
       case SDL_FINGERMOTION:
 #if VERBOSE
-        SDL_Log("Finger: %"PRIs64",x: %f, y: %f",event.tfinger.fingerId,
+        SDL_Log("Finger: %"SDL_PRIs64",x: %f, y: %f",event.tfinger.fingerId,
                event.tfinger.x,event.tfinger.y);
 #endif
         break;
       case SDL_FINGERDOWN:
 #if VERBOSE
-        SDL_Log("Finger: %"PRIs64" down - x: %f, y: %f",
+        SDL_Log("Finger: %"SDL_PRIs64" down - x: %f, y: %f",
            event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
 #endif
         break;
       case SDL_FINGERUP:
 #if VERBOSE
-        SDL_Log("Finger: %"PRIs64" up - x: %f, y: %f",
+        SDL_Log("Finger: %"SDL_PRIs64" up - x: %f, y: %f",
                event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
 #endif
         break;
@@ -286,20 +255,23 @@ void loop()
         knob.r += event.mgesture.dDist;
         break;
       case SDL_DOLLARGESTURE:
-        SDL_Log("Gesture %"PRIs64" performed, error: %f",
+        SDL_Log("Gesture %"SDL_PRIs64" performed, error: %f",
            event.dgesture.gestureId,
            event.dgesture.error);
         break;
       case SDL_DOLLARRECORD:
-        SDL_Log("Recorded gesture: %"PRIs64"",event.dgesture.gestureId);
+        SDL_Log("Recorded gesture: %"SDL_PRIs64"",event.dgesture.gestureId);
         break;
       }
-      }
-    DrawScreen(screen);
+    }
+    DrawScreen(screen, window);
 }
 
 int main(int argc, char* argv[])
 {
+  window = NULL;
+  screen = NULL;
+  quitting = SDL_FALSE;
 
   /* Enable standard application logging */
   SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -310,11 +282,12 @@ int main(int argc, char* argv[])
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0 ) return 1;
 
-  if (!(screen = initScreen(WIDTH,HEIGHT)))
-    {
+  if (!(window = initWindow(window, WIDTH, HEIGHT)) ||
+      !(screen = SDL_GetWindowSurface(window)))
+  {
       SDL_Quit();
       return 1;
-    }
+  }
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop, 0, 1);

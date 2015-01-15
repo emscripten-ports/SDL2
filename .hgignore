@@ -73,6 +73,7 @@ test/Makefile
 test/SDL2.dll
 test/checkkeys
 test/loopwave
+test/loopwavequeue
 test/testatomic
 test/testaudioinfo
 test/testautomation
@@ -84,6 +85,7 @@ test/testgesture
 test/testgl2
 test/testgles
 test/testhaptic
+test/testhittesting
 test/testiconv
 test/testime
 test/testintersections

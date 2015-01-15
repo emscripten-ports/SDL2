@@ -210,7 +210,7 @@ main(int argc, char *argv[])
     while (!done) {
         ++frames;
         loop();
-    }
+        }
 #endif
     /* Print out some timing information */
     now = SDL_GetTicks();
