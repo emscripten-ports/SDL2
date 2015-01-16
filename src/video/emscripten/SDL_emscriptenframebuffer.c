@@ -107,11 +107,21 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
         } else {
             if (SDL2.data32Data !== data) {
                 SDL2.data32 = new Int32Array(data.buffer);
+                SDL2.data8 = new Uint8Array(data.buffer);
             }
             var data32 = SDL2.data32;
             num = data32.length;
-            while (dst < num) {
-                data32[dst++] = HEAP32[src++] | 0xff000000;
+            // logically we need to do
+            //      while (dst < num) {
+            //          data32[dst++] = HEAP32[src++] | 0xff000000
+            //      }
+            // the following code is faster though
+            data32.set(HEAP32.subarray(src >> 2, (src >> 2) + num));
+            var data8 = SDL2.data8;
+            var i = 3;
+            while (num-- > 0) {
+                data8[i] = 0xff;
+                i += 4;
             }
         }
 
