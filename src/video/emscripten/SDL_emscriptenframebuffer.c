@@ -115,13 +115,39 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             //      while (dst < num) {
             //          data32[dst++] = HEAP32[src++] | 0xff000000
             //      }
-            // the following code is faster though
+            // the following code is faster though, because
+            // .set() is almost free - easily 10x faster due to
+            // native memcpy efficiencies, and the remaining loop
+            // just stores, not load + store, so it is faster
             data32.set(HEAP32.subarray(src >> 2, (src >> 2) + num));
             var data8 = SDL2.data8;
             var i = 3;
-            while (num-- > 0) {
-                data8[i] = 0xff;
-                i += 4;
+            var j = i + 4*num;
+            if (num % 8 == 0) {
+                // unrolling gives big speedups
+                while (i < j) {
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                }
+             } else {
+                while (i < j) {
+                  data8[i] = 0xff;
+                  i = i + 4 | 0;
+                }
             }
         }
 
