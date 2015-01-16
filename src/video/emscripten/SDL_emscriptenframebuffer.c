@@ -88,7 +88,6 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
         var data = SDL2.image.data;
         var src = pixels >> 2;
         var dst = 0;
-        var isScreen = true;
         var num;
         if (typeof CanvasPixelArray !== 'undefined' && data instanceof CanvasPixelArray) {
             // IE10/IE11: ImageData objects are backed by the deprecated CanvasPixelArray,
@@ -106,17 +105,13 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
                 dst += 4;
             }
         } else {
-            var data32 = new Uint32Array(data.buffer);
+            if (SDL2.data32Data !== data) {
+                SDL2.data32 = new Int32Array(data.buffer);
+            }
+            var data32 = SDL2.data32;
             num = data32.length;
-            if (isScreen) {
-                while (dst < num) {
-                    // HEAP32[src++] is an optimization. Instead, we could do {{{ makeGetValue('buffer', 'dst', 'i32') }}};
-                    data32[dst++] = HEAP32[src++] | 0xff000000;
-                }
-            } else {
-                while (dst < num) {
-                    data32[dst++] = HEAP32[src++];
-                }
+            while (dst < num) {
+                data32[dst++] = HEAP32[src++] | 0xff000000;
             }
         }
 
