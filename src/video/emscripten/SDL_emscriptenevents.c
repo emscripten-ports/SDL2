@@ -305,7 +305,7 @@ Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent
 
     /* check for pointer lock */
     int isPointerLockSupported = emscripten_get_pointerlock_status(&pointerlock_status);
-    int isPointerLocked = isPointerLockSupported == EMSCRIPTEN_RESULT_NOT_SUPPORTED ? SDL_FALSE : pointerlock_status.isActive;
+    int isPointerLocked = isPointerLockSupported == EMSCRIPTEN_RESULT_SUCCESS  ? pointerlock_status.isActive : SDL_FALSE;
 
     if (isPointerLocked) {
         mx = mouseEvent->movementX;
@@ -355,7 +355,7 @@ Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEven
 
     /* check for pointer lock */
     int isPointerLockSupported = emscripten_get_pointerlock_status(&pointerlock_status);
-    int isPointerLocked = isPointerLockSupported == EMSCRIPTEN_RESULT_NOT_SUPPORTED ? SDL_FALSE : pointerlock_status.isActive;
+    int isPointerLocked = isPointerLockSupported == EMSCRIPTEN_RESULT_SUCCESS  ? pointerlock_status.isActive : SDL_FALSE;
 
     if (!isPointerLocked) {
         /* rescale (in case canvas is being scaled)*/
