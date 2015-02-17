@@ -408,6 +408,13 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
         }
     }
 
+    /* rescale (in case canvas is being scaled)*/
+    double client_w, client_h, xscale, yscale;
+    emscripten_get_element_css_size(NULL, &client_w, &client_h);
+    SDL_WindowData *window_data = userData;
+    xscale = window_data->window->w / client_w;
+    yscale = window_data->window->h / client_h;
+
     for (i = 0; i < touchEvent->numTouches; i++) {
         long x, y, id;
 
@@ -415,8 +422,8 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
             continue;
 
         id = touchEvent->touches[i].identifier;
-        x = touchEvent->touches[i].canvasX;
-        y = touchEvent->touches[i].canvasY;
+        x = touchEvent->touches[i].canvasX * xscale;
+        y = touchEvent->touches[i].canvasY * yscale;
 
         if (eventType == EMSCRIPTEN_EVENT_TOUCHMOVE) {
             SDL_SendTouchMotion(deviceId, id, x, y, 1.0f);
