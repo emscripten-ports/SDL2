@@ -328,7 +328,7 @@ Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent
     }
 
     SDL_SendMouseMotion(window_data->window, 0, isPointerLocked, mx, my);
-    return SDL_GetEventState(SDL_MOUSEMOTION) == SDL_ENABLE;
+    return 0;
 }
 
 EM_BOOL
