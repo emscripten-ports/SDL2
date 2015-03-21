@@ -446,9 +446,9 @@ ConfigHIDManager(CFArrayRef matchingArray)
         return SDL_FALSE;
     }
 
+    IOHIDManagerSetDeviceMatchingMultiple(hidman, matchingArray);
     IOHIDManagerRegisterDeviceMatchingCallback(hidman, JoystickDeviceWasAddedCallback, NULL);
     IOHIDManagerScheduleWithRunLoop(hidman, runloop, SDL_JOYSTICK_RUNLOOP_MODE);
-    IOHIDManagerSetDeviceMatchingMultiple(hidman, matchingArray);
 
     while (CFRunLoopRunInMode(SDL_JOYSTICK_RUNLOOP_MODE,0,TRUE) == kCFRunLoopRunHandledSource) {
         /* no-op. Callback fires once per existing device. */
@@ -560,10 +560,6 @@ SDL_SYS_NumJoysticks()
 void
 SDL_SYS_JoystickDetect()
 {
-    while (CFRunLoopRunInMode(SDL_JOYSTICK_RUNLOOP_MODE,0,TRUE) == kCFRunLoopRunHandledSource) {
-        /* no-op. Pending callbacks will fire in CFRunLoopRunInMode(). */
-    }
-
     if (s_bDeviceAdded || s_bDeviceRemoved) {
         recDevice *device = gpDeviceList;
         s_bDeviceAdded = SDL_FALSE;
@@ -613,6 +609,12 @@ SDL_SYS_JoystickDetect()
             }
         }
     }
+
+	// run this after the checks above so we don't set device->removed and delete the device before
+	// SDL_SYS_JoystickUpdate can run to clean up the SDL_Joystick object that owns this device
+	while (CFRunLoopRunInMode(SDL_JOYSTICK_RUNLOOP_MODE,0,TRUE) == kCFRunLoopRunHandledSource) {
+		/* no-op. Pending callbacks will fire in CFRunLoopRunInMode(). */
+	}
 }
 
 /* Function to get the device-dependent name of a joystick */
@@ -644,7 +646,7 @@ SDL_SYS_GetInstanceIdOfDeviceIndex(int device_index)
 }
 
 /* Function to open a joystick for use.
- * The joystick to open is specified by the index field of the joystick.
+ * The joystick to open is specified by the device index.
  * This should fill the nbuttons and naxes fields of the joystick structure.
  * It returns 0, or -1 if there is an error.
  */
@@ -670,7 +672,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
 }
 
 /* Function to query if the joystick is currently attached
- *   It returns 1 if attached, 0 otherwise.
+ * It returns SDL_TRUE if attached, SDL_FALSE otherwise.
  */
 SDL_bool
 SDL_SYS_JoystickAttached(SDL_Joystick * joystick)
