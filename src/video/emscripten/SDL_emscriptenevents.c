@@ -425,7 +425,7 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
     xscale = window_data->window->w / client_w;
     yscale = window_data->window->h / client_h;
 
-    bool preventDefault = false;
+    int preventDefault = 0;
 
     for (i = 0; i < touchEvent->numTouches; i++) {
         long x, y, id;
@@ -440,17 +440,17 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
         if (eventType == EMSCRIPTEN_EVENT_TOUCHMOVE) {
             SDL_SendTouchMotion(deviceId, id, x, y, 1.0f);
             if (!preventDefault && SDL_GetEventState(SDL_FINGERMOTION) == SDL_ENABLE) {
-                preventDefault = true;
+                preventDefault = 1;
             }
         } else if (eventType == EMSCRIPTEN_EVENT_TOUCHSTART) {
             SDL_SendTouch(deviceId, id, SDL_TRUE, x, y, 1.0f);
             if (!preventDefault && SDL_GetEventState(SDL_FINGERDOWN) == SDL_ENABLE) {
-                preventDefault = true;
+                preventDefault = 1;
             }
         } else {
             SDL_SendTouch(deviceId, id, SDL_FALSE, x, y, 1.0f);
             if (!preventDefault && SDL_GetEventState(SDL_FINGERUP) == SDL_ENABLE) {
-                preventDefault = true;
+                preventDefault = 1;
             }
         }
     }
