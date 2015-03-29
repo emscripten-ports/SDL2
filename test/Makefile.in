@@ -39,6 +39,7 @@ TARGETS = \
 	testlock$(EXE) \
 	testmultiaudio$(EXE) \
 	testmultiaudio2$(EXE) \
+	testaudiohotplug$(EXE) \
 	testnative$(EXE) \
 	testoverlay2$(EXE) \
 	testplatform$(EXE) \
@@ -107,6 +108,9 @@ testmultiaudio$(EXE): $(srcdir)/testmultiaudio.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 testmultiaudio2$(EXE): $(srcdir)/testmultiaudio2.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+testaudiohotplug$(EXE): $(srcdir)/testaudiohotplug.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 testatomic$(EXE): $(srcdir)/testatomic.c
