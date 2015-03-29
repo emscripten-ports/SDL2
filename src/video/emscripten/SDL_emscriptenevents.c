@@ -378,8 +378,7 @@ Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEven
     }
 
     SDL_SetMouseFocus(eventType == EMSCRIPTEN_EVENT_MOUSEENTER ? window_data->window : NULL);
-    /* SDL_MOUSEMOTION instead of SDL_MOUSEFOCUS is not a typo, the SDL_Send* call is in "if (!isPointerLocked)" */
-    return SDL_GetEventState(SDL_MOUSEMOTION) == SDL_ENABLE;
+    return SDL_GetEventState(SDL_WINDOWEVENT) == SDL_ENABLE;
 }
 
 EM_BOOL
