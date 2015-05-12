@@ -100,7 +100,7 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
                 data[dst  ] = val & 0xff;
                 data[dst+1] = (val >> 8) & 0xff;
                 data[dst+2] = (val >> 16) & 0xff;
-                data[dst+3] = isScreen ? 0xff : ((val >> 24) & 0xff);
+                data[dst+3] = 0xff;
                 src++;
                 dst += 4;
             }
