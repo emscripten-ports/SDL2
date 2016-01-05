@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -200,7 +200,7 @@ SDL_SYS_JoystickInit(void)
 
     /* Check if gamepad is supported by browser */
     if (numjs == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
-        return -1;
+        return SDL_SetError("Gamepads not supported");
     }
 
     /* handle already connected gamepads */
@@ -221,7 +221,7 @@ SDL_SYS_JoystickInit(void)
 
     if(retval != EMSCRIPTEN_RESULT_SUCCESS) {
         SDL_SYS_JoystickQuit();
-        return -1;
+        return SDL_SetError("Could not set gamepad connect callback");
     }
 
     retval = emscripten_set_gamepaddisconnected_callback(NULL,
@@ -229,7 +229,7 @@ SDL_SYS_JoystickInit(void)
                                                          Emscripten_JoyStickDisconnected);
     if(retval != EMSCRIPTEN_RESULT_SUCCESS) {
         SDL_SYS_JoystickQuit();
-        return -1;
+        return SDL_SetError("Could not set gamepad disconnect callback");
     }
 
     return 0;
@@ -323,10 +323,10 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
     return (0);
 }
 
-/* Function to determine is this joystick is attached to the system right now */
+/* Function to determine if this joystick is attached to the system right now */
 SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 {
-    return !joystick->closed && (joystick->hwdata != NULL);
+    return joystick->hwdata != NULL;
 }
 
 /* Function to update the state of a joystick - called as a device poll.
@@ -350,6 +350,10 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
                         buttonState = gamepadState.digitalButton[i]? SDL_PRESSED: SDL_RELEASED;
                         SDL_PrivateJoystickButton(item->joystick, i, buttonState);
                     }
+
+                    /* store values to compare them in the next update */
+                    item->analogButton[i] = gamepadState.analogButton[i];
+                    item->digitalButton[i] = gamepadState.digitalButton[i];
                 }
 
                 for(i = 0; i < item->naxes; i++) {
@@ -358,17 +362,12 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
                         SDL_PrivateJoystickAxis(item->joystick, i,
                                                   (Sint16) (32767.*gamepadState.axis[i]));
                     }
-                }
 
-                item->timestamp = gamepadState.timestamp;
-                for( i = 0; i < item->naxes; i++) {
+                    /* store to compare in next update */
                     item->axis[i] = gamepadState.axis[i];
                 }
 
-                for( i = 0; i < item->nbuttons; i++) {
-                    item->analogButton[i] = gamepadState.analogButton[i];
-                    item->digitalButton[i] = gamepadState.digitalButton[i];
-                }
+                item->timestamp = gamepadState.timestamp;
             }
         }
     }
@@ -378,11 +377,6 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 void
 SDL_SYS_JoystickClose(SDL_Joystick * joystick)
 {
-    if (joystick->hwdata) {
-        ((SDL_joylist_item*)joystick->hwdata)->joystick = NULL;
-        joystick->hwdata = NULL;
-    }
-    joystick->closed = 1;
 }
 
 /* Function to perform any system-specific joystick related cleanup */

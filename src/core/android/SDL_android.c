@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -32,6 +32,7 @@
 
 #include "../../events/SDL_events_c.h"
 #include "../../video/android/SDL_androidkeyboard.h"
+#include "../../video/android/SDL_androidmouse.h"
 #include "../../video/android/SDL_androidtouch.h"
 #include "../../video/android/SDL_androidvideo.h"
 #include "../../video/android/SDL_androidwindow.h"
@@ -70,7 +71,6 @@ static jclass mActivityClass;
 
 /* method signatures */
 static jmethodID midGetNativeSurface;
-static jmethodID midFlipBuffers;
 static jmethodID midAudioInit;
 static jmethodID midAudioWriteShortBuffer;
 static jmethodID midAudioWriteByteBuffer;
@@ -118,8 +118,6 @@ JNIEXPORT void JNICALL SDL_Android_Init(JNIEnv* mEnv, jclass cls)
 
     midGetNativeSurface = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "getNativeSurface","()Landroid/view/Surface;");
-    midFlipBuffers = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
-                                "flipBuffers","()V");
     midAudioInit = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "audioInit", "(IZZI)I");
     midAudioWriteShortBuffer = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
@@ -133,11 +131,21 @@ JNIEXPORT void JNICALL SDL_Android_Init(JNIEnv* mEnv, jclass cls)
 
     bHasNewData = SDL_FALSE;
 
-    if(!midGetNativeSurface || !midFlipBuffers || !midAudioInit ||
+    if (!midGetNativeSurface || !midAudioInit ||
        !midAudioWriteShortBuffer || !midAudioWriteByteBuffer || !midAudioQuit || !midPollInputDevices) {
         __android_log_print(ANDROID_LOG_WARN, "SDL", "SDL: Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
     __android_log_print(ANDROID_LOG_INFO, "SDL", "SDL_Android_Init() finished!");
+}
+
+/* Drop file */
+void Java_org_libsdl_app_SDLActivity_onNativeDropFile(
+                                    JNIEnv* env, jclass jcls,
+                                    jstring filename)
+{
+    const char *path = (*env)->GetStringUTFChars(env, filename, NULL);
+    SDL_SendDropFile(path);
+    (*env)->ReleaseStringUTFChars(env, filename, path);
 }
 
 /* Resize */
@@ -149,7 +157,7 @@ JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeResize(
 }
 
 /* Paddown */
-JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_onNativePadDown(
+JNIEXPORT jint JNICALL Java_org_libsdl_app_SDLActivity_onNativePadDown(
                                     JNIEnv* env, jclass jcls,
                                     jint device_id, jint keycode)
 {
@@ -157,7 +165,7 @@ JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_onNativePadDown(
 }
 
 /* Padup */
-JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_onNativePadUp(
+JNIEXPORT jint JNICALL Java_org_libsdl_app_SDLActivity_onNativePadUp(
                                    JNIEnv* env, jclass jcls,
                                    jint device_id, jint keycode)
 {
@@ -181,7 +189,7 @@ JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeHat(
 }
 
 
-JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_nativeAddJoystick(
+JNIEXPORT jint JNICALL Java_org_libsdl_app_SDLActivity_nativeAddJoystick(
     JNIEnv* env, jclass jcls,
     jint device_id, jstring device_name, jint is_accelerometer, 
     jint nbuttons, jint naxes, jint nhats, jint nballs)
@@ -196,7 +204,7 @@ JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_nativeAddJoystick(
     return retval;
 }
 
-JNIEXPORT int JNICALL Java_org_libsdl_app_SDLActivity_nativeRemoveJoystick(
+JNIEXPORT jint JNICALL Java_org_libsdl_app_SDLActivity_nativeRemoveJoystick(
     JNIEnv* env, jclass jcls, jint device_id)
 {
     return Android_RemoveJoystick(device_id);
@@ -256,11 +264,6 @@ JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeSurfaceDestroyed(
 
 }
 
-JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_nativeFlipBuffers(JNIEnv* env, jclass jcls)
-{
-    SDL_GL_SwapWindow(Android_Window);
-}
-
 /* Keydown */
 JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeKeyDown(
                                     JNIEnv* env, jclass jcls, jint keycode)
@@ -291,6 +294,14 @@ JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeTouch(
                                     jint action, jfloat x, jfloat y, jfloat p)
 {
     Android_OnTouch(touch_device_id_in, pointer_finger_id_in, action, x, y, p);
+}
+
+/* Mouse */
+JNIEXPORT void JNICALL Java_org_libsdl_app_SDLActivity_onNativeMouse(
+                                    JNIEnv* env, jclass jcls,
+                                    jint button, jint action, jfloat x, jfloat y)
+{
+    Android_OnMouse(button, action, x, y);
 }
 
 /* Accelerometer */
@@ -441,7 +452,7 @@ static void LocalReferenceHolder_Cleanup(struct LocalReferenceHolder *refholder)
     }
 }
 
-static SDL_bool LocalReferenceHolder_IsActive()
+static SDL_bool LocalReferenceHolder_IsActive(void)
 {
     return s_active > 0;
 }
@@ -457,12 +468,6 @@ ANativeWindow* Android_JNI_GetNativeWindow(void)
     (*env)->DeleteLocalRef(env, s);
   
     return anw;
-}
-
-void Android_JNI_SwapWindow()
-{
-    JNIEnv *mEnv = Android_JNI_GetEnv();
-    (*mEnv)->CallStaticVoidMethod(mEnv, mActivityClass, midFlipBuffers);
 }
 
 void Android_JNI_SetActivityTitle(const char *title)
@@ -611,12 +616,12 @@ int Android_JNI_OpenAudioDevice(int sampleRate, int is16Bit, int channelCount, i
     return audioBufferFrames;
 }
 
-void * Android_JNI_GetAudioBuffer()
+void * Android_JNI_GetAudioBuffer(void)
 {
     return audioBufferPinned;
 }
 
-void Android_JNI_WriteAudioBuffer()
+void Android_JNI_WriteAudioBuffer(void)
 {
     JNIEnv *mAudioEnv = Android_JNI_GetEnv();
 
@@ -631,7 +636,7 @@ void Android_JNI_WriteAudioBuffer()
     /* JNI_COMMIT means the changes are committed to the VM but the buffer remains pinned */
 }
 
-void Android_JNI_CloseAudioDevice()
+void Android_JNI_CloseAudioDevice(void)
 {
     JNIEnv *env = Android_JNI_GetEnv();
 
@@ -766,12 +771,19 @@ fallback:
                 "open", "(Ljava/lang/String;I)Ljava/io/InputStream;");
         inputStream = (*mEnv)->CallObjectMethod(mEnv, assetManager, mid, fileNameJString, 1 /* ACCESS_RANDOM */);
         if (Android_JNI_ExceptionOccurred(SDL_FALSE)) {
-            // Try fallback to APK Extension files
+            /* Try fallback to APK expansion files */
             mid = (*mEnv)->GetMethodID(mEnv, (*mEnv)->GetObjectClass(mEnv, context),
-                "openAPKExtensionInputStream", "(Ljava/lang/String;)Ljava/io/InputStream;");
+                "openAPKExpansionInputStream", "(Ljava/lang/String;)Ljava/io/InputStream;");
+            if (!mid) {
+                SDL_SetError("No openAPKExpansionInputStream() in Java class");
+                goto failure; /* Java class is missing the required method */
+            }
             inputStream = (*mEnv)->CallObjectMethod(mEnv, context, mid, fileNameJString);
 
-            if (Android_JNI_ExceptionOccurred(SDL_FALSE)) {
+            /* Exception is checked first because it always needs to be cleared.
+             * If no exception occurred then the last SDL error message is kept.
+             */
+            if (Android_JNI_ExceptionOccurred(SDL_FALSE) || !inputStream) {
                 goto failure;
             }
         }
@@ -1133,7 +1145,7 @@ int Android_JNI_SetClipboardText(const char* text)
     return 0;
 }
 
-char* Android_JNI_GetClipboardText()
+char* Android_JNI_GetClipboardText(void)
 {
     SETUP_CLIPBOARD(SDL_strdup(""))
 
@@ -1159,7 +1171,7 @@ char* Android_JNI_GetClipboardText()
     return SDL_strdup("");
 }
 
-SDL_bool Android_JNI_HasClipboardText()
+SDL_bool Android_JNI_HasClipboardText(void)
 {
     SETUP_CLIPBOARD(SDL_FALSE)
 
@@ -1295,7 +1307,7 @@ int Android_JNI_GetTouchDeviceIds(int **ids) {
     return number;
 }
 
-void Android_JNI_PollInputDevices()
+void Android_JNI_PollInputDevices(void)
 {
     JNIEnv *env = Android_JNI_GetEnv();
     (*env)->CallStaticVoidMethod(env, mActivityClass, midPollInputDevices);    
@@ -1342,7 +1354,7 @@ void Android_JNI_ShowTextInput(SDL_Rect *inputRect)
                                inputRect->h );
 }
 
-void Android_JNI_HideTextInput()
+void Android_JNI_HideTextInput(void)
 {
     /* has to match Activity constant */
     const int COMMAND_TEXTEDIT_HIDE = 3;
@@ -1599,6 +1611,11 @@ const char * SDL_AndroidGetExternalStoragePath()
         LocalReferenceHolder_Cleanup(&refs);
     }
     return s_AndroidExternalFilesPath;
+}
+
+jclass Android_JNI_GetActivityClass(void)
+{
+    return mActivityClass;
 }
 
 #endif /* __ANDROID__ */

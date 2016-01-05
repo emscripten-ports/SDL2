@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -177,7 +177,7 @@ int SDL_SYS_JoystickOpen(SDL_Joystick *joystick, int device_index)
     return 0;
 }
 
-/* Function to determine is this joystick is attached to the system right now */
+/* Function to determine if this joystick is attached to the system right now */
 SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 {
     return SDL_TRUE;
@@ -233,7 +233,6 @@ void SDL_SYS_JoystickUpdate(SDL_Joystick *joystick)
 /* Function to close a joystick after use */
 void SDL_SYS_JoystickClose(SDL_Joystick *joystick)
 {
-    /* Do nothing. */
 }
 
 /* Function to perform any system-specific joystick related cleanup */

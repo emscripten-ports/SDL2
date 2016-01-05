@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -171,6 +171,11 @@ struct SDL_VideoDevice
     int (*GetDisplayBounds) (_THIS, SDL_VideoDisplay * display, SDL_Rect * rect);
 
     /*
+     * Get the dots/pixels-per-inch of a display
+     */
+    int (*GetDisplayDPI) (_THIS, SDL_VideoDisplay * display, float * ddpi, float * hdpi, float * vdpi);
+
+    /*
      * Get a list of the available display modes for a display.
      */
     void (*GetDisplayModes) (_THIS, SDL_VideoDisplay * display);
@@ -274,6 +279,7 @@ struct SDL_VideoDevice
     int num_displays;
     SDL_VideoDisplay *displays;
     SDL_Window *windows;
+    SDL_Window *grabbed_window;
     Uint8 window_magic;
     Uint32 next_object_id;
     char * clipboard_text;
@@ -421,6 +427,8 @@ extern void SDL_UpdateWindowGrab(SDL_Window * window);
 extern SDL_Window * SDL_GetFocusWindow(void);
 
 extern SDL_bool SDL_ShouldAllowTopmost(void);
+
+extern float SDL_ComputeDiagonalDPI(int hpix, int vpix, float hinches, float vinches);
 
 #endif /* _SDL_sysvideo_h */
 

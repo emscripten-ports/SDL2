@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -152,7 +152,7 @@ extern "C"
         return (0);
     }
 
-/* Function to determine is this joystick is attached to the system right now */
+/* Function to determine if this joystick is attached to the system right now */
     SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
     {
         return SDL_TRUE;
@@ -228,7 +228,6 @@ extern "C"
             SDL_free(joystick->hwdata->new_hats);
             SDL_free(joystick->hwdata->new_axes);
             SDL_free(joystick->hwdata);
-            joystick->hwdata = NULL;
         }
     }
 

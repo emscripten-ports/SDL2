@@ -61,6 +61,7 @@ TARGETS = \
 	torturethread$(EXE) \
 	testrendercopyex$(EXE) \
 	testmessage$(EXE) \
+	testdisplayinfo$(EXE) \
 	controllermap$(EXE) \
 	
 all: Makefile $(TARGETS)
@@ -268,6 +269,9 @@ testrendercopyex$(EXE): $(srcdir)/testrendercopyex.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) @MATHLIB@
 
 testmessage$(EXE): $(srcdir)/testmessage.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+testdisplayinfo$(EXE): $(srcdir)/testdisplayinfo.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 controllermap$(EXE): $(srcdir)/controllermap.c

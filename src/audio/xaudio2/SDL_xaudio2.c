@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -58,13 +58,20 @@
 /* The configure script already did any necessary checking */
 #  define SDL_XAUDIO2_HAS_SDK 1
 #elif defined(__WINRT__)
-/* WinRT always has access to the XAudio 2 SDK */
+/* WinRT always has access to the XAudio 2 SDK (albeit with a header file
+   that doesn't compile as C code).
+*/
 #  define SDL_XAUDIO2_HAS_SDK
+#include "SDL_xaudio2.h"    /* ... compiles as C code, in contrast to XAudio2 headers
+                               in the Windows SDK, v.10.0.10240.0 (Win 10's initial SDK)
+                             */
 #else
-/* XAudio2 exists as of the March 2008 DirectX SDK 
-   The XAudio2 implementation available in the Windows 8 SDK targets Windows 8 and newer.
-   If you want to build SDL with XAudio2 support you should install the DirectX SDK.
+/* XAudio2 exists in the last DirectX SDK as well as the latest Windows SDK.
+   To enable XAudio2 support, you will need to add the location of your DirectX SDK headers to
+   the SDL projects additional include directories and then set SDL_XAUDIO2_HAS_SDK=1 as a
+   preprocessor define
  */
+#if 0 /* See comment above */
 #include <dxsdkver.h>
 #if (!defined(_DXSDK_BUILD_MAJOR) || (_DXSDK_BUILD_MAJOR < 1284))
 #  pragma message("Your DirectX SDK is too old. Disabling XAudio2 support.")
@@ -72,6 +79,7 @@
 #  define SDL_XAUDIO2_HAS_SDK 1
 #endif
 #endif
+#endif /* 0 */
 
 #ifdef SDL_XAUDIO2_HAS_SDK
 
@@ -82,17 +90,10 @@
 #endif
 #endif
 
-/* The XAudio header file, when #include'd on WinRT, will only compile in C++
-   files, but not C.  A few preprocessor-based hacks are defined below in order
-   to get xaudio2.h to compile in the C/non-C++ file, SDL_xaudio2.c.
- */
-#ifdef __WINRT__
-#define uuid(x)
-#define DX_BUILD
-#endif
-
+#if !defined(_SDL_XAUDIO2_H)
 #define INITGUID 1
 #include <xaudio2.h>
+#endif
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
