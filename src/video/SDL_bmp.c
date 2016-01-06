@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -531,6 +531,10 @@ SDL_SaveBMP_RW(SDL_Surface * saveme, SDL_RWops * dst, int freedst)
                              format.BitsPerPixel);
             }
         }
+    } else {
+        /* Set no error here because it may overwrite a more useful message from
+           SDL_RWFromFile() if SDL_SaveBMP_RW() is called from SDL_SaveBMP(). */
+        return -1;
     }
 
     if (surface && (SDL_LockSurface(surface) == 0)) {

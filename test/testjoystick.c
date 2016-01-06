@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -56,6 +56,12 @@ loop(void *arg)
 
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
+
+            case SDL_JOYDEVICEREMOVED:
+                SDL_Log("Joystick device %d removed.\n", (int) event.jdevice.which);
+                SDL_Log("Our instance ID is %d\n", (int) SDL_JoystickInstanceID(joystick));
+                break;
+
             case SDL_JOYAXISMOTION:
                 SDL_Log("Joystick %d axis %d value: %d\n",
                        event.jaxis.which,
@@ -169,6 +175,12 @@ loop(void *arg)
             done = SDL_TRUE;
             retval = SDL_TRUE;  /* keep going, wait for reattach. */
         }
+
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
 }
 
 static SDL_bool
@@ -231,8 +243,10 @@ main(int argc, char *argv[])
     int i;
     SDL_Joystick *joystick;
 
+    SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
+
     /* Enable standard application logging */
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);	
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Initialize SDL (Note: video is required to start event loop) */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -251,6 +265,7 @@ main(int argc, char *argv[])
                     SDL_GetError());
         } else {
             char guid[64];
+            SDL_assert(SDL_JoystickFromInstanceID(SDL_JoystickInstanceID(joystick)) == joystick);
             SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(joystick),
                                       guid, sizeof (guid));
             SDL_Log("       axes: %d\n", SDL_JoystickNumAxes(joystick));
@@ -263,7 +278,7 @@ main(int argc, char *argv[])
         }
     }
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IPHONEOS__)
     if (SDL_NumJoysticks() > 0) {
 #else
     if (argv[1]) {
@@ -272,12 +287,15 @@ main(int argc, char *argv[])
         SDL_bool keepGoing = SDL_TRUE;
         SDL_Event event;
         int device;
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IPHONEOS__)
         device = 0;
 #else
         device = atoi(argv[1]);
 #endif
         joystick = SDL_JoystickOpen(device);
+        if (joystick != NULL) {
+            SDL_assert(SDL_JoystickFromInstanceID(SDL_JoystickInstanceID(joystick)) == joystick);
+        }
 
         while ( keepGoing ) {
             if (joystick == NULL) {
@@ -303,6 +321,9 @@ main(int argc, char *argv[])
                     keepGoing = SDL_FALSE;
                 } else if (event.type == SDL_JOYDEVICEADDED) {
                     joystick = SDL_JoystickOpen(device);
+                    if (joystick != NULL) {
+                        SDL_assert(SDL_JoystickFromInstanceID(SDL_JoystickInstanceID(joystick)) == joystick);
+                    }
                     break;
                 }
             }

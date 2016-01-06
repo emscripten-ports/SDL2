@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -232,7 +232,7 @@ WatchJoystick(SDL_Joystick * joystick)
             if (SDL_PollEvent(&event)) {
                 switch (event.type) {
                 case SDL_JOYAXISMOTION:
-                    if (event.jaxis.value > 20000 || event.jaxis.value < -20000) {
+                    if ((event.jaxis.value > 20000 || event.jaxis.value < -20000) && event.jaxis.value != -32768) {
                         for (_s = 0; _s < s; _s++) {
                             if (steps[_s].axis == event.jaxis.axis) {
                                 break;
@@ -344,7 +344,7 @@ main(int argc, char *argv[])
     SDL_Joystick *joystick;
 
     /* Enable standard application logging */
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);	
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Initialize SDL (Note: video is required to start event loop) */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {

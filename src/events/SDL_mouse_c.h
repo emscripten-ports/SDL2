@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -61,7 +61,7 @@ typedef struct
     void (*WarpMouse) (SDL_Window * window, int x, int y);
 
     /* Warp the mouse to (x,y) in screen space */
-    void (*WarpMouseGlobal) (int x, int y);
+    int (*WarpMouseGlobal) (int x, int y);
 
     /* Set relative mode */
     int (*SetRelativeMouseMode) (SDL_bool enabled);

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -293,9 +293,14 @@ SDL_PrivateSendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int relativ
         event.motion.yrel = yrel;
         posted = (SDL_PushEvent(&event) > 0);
     }
-    /* Use unclamped values if we're getting events outside the window */
-    mouse->last_x = x;
-    mouse->last_y = y;
+    if (relative) {
+        mouse->last_x = mouse->x;
+        mouse->last_y = mouse->y;
+    } else {
+        /* Use unclamped values if we're getting events outside the window */
+        mouse->last_x = x;
+        mouse->last_y = y;
+    }
     return posted;
 }
 
@@ -530,14 +535,16 @@ SDL_WarpMouseInWindow(SDL_Window * window, int x, int y)
     }
 }
 
-void
+int
 SDL_WarpMouseGlobal(int x, int y)
 {
     SDL_Mouse *mouse = SDL_GetMouse();
 
     if (mouse->WarpMouseGlobal) {
-        mouse->WarpMouseGlobal(x, y);
+        return mouse->WarpMouseGlobal(x, y);
     }
+
+    return SDL_Unsupported();
 }
 
 static SDL_bool

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -163,12 +163,18 @@ extern DECLSPEC const char *SDLCALL SDL_GameControllerNameForIndex(int joystick_
 /**
  *  Open a game controller for use.
  *  The index passed as an argument refers to the N'th game controller on the system.
- *  This index is the value which will identify this controller in future controller
- *  events.
+ *  This index is not the value which will identify this controller in future
+ *  controller events.  The joystick's instance id (::SDL_JoystickID) will be
+ *  used there instead.
  *
  *  \return A controller identifier, or NULL if an error occurred.
  */
 extern DECLSPEC SDL_GameController *SDLCALL SDL_GameControllerOpen(int joystick_index);
+
+/**
+ * Return the SDL_GameController associated with an instance id.
+ */
+extern DECLSPEC SDL_GameController *SDLCALL SDL_GameControllerFromInstanceID(SDL_JoystickID joyid);
 
 /**
  *  Return the name for this currently opened controller

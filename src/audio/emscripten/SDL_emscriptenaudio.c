@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -262,6 +262,10 @@ Emscripten_Init(SDL_AudioDriverImpl * impl)
         }
         return 0;
     });
+
+    if (!available) {
+        SDL_SetError("No audio context available");
+    }
 
     return available;
 }

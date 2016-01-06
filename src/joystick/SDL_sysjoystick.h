@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -53,8 +53,8 @@ struct _SDL_Joystick
 
     int ref_count;              /* Reference count for multiple opens */
 
-    SDL_bool closed;            /* SDL_TRUE if this device is no longer valid */
-    SDL_bool uncentered;        /* SDL_TRUE if this device needs to have its state reset to 0 */
+    SDL_bool force_recentering; /* SDL_TRUE if this device needs to have its state reset to 0 */
+    SDL_JoystickPowerLevel epowerlevel; /* power level of this joystick, SDL_JOYSTICK_POWER_UNKNOWN if not supported */
     struct _SDL_Joystick *next; /* pointer to next joystick we have allocated */
 };
 

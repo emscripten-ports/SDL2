@@ -1,5 +1,5 @@
 /*
-  Copyright (r) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (r) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 
 #include "SDL_test_common.h"
 
-#if defined(__IPHONEOS__) || defined(__ANDROID__) || defined(__NACL__)
+#if defined(__IPHONEOS__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__NACL__)
 #define HAVE_OPENGLES2
 #endif
 
@@ -61,7 +61,7 @@ static int LoadContext(GLES2_Context * data)
             return SDL_SetError("Couldn't load GLES2 function %s: %s\n", #func, SDL_GetError()); \
         } \
     } while ( 0 );
-#endif /* _SDL_NOGETPROCADDR_ */
+#endif /* __SDL_NOGETPROCADDR__ */
 
 #include "../src/render/opengles2/SDL_gles2funcs.h"
 #undef SDL_PROC
@@ -169,7 +169,7 @@ perspective_matrix(float fovy, float aspect, float znear, float zfar, float *r)
 static void
 multiply_matrix(float *lhs, float *rhs, float *r)
 {
-	int i, j, k;
+    int i, j, k;
     float tmp[16];
 
     for (i = 0; i < 4; i++) {
@@ -466,6 +466,11 @@ void loop()
           SDL_GL_SwapWindow(state->windows[i]);
       }
     }
+#ifdef __EMSCRIPTEN__
+    else {
+        emscripten_cancel_main_loop();
+    }
+#endif
 }
 
 int

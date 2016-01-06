@@ -826,6 +826,7 @@ enable_video_x11
 with_x
 enable_x11_shared
 enable_video_x11_xcursor
+enable_video_x11_xdbe
 enable_video_x11_xinerama
 enable_video_x11_xinput
 enable_video_x11_xrandr
@@ -1551,6 +1552,7 @@ Optional Features:
   --enable-x11-shared     dynamically load X11 support [[default=maybe]]
   --enable-video-x11-xcursor
                           enable X11 Xcursor support [[default=yes]]
+  --enable-video-x11-xdbe enable X11 Xdbe support [[default=yes]]
   --enable-video-x11-xinerama
                           enable X11 Xinerama support [[default=yes]]
   --enable-video-x11-xinput
@@ -9912,13 +9914,20 @@ if test "$GCC" = yes; then
     ;;
   esac
   # Ok, now we have the path, separated by spaces, we can step through it
-  # and add multilib dir if necessary.
+  # and add multilib dir if necessary...
   lt_tmp_lt_search_path_spec=
-  lt_multi_os_dir=`$CC $CPPFLAGS $CFLAGS $LDFLAGS -print-multi-os-directory 2>/dev/null`
+  lt_multi_os_dir=/`$CC $CPPFLAGS $CFLAGS $LDFLAGS -print-multi-os-directory 2>/dev/null`
+  # ...but if some path already ends with the multilib dir we assume
+  # that all is fine and trust -print-search-dirs as is (GCC 4.2 or newer).
+  case "$lt_multi_os_dir; $lt_search_path_spec " in
+  "/; "* | "/.; "* | "/./; "* | *"$lt_multi_os_dir "* | *"$lt_multi_os_dir/ "*)
+    lt_multi_os_dir=
+    ;;
+  esac
   for lt_sys_path in $lt_search_path_spec; do
-    if test -d "$lt_sys_path/$lt_multi_os_dir"; then
-      lt_tmp_lt_search_path_spec="$lt_tmp_lt_search_path_spec $lt_sys_path/$lt_multi_os_dir"
-    else
+    if test -d "$lt_sys_path$lt_multi_os_dir"; then
+      lt_tmp_lt_search_path_spec="$lt_tmp_lt_search_path_spec $lt_sys_path$lt_multi_os_dir"
+    elif test -n "$lt_multi_os_dir"; then
       test -d "$lt_sys_path" && \
 	lt_tmp_lt_search_path_spec="$lt_tmp_lt_search_path_spec $lt_sys_path"
     fi
@@ -18692,43 +18701,6 @@ $as_echo "$need_gcc_Wno_multichar" >&6; }
     fi
 }
 
-CheckWarnShadow()
-{
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCC -Wshadow option" >&5
-$as_echo_n "checking for GCC -Wshadow option... " >&6; }
-    have_gcc_Wshadow=no
-
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$save_CFLAGS -Wshadow"
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-    int x = 0;
-
-int
-main ()
-{
-
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-
-    have_gcc_Wshadow=yes
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_gcc_Wshadow" >&5
-$as_echo "$have_gcc_Wshadow" >&6; }
-    CFLAGS="$save_CFLAGS"
-
-    if test x$have_gcc_Wshadow = xyes; then
-        EXTRA_CFLAGS="$EXTRA_CFLAGS -Wshadow"
-    fi
-}
-
 CheckWayland()
 {
     # Check whether --enable-video-wayland was given.
@@ -19928,35 +19900,6 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
             { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_const_param_XextAddDisplay" >&5
 $as_echo "$have_const_param_XextAddDisplay" >&6; }
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for const parameter to _XData32" >&5
-$as_echo_n "checking for const parameter to _XData32... " >&6; }
-	    have_const_param_xdata32=no
-	    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-	      #include <X11/Xlibint.h>
-	      extern int _XData32(Display *dpy,register _Xconst long *data,unsigned len);
-
-int
-main ()
-{
-
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-
-	    have_const_param_xdata32=yes
-	    $as_echo "#define SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32 1" >>confdefs.h
-
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_const_param_xdata32" >&5
-$as_echo "$have_const_param_xdata32" >&6; }
-
                         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XGenericEvent" >&5
 $as_echo_n "checking for XGenericEvent... " >&6; }
             have_XGenericEvent=no
@@ -20115,6 +20058,31 @@ fi
 $as_echo "#define SDL_VIDEO_DRIVER_X11_XCURSOR 1" >>confdefs.h
 
                 SUMMARY_video_x11="${SUMMARY_video_x11} xcursor"
+            fi
+            # Check whether --enable-video-x11-xdbe was given.
+if test "${enable_video_x11_xdbe+set}" = set; then :
+  enableval=$enable_video_x11_xdbe;
+else
+  enable_video_x11_xdbe=yes
+fi
+
+            if test x$enable_video_x11_xdbe = xyes; then
+                ac_fn_c_check_header_compile "$LINENO" "X11/extensions/Xdbe.h" "ac_cv_header_X11_extensions_Xdbe_h" "#include <X11/Xlib.h>
+
+"
+if test "x$ac_cv_header_X11_extensions_Xdbe_h" = xyes; then :
+  have_dbe_h_hdr=yes
+else
+  have_dbe_h_hdr=no
+fi
+
+
+                if test x$have_dbe_h_hdr = xyes; then
+
+$as_echo "#define SDL_VIDEO_DRIVER_X11_XDBE 1" >>confdefs.h
+
+                    SUMMARY_video_x11="${SUMMARY_video_x11} xdbe"
+                fi
             fi
             # Check whether --enable-video-x11-xinerama was given.
 if test "${enable_video_x11_xinerama+set}" = set; then :
@@ -21901,7 +21869,6 @@ $as_echo "#define SDL_THREAD_PTHREAD 1" >>confdefs.h
             EXTRA_CFLAGS="$EXTRA_CFLAGS $pthread_cflags"
             EXTRA_LDFLAGS="$EXTRA_LDFLAGS $pthread_lib"
             SDL_CFLAGS="$SDL_CFLAGS $pthread_cflags"
-            SDL_LIBS="$SDL_LIBS $pthread_lib"
 
             # Save the original compiler flags and libraries
             ac_save_cflags="$CFLAGS"; ac_save_libs="$LIBS"
@@ -21916,6 +21883,7 @@ $as_echo_n "checking for recursive mutexes... " >&6; }
                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+                  #define _GNU_SOURCE 1
                   #include <pthread.h>
 
 int
@@ -21929,7 +21897,7 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
+if ac_fn_c_try_link "$LINENO"; then :
 
                 has_recursive_mutexes=yes
 
@@ -21937,12 +21905,14 @@ $as_echo "#define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX 1" >>confdefs.h
 
 
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
             fi
             if test x$has_recursive_mutexes = xno; then
                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+                  #define _GNU_SOURCE 1
                   #include <pthread.h>
 
 int
@@ -21956,7 +21926,7 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
+if ac_fn_c_try_link "$LINENO"; then :
 
                 has_recursive_mutexes=yes
 
@@ -21964,7 +21934,8 @@ $as_echo "#define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP 1" >>confdefs.h
 
 
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
             fi
             { $as_echo "$as_me:${as_lineno-$LINENO}: result: $has_recursive_mutexes" >&5
 $as_echo "$has_recursive_mutexes" >&6; }
@@ -22937,7 +22908,9 @@ case "$host" in
 
                 if test x$enable_video = xyes; then
                     SOURCES="$SOURCES $srcdir/src/video/raspberry/*.c"
+                    # FIXME: confdefs? Not AC_DEFINE?
                     $as_echo "#define SDL_VIDEO_DRIVER_RPI 1" >>confdefs.h
+                    SUMMARY_video="${SUMMARY_video} rpi"
                 fi
                 ;;
             *-*-androideabi*)
@@ -22951,6 +22924,7 @@ case "$host" in
 
                 if test x$enable_video = xyes; then
                     SOURCES="$SOURCES $srcdir/src/core/android/*.c $srcdir/src/video/android/*.c"
+                    # FIXME: confdefs? Not AC_DEFINE?
                     $as_echo "#define SDL_VIDEO_DRIVER_ANDROID 1" >>confdefs.h
                     SUMMARY_video="${SUMMARY_video} android"
                 fi
@@ -22964,6 +22938,21 @@ case "$host" in
             *-*-bsdi*)          ARCH=bsdi ;;
             *-*-freebsd*)       ARCH=freebsd ;;
             *-*-dragonfly*)     ARCH=freebsd ;;
+            *-raspberry-netbsd*)
+                # Raspberry Pi
+                ARCH=netbsd
+                RPI_CFLAGS="-I/usr/pkg/include -I/usr/pkg/include/interface/vcos/pthreads -I/usr/pkg/include/interface/vmcs_host/linux"
+                CFLAGS="$CFLAGS $RPI_CFLAGS"
+                SDL_CFLAGS="$SDL_CFLAGS $RPI_CFLAGS"
+                EXTRA_CFLAGS="$EXTRA_CFLAGS $RPI_CFLAGS"
+                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-R/usr/pkg/lib -L/usr/pkg/lib -lbcm_host -ldl"
+
+                if test x$enable_video = xyes; then
+                    SOURCES="$SOURCES $srcdir/src/video/raspberry/*.c"
+                    $as_echo "#define SDL_VIDEO_DRIVER_RPI 1" >>confdefs.h
+                    SUMMARY_video="${SUMMARY_video} raspberry"
+                fi
+                ;;
             *-*-netbsd*)        ARCH=netbsd ;;
             *-*-openbsd*)       ARCH=openbsd ;;
             *-*-sysv5*)         ARCH=sysv5 ;;
@@ -22994,8 +22983,12 @@ case "$host" in
         CheckLibUDev
         CheckDBus
         CheckIBus
-        CheckInputEvents
-        CheckInputKD
+        case $ARCH in
+          linux)
+              CheckInputEvents
+              CheckInputKD
+          ;;
+        esac
         CheckTslib
         CheckUSBHID
         CheckPTHREAD
@@ -23275,7 +23268,7 @@ $as_echo "#define SDL_LOADSO_WINDOWS 1" >>confdefs.h
         else
             LIBUUID=-luuid
         fi
-        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion $LIBUUID -XCClinker -static-libgcc"
+        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion $LIBUUID -static-libgcc"
         # The Windows platform requires special setup
         VERSION_SOURCES="$srcdir/src/main/windows/*.rc"
         SDLMAIN_SOURCES="$srcdir/src/main/windows/*.c"
@@ -23455,6 +23448,7 @@ $as_echo "#define SDL_FILESYSTEM_HAIKU 1" >>confdefs.h
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-framework,AudioToolbox"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-framework,CoreGraphics"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-framework,CoreMotion"
+        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-framework,GameController"
         ;;
     *-*-darwin* )
         # This could be either full "Mac OS X", or plain "Darwin" which is
@@ -23637,7 +23631,6 @@ $as_echo "#define SDL_TIMER_UNIX 1" >>confdefs.h
 esac
 
 CheckWarnAll
-CheckWarnShadow
 
 # Verify that we have all the platform specific files we need
 
@@ -23787,7 +23780,7 @@ $SDLMAIN_DEPENDS
 $SDLTEST_DEPENDS
 __EOF__
 
-ac_config_files="$ac_config_files Makefile:Makefile.in:Makefile.rules sdl2-config SDL2.spec sdl2.pc"
+ac_config_files="$ac_config_files Makefile:Makefile.in:Makefile.rules sdl2-config sdl2-config.cmake SDL2.spec sdl2.pc"
 
 ac_config_commands="$ac_config_commands sdl2_config"
 
@@ -24906,6 +24899,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile:Makefile.in:Makefile.rules" ;;
     "sdl2-config") CONFIG_FILES="$CONFIG_FILES sdl2-config" ;;
+    "sdl2-config.cmake") CONFIG_FILES="$CONFIG_FILES sdl2-config.cmake" ;;
     "SDL2.spec") CONFIG_FILES="$CONFIG_FILES SDL2.spec" ;;
     "sdl2.pc") CONFIG_FILES="$CONFIG_FILES sdl2.pc" ;;
     "sdl2_config") CONFIG_COMMANDS="$CONFIG_COMMANDS sdl2_config" ;;
