@@ -32,36 +32,56 @@
 #include "../../events/SDL_mouse_c.h"
 #include "SDL_assert.h"
 
+#include "base64.h"
+
+static SDL_Cursor*
+Emscripten_CreateCursorWithStyle(const char* cursor_type)
+{
+  SDL_Cursor* cursor;
+  Emscripten_CursorData *curdata;
+
+  cursor = SDL_calloc(1, sizeof(SDL_Cursor));
+  if (cursor) {
+      curdata = (Emscripten_CursorData *) SDL_calloc(1, sizeof(*curdata));
+      if (!curdata) {
+          SDL_OutOfMemory();
+          SDL_free(cursor);
+          return NULL;
+      }
+
+      curdata->system_cursor = cursor_type;
+      cursor->driverdata = curdata;
+  }
+  else {
+      SDL_OutOfMemory();
+  }
+
+  return cursor;
+}
 
 static SDL_Cursor*
 Emscripten_CreateDefaultCursor()
 {
-    SDL_Cursor* cursor;
-    Emscripten_CursorData *curdata;
-
-    cursor = SDL_calloc(1, sizeof(SDL_Cursor));
-    if (cursor) {
-        curdata = (Emscripten_CursorData *) SDL_calloc(1, sizeof(*curdata));
-        if (!curdata) {
-            SDL_OutOfMemory();
-            SDL_free(cursor);
-            return NULL;
-        }
-
-        curdata->system_cursor = "default";
-        cursor->driverdata = curdata;
-    }
-    else {
-        SDL_OutOfMemory();
-    }
-
-    return cursor;
+  return Emscripten_CreateCursorWithStyle("default");
 }
 
 static SDL_Cursor*
-Emscripten_CreateCursor(SDL_Surface* sruface, int hot_x, int hot_y)
+Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
 {
-    return Emscripten_CreateDefaultCursor();
+    int surfaceSize = surface->w * surface->h * surface->format->BytesPerPixel;
+    int base64Size = Base64encode_len(surfaceSize);
+
+    char bitmap[surfaceSize];
+    SDL_RWops *rw = SDL_RWFromMem(bitmap, sizeof(bitmap));
+    SDL_SaveBMP_RW(surface, rw, 1);
+
+    char encoded[base64Size];
+    Base64encode(encoded, bitmap, surfaceSize);
+
+    char dataURI[base64Size + 256];
+    sprintf(dataURI, "url('data:image/bmp;base64,%s') %d %d, auto", encoded, hot_x, hot_y);
+
+    return Emscripten_CreateCursorWithStyle(dataURI);
 }
 
 static SDL_Cursor*
