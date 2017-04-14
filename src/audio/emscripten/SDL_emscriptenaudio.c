@@ -225,6 +225,7 @@ EMSCRIPTENAUDIO_CloseDevice(_THIS)
             SDL2.capture = undefined;
         } else {
             if (SDL2.audio.scriptProcessorNode != undefined) {
+                SDL2.audio.scriptProcessorNode.onaudioprocess = function(audioProcessingEvent) {};
                 SDL2.audio.scriptProcessorNode.disconnect();
                 SDL2.audio.scriptProcessorNode = undefined;
             }
