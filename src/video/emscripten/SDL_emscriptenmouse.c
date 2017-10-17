@@ -116,7 +116,9 @@ Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
         }
 
         ctx.putImageData(image, 0, 0);
-        var url = "url(" + canvas.toDataURL() + ") " + hot_x + " " + hot_y + ", auto";
+        var url = hot_x === 0 && hot_y === 0
+            ? "url(" + canvas.toDataURL() + "), auto"
+            : "url(" + canvas.toDataURL() + ") " + hot_x + " " + hot_y + ", auto";
 
         var urlBuf = _malloc(url.length + 1);
         stringToUTF8(url, urlBuf, url.length + 1);
