@@ -1,0 +1,42 @@
+
+
+
+* usage:
+* sbl convert_gles2funcs_into_gles2_define_overs_h.sno <SDL_gles2funcs.h >SDL_gles2_define_overs_wrapper.h
+* -or-
+* snobol4 sbl convert_gles2funcs_into_gles2_define_overs_h.sno <SDL_gles2funcs.h >SDL_gles2_define_overs_wrapper.h
+*
+
+	sz = ( span(' 	') | '' )
+	proc_line = sz 'SDL_PROC(' break(',') . the_return_datatype ',' sz
++             break(',') . the_function_name ','
+
+	
+
+	&anchor = 1
+	
+	
+	output = '/* generated with convert_gles2funcs_into_gles_define_overs.sno '
+	output = '  Generator by Hibbard M. Engler'
+	output = '  */'
+	output = '#ifndef _H_GLES_DEFINE_OVERS' 
+	output = '#define _H_GLES_DEFINE_OVERS 1'
+	output = ''
+	output = '#ifndef GLES2_DEFINE_OVERS_CONTEXT'
+	output = '#define GLES2_DEFINE_OVERS_CONTEXT ctx'
+	output = '#endif'
+	output = ''
+	
+loop	x = input	:f(endd)	
+	x proc_line	:f(keep)
+	output = '#define ' the_function_name '(...) GLES2_DEFINE_OVERS_CONTEXT.' the_function_name '(__VA_ARGS__)'
+	:(loop)
+	
+keep	output = x
+	:(loop)	
+		
+endd
+	output = '/* there is also a wrapper system for linking, but that is slower */'
+	output = '#endif // _H_GLES_DEFINE_OVERS'
+	output = ''
+end

@@ -1,0 +1,181 @@
+
+
+
+* usage:
+* sbl convert_gl2_h_into_gles2_stubcall_overs_c.sno <gl2.h >SDL_gles2_stubcall_overs_wrapper.c
+* -or-
+* snobol4 convert_gl2_h_into_gles2_stubcall_overs_c.sno  <gl2.h >SDL_gles2_stubcall_overs_wrapper.c  
+*
+
+	sz = ( span(' 	') | '' )
+	s = span(' 	') 
+	
+	
+	funcname = any('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_')
++		 ( span('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789') | '' )
+	
+	
+	parameters = '(' arbno(any(&alphabet)) . the_parameter_list ')'
+
+
+	everything_no_comma = &alphabet
+	&anchor = 0
+	everything_no_comma ',' = ''
+	&anchor = 1
+
+	apicall_line = sz 'GL_APICALL' s  ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . the_return_datatype sz 'GL_APIENTRY' s 
++                                    funcname . the_function_name sz parameters . the_parameters sz ';' sz rpos(0) 
+
+
+
+
+
+
+	define('noname_protocol(par),a,b,c,d,e,f') :(done_noname_protocol)
+noname_protocol
+	par sz = ''
+	d = ''
+	c = ''
+np_loop
+	par 'void' sz rpos(0) :s(np_is_void)
+	ident(par,'')	:s(np_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz ',' sz  = ''	:f(np_junk_left)s(np_extract_parameter)
+np_junk_left
+	ident(par,'')	:s(np_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz rpos(0)  = '' :s(np_extract_parameter)
+	b = par
+	par = ''
+np_extract_parameter
+	d = d c b 
+	c = ','
+	:(np_loop)
+np_is_void
+	d = d c par
+	par = ''
+	:(np_loop)
+
+
+np_done
+	noname_protocol = d
+	:(return)
+done_noname_protocol
+
+	
+			
+
+	define('variable_list(par),a,b,c,d,e,f') :(done_variable_list)
+variable_list
+	par sz = ''
+	d = ''
+	c = ''
+vl_loop
+	par 'void' sz rpos(0) :s(vl_is_void)
+	ident(par,'')	:s(vl_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . f sz funcname . b sz ',' sz  = ''	:f(vl_junk_left)s(vl_extract_parameter)
+vl_junk_left
+	ident(par,'')	:s(vl_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . f sz funcname . b sz rpos(0)  = '' :s(vl_extract_parameter)
+	b = par
+	par = ''
+vl_extract_parameter
+	d = d c b 
+	c = ','
+	:(vl_loop)
+vl_is_void
+	d = d 
+	par = ''
+	:(vl_loop)
+
+
+vl_done
+	variable_list = d
+	:(return)
+done_variable_list
+
+	&anchor = 1
+	
+	
+	
+	
+	output = '/* generated with convert_gles2funcs_into_gles_wrapper_overs_c.sno '
+	output = '  Generator by Hibbard M. Engler'
+	output = '  */'
+	output = ''
+	output = ''
+	output = '#include <stdlib.h>'
+	output = '#include <stdio.h>'
+	output = '#include <string.h>'
+	output = '#include <math.h>'
+	output = '#ifdef __EMSCRIPTEN__'
+	output = '#include <emscripten/emscripten.h>'
+	output = '#endif'
+	output = ''
+	output = ''
+	output = '#define HAVE_OPENGLES2'
+	output = ''
+	output = '#include "SDL_gles2_stubcall_overs_wrapper.h"'
+	output = ''
+	output = '#ifdef HAVE_OPENGLES2'
+	output = ''
+        output = 'static GLES2_Context *my_context=NULL;'
+	output = ''
+	output = 'int LoadContext(GLES2_Context * data)'
+	output = '{'
+	output = '#if SDL_VIDEO_DRIVER_UIKIT'
+	output = '#define __SDL_NOGETPROCADDR__'
+	output = '#elif SDL_VIDEO_DRIVER_ANDROID'
+	output = '#define __SDL_NOGETPROCADDR__'
+	output = '#elif SDL_VIDEO_DRIVER_PANDORA'
+	output = '#define __SDL_NOGETPROCADDR__'
+	output = '#endif'
+	output = ''
+	output = '#if defined __SDL_NOGETPROCADDR__'
+	output = '#define SDL_PROC(ret,func,params) data->func=func;'
+	output = '#else'
+	output = '#define SDL_PROC(ret,func,params) \'
+	output = '    do { \'
+	output = '        data->func = SDL_GL_GetProcAddress(#func); \'
+	output = '        if ( ! data->func ) { \'
+	output = '            return SDL_SetError("Couldn' "'" 't load GLES2 function %s: %s", #func, SDL_GetError()); \'
+	output = '        } \'
+	output = '    } while ( 0 );'
+	output = '#endif /* __SDL_NOGETPROCADDR__ */'
+	output = '#include "SDL_gles2funcs.h"'
+	output = '#undef SDL_PROC'
+	output = '    my_context = data;'
+	output = '    return 0;'
+	output = '}'
+
+        output = ''
+	output = ''
+	output = '#pragma GCC diagnostic ignored "-Wattributes"'
+	output = ''
+	output = ''
+	
+loop	x = input	:f(endd)	
+	x apicall_line	:f(nokeep)
+	
+	output = '__declspec(dllimport) ' the_return_datatype ' GL_APIENTRY  ' the_function_name ' '	the_parameters 
+	output = '{'
+	ident(the_return_datatype,'void') :s(noret)
+	output = '    return my_context->' the_function_name '('
++                      variable_list(the_parameter_list) ');' :(ocont)
+        
+
+noret	output = '    my_context->' the_function_name '('
++ 	                     variable_list(the_parameter_list) ');' :(ocont)
+	
+ocont	output = '}'
+	output = ' __declspec(dllexport) ' the_return_datatype ' GL_APIENTRY  (*__imp_' the_function_name ') '	the_parameters  ' = &' the_function_name ';'
+        output = ''
+	:(loop)
+		
+	
+nokeep	
+	:(loop)	
+		
+endd
+	output = ''
+	output = ''
+	output = '#endif //HAVE_OPENGLES2'
+end

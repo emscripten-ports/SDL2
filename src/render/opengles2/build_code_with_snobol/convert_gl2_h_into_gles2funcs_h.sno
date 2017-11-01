@@ -1,0 +1,82 @@
+
+
+
+* usage:
+* sbl convert_gl2_h_into_gles2funcs_h.sno <gl2.h >SDL_gles2funcs.h
+* -or-
+* snobol4 convert_gl2_h_into_gles2funcs_h.sno <gl2.h >SDL_gles2funcs.h
+*
+
+	sz = ( span(' 	') | '' )
+	s = span(' 	') 
+	
+	
+	funcname = any('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_')
++		 ( span('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789') | '' )
+	
+	
+	parameters = '(' arbno(any(&alphabet)) . the_parameter_list ')'
+
+
+	everything_no_comma = &alphabet
+	&anchor = 0
+	everything_no_comma ',' = ''
+	&anchor = 1
+
+	apicall_line = sz 'GL_APICALL' s  ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . the_return_datatype sz 'GL_APIENTRY' s 
++                                    funcname . the_function_name sz parameters . the_parameters sz ';' sz rpos(0) 
+
+	define('noname_protocol(par),a,b,c,d,e,f') :(done_noname_protocol)
+noname_protocol
+	par sz = ''
+	d = ''
+	c = ''
+np_loop
+	ident(par,'')	:s(np_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz ',' sz  = ''	:f(np_junk_left)s(np_extract_parameter)
+np_junk_left
+	ident(par,'')	:s(np_done)
+	par 'void' sz rpos(0) :s(np_is_void)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz rpos(0)  = '' :s(np_extract_parameter)
+	b = par
+	par = ''
+np_extract_parameter
+	d = d c b 
+	c = ','
+	:(np_loop)
+np_is_void
+	d = d c par
+	par = ''
+	:(np_loop)
+
+
+np_done
+	noname_protocol = d
+	:(return)
+done_noname_protocol
+
+	
+			
+
+	&anchor = 1
+	
+	
+	output = '/* generated with convert_gl2_h_into_gles2funcs_h.sno '
+	output = '  Generator by Hibbard M. Engler'
+	output = ''
+	output = '  */'
+	output = ''
+	
+loop	x = input	:f(endd)	
+	x apicall_line	:f(nokeep)
+
+	output = 'SDL_PROC(' the_return_datatype ', ' the_function_name ', (' noname_protocol(the_parameter_list)  '))'
+	:(loop)
+	
+nokeep	
+	:(loop)	
+		
+endd
+	output = ''
+	output = ''
+end
