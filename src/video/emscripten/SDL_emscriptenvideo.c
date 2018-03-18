@@ -44,12 +44,14 @@ static int Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_Disp
 static void Emscripten_VideoQuit(_THIS);
 
 static int Emscripten_CreateWindow(_THIS, SDL_Window * window);
+static void Emscripten_ShowWindow(_THIS, SDL_Window * window);
 static void Emscripten_SetWindowSize(_THIS, SDL_Window * window);
 static void Emscripten_DestroyWindow(_THIS, SDL_Window * window);
 static void Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen);
 static void Emscripten_PumpEvents(_THIS);
 static void Emscripten_SetWindowTitle(_THIS, SDL_Window * window);
 
+static int WindowSwitchHandler(void *userdata, SDL_Event *event);
 
 /* Emscripten driver bootstrap functions */
 
@@ -97,8 +99,8 @@ Emscripten_CreateDevice(int devindex)
     /*device->SetWindowIcon = Emscripten_SetWindowIcon;
     device->SetWindowPosition = Emscripten_SetWindowPosition;*/
     device->SetWindowSize = Emscripten_SetWindowSize;
-    /*device->ShowWindow = Emscripten_ShowWindow;
-    device->HideWindow = Emscripten_HideWindow;
+    device->ShowWindow = Emscripten_ShowWindow;
+    /*device->HideWindow = Emscripten_HideWindow;
     device->RaiseWindow = Emscripten_RaiseWindow;
     device->MaximizeWindow = Emscripten_MaximizeWindow;
     device->MinimizeWindow = Emscripten_MinimizeWindow;
@@ -160,6 +162,8 @@ Emscripten_VideoInit(_THIS)
 
     Emscripten_InitMouse();
 
+    SDL_AddEventWatch(WindowSwitchHandler, NULL);
+
     /* We're done! */
     return 0;
 }
@@ -183,6 +187,70 @@ Emscripten_PumpEvents(_THIS)
     /* do nothing. */
 }
 
+static void ApplyWindowSettings(SDL_WindowData *wdata)
+{
+    SDL_Window *window;
+    double scaled_w, scaled_h;
+    double css_w, css_h;
+
+    if (!wdata) {
+        return;
+    }
+    window = wdata->window;
+
+    scaled_w = SDL_floor(window->w * wdata->pixel_ratio);
+    scaled_h = SDL_floor(window->h * wdata->pixel_ratio);
+
+    emscripten_set_canvas_size(scaled_w, scaled_h);
+
+    emscripten_get_element_css_size(NULL, &css_w, &css_h);
+
+    if ((window->flags & SDL_WINDOW_RESIZABLE) && wdata->external_size) {
+        /* external css has resized us */
+        scaled_w = css_w * wdata->pixel_ratio;
+        scaled_h = css_h * wdata->pixel_ratio;
+
+        emscripten_set_canvas_size(scaled_w, scaled_h);
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, css_w, css_h);
+    }
+
+    /* if the size is not being controlled by css, we need to scale down for hidpi */
+    if (!wdata->external_size) {
+        if (wdata->pixel_ratio != 1.0f) {
+            /*scale canvas down*/
+            emscripten_set_element_css_size(NULL, window->w, window->h);
+        }
+    }
+
+    SDL_SetMouseFocus(window);
+    SDL_SetKeyboardFocus(window);
+
+    Emscripten_SetWindowSize(NULL, window);
+    Emscripten_SetWindowTitle(NULL, window);
+}
+
+static void Emscripten_ShowWindow(_THIS, SDL_Window * window) {
+    SDL_WindowData *wdata = (SDL_WindowData *) window->driverdata;
+    if (wdata && !wdata->selected) {
+        fprintf(stderr, "Someone manually called SDL_ShowWindow. The screen will probably be cluttered.\n");
+    }
+}
+
+static int WindowSwitchHandler(void *userdata, SDL_Event *event) {
+    if (event->type == SDL_WINDOWEVENT) {
+        SDL_WindowData *wdata = SDL_GetWindowFromID(event->window.windowID)->driverdata;
+        if (event->window.event == SDL_WINDOWEVENT_SHOWN) {
+            ApplyWindowSettings(wdata);
+        }
+        if (event->window.event == SDL_WINDOWEVENT_SHOWN && wdata && !wdata->selected) {
+            fprintf(stderr, "Someone sent SDL_WINDOWEVENT_SHOWN to inactive window. The screen will probably be cluttered.\n");
+        }
+    }
+    return 0;
+}
+
+static int window_count = 0;
+
 static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
@@ -205,28 +273,9 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     scaled_w = SDL_floor(window->w * wdata->pixel_ratio);
     scaled_h = SDL_floor(window->h * wdata->pixel_ratio);
 
-    emscripten_set_canvas_size(scaled_w, scaled_h);
-
     emscripten_get_element_css_size(NULL, &css_w, &css_h);
 
     wdata->external_size = SDL_floor(css_w) != scaled_w || SDL_floor(css_h) != scaled_h;
-
-    if ((window->flags & SDL_WINDOW_RESIZABLE) && wdata->external_size) {
-        /* external css has resized us */
-        scaled_w = css_w * wdata->pixel_ratio;
-        scaled_h = css_h * wdata->pixel_ratio;
-
-        emscripten_set_canvas_size(scaled_w, scaled_h);
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, css_w, css_h);
-    }
-
-    /* if the size is not being controlled by css, we need to scale down for hidpi */
-    if (!wdata->external_size) {
-        if (wdata->pixel_ratio != 1.0f) {
-            /*scale canvas down*/
-            emscripten_set_element_css_size(NULL, window->w, window->h);
-        }
-    }
 
     if (window->flags & SDL_WINDOW_OPENGL) {
         if (!_this->egl_data) {
@@ -241,16 +290,25 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
         }
     }
 
+    window->flags |= SDL_WINDOW_FOREIGN;
+
     wdata->window = window;
 
     /* Setup driver data for this window */
     window->driverdata = wdata;
 
-    /* One window, it always has focus */
-    SDL_SetMouseFocus(window);
-    SDL_SetKeyboardFocus(window);
+    if (window_count == 0) {
+        Emscripten_RegisterEventHandlers(wdata);
+    }
+    window_count += 1;
+#ifdef EMSCRIPTEN_HAS_WINDOW_SELECTOR
+    emscripten_add_window("SDL2 window", wdata);
+    emscripten_set_current_window(wdata);
+#endif
 
-    Emscripten_RegisterEventHandlers(wdata);
+    SDL_SendWindowEvent(window, SDL_WINDOWEVENT_SHOWN, 0, 0);
+    wdata->selected = 1;
+    ApplyWindowSettings(wdata);
 
     /* Window has been successfully created */
     return 0;
@@ -266,11 +324,14 @@ static void Emscripten_SetWindowSize(_THIS, SDL_Window * window)
         if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
             data->pixel_ratio = emscripten_get_device_pixel_ratio();
         }
-        emscripten_set_canvas_size(window->w * data->pixel_ratio, window->h * data->pixel_ratio);
 
-        /*scale canvas down*/
-        if (!data->external_size && data->pixel_ratio != 1.0f) {
-            emscripten_set_element_css_size(NULL, window->w, window->h);
+        if (data->selected) {
+            emscripten_set_canvas_size(window->w * data->pixel_ratio, window->h * data->pixel_ratio);
+
+            /*scale canvas down*/
+            if (!data->external_size && data->pixel_ratio != 1.0f) {
+                emscripten_set_element_css_size(NULL, window->w, window->h);
+            }
         }
     }
 }
@@ -283,7 +344,13 @@ Emscripten_DestroyWindow(_THIS, SDL_Window * window)
     if(window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
 
-        Emscripten_UnregisterEventHandlers(data);
+#ifdef EMSCRIPTEN_HAS_WINDOW_SELECTOR
+        emscripten_remove_window(data);
+#endif
+        window_count -= 1;
+        if (window_count == 0) {
+            Emscripten_UnregisterEventHandlers(data);
+        }
         if (data->egl_surface != EGL_NO_SURFACE) {
             SDL_EGL_DestroySurface(_this, data->egl_surface);
             data->egl_surface = EGL_NO_SURFACE;
@@ -336,12 +403,20 @@ Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * di
 
 static void
 Emscripten_SetWindowTitle(_THIS, SDL_Window * window) {
-    EM_ASM_INT({
-      if (typeof Module['setWindowTitle'] !== 'undefined') {
-        Module['setWindowTitle'](Module['Pointer_stringify']($0));
-      }
-      return 0;
-    }, window->title);
+    SDL_WindowData *data = window->driverdata;
+    if (data) {
+#ifdef EMSCRIPTEN_HAS_WINDOW_SELECTOR
+        emscripten_set_window_title(window->title, window->driverdata);
+#endif
+        if (data->selected) {
+            EM_ASM_INT({
+              if (typeof Module['setWindowTitle'] !== 'undefined') {
+                Module['setWindowTitle'](Module['Pointer_stringify']($0));
+              }
+              return 0;
+            }, window->title);
+        }
+    }
 }
 
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN */
