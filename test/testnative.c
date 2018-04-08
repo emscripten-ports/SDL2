@@ -15,6 +15,10 @@
 #include <stdlib.h> /* for srand() */
 #include <time.h> /* for time() */
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 #include "testnative.h"
 
 #define WINDOW_W    640
@@ -32,11 +36,17 @@ static NativeWindowFactory *factories[] = {
 #ifdef TEST_NATIVE_COCOA
     &CocoaWindowFactory,
 #endif
+#ifdef TEST_NATIVE_EMSCRIPTEN
+    &EmscriptenWindowFactory,
+#endif
     NULL
 };
 static NativeWindowFactory *factory = NULL;
 static void *native_window;
 static SDL_Rect *positions, *velocities;
+static int done;
+static SDL_Renderer *renderer;
+static SDL_Texture *sprite;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -119,17 +129,40 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     SDL_RenderPresent(renderer);
 }
 
+void
+loop()
+{
+    SDL_Event event;
+
+    /* Check for events */
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_WINDOWEVENT:
+            switch (event.window.event) {
+            case SDL_WINDOWEVENT_EXPOSED:
+                SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
+                SDL_RenderClear(renderer);
+                break;
+            }
+            break;
+        case SDL_QUIT:
+            done = 1;
+            break;
+        default:
+            break;
+        }
+    }
+    MoveSprites(renderer, sprite);
+}
+
 int
 main(int argc, char *argv[])
 {
-    int i, done;
+    int i;
     const char *driver;
     SDL_Window *window;
-    SDL_Renderer *renderer;
-    SDL_Texture *sprite;
     int window_w, window_h;
     int sprite_w, sprite_h;
-    SDL_Event event;
 
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -207,27 +240,14 @@ main(int argc, char *argv[])
 
     /* Main render loop */
     done = 0;
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, 0, 1);
+#else
     while (!done) {
-        /* Check for events */
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_WINDOWEVENT:
-                switch (event.window.event) {
-                case SDL_WINDOWEVENT_EXPOSED:
-                    SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
-                    SDL_RenderClear(renderer);
-                    break;
-                }
-                break;
-            case SDL_QUIT:
-                done = 1;
-                break;
-            default:
-                break;
-            }
-        }
-        MoveSprites(renderer, sprite);
+        loop();
     }
+#endif
 
     quit(0);
 

@@ -44,3 +44,9 @@ extern NativeWindowFactory X11WindowFactory;
 #define TEST_NATIVE_COCOA
 extern NativeWindowFactory CocoaWindowFactory;
 #endif
+
+#ifdef SDL_VIDEO_DRIVER_EMSCRIPTEN
+#define TEST_NATIVE_EMSCRIPTEN
+extern NativeWindowFactory EmscriptenWindowFactory;
+#endif
+
