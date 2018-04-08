@@ -266,7 +266,7 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     SDL_SetMouseFocus(window);
     SDL_SetKeyboardFocus(window);
 
-    Emscripten_RegisterEventHandlers(wdata);
+    Emscripten_RegisterEventHandlers(wdata, data->num_windows == 0);
 
     data->num_windows++;
 
@@ -299,10 +299,12 @@ Emscripten_DestroyWindow(_THIS, SDL_Window * window)
     SDL_WindowData *data;
     SDL_VideoData *video_data = (SDL_VideoData *) _this->driverdata;
 
+    video_data->num_windows--;
+
     if(window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
 
-        Emscripten_UnregisterEventHandlers(data);
+        Emscripten_UnregisterEventHandlers(data, video_data->num_windows == 0);
 #if SDL_VIDEO_OPENGL_EGL
         if (data->egl_surface != EGL_NO_SURFACE) {
             SDL_EGL_DestroySurface(_this, data->egl_surface);
@@ -315,8 +317,6 @@ Emscripten_DestroyWindow(_THIS, SDL_Window * window)
         SDL_free(window->driverdata);
         window->driverdata = NULL;
     }
-
-    video_data->num_windows--;
 }
 
 static void

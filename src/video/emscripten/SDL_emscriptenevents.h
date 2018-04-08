@@ -26,10 +26,10 @@
 #include "SDL_emscriptenvideo.h"
 
 extern void
-Emscripten_RegisterEventHandlers(SDL_WindowData *data);
+Emscripten_RegisterEventHandlers(SDL_WindowData *data, SDL_bool global);
 
 extern void
-Emscripten_UnregisterEventHandlers(SDL_WindowData *data);
+Emscripten_UnregisterEventHandlers(SDL_WindowData *data, SDL_bool global);
 
 extern EM_BOOL
 Emscripten_HandleCanvasResize(int eventType, const void *reserved, void *userData);
