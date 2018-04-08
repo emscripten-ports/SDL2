@@ -62,12 +62,14 @@ Emscripten_Available(void)
 static void
 Emscripten_DeleteDevice(SDL_VideoDevice * device)
 {
+    SDL_free(device->driverdata);
     SDL_free(device);
 }
 
 static SDL_VideoDevice *
 Emscripten_CreateDevice(int devindex)
 {
+    SDL_VideoData *data;
     SDL_VideoDevice *device;
 
     /* Initialize all variables that we clean on shutdown */
@@ -76,6 +78,14 @@ Emscripten_CreateDevice(int devindex)
         SDL_OutOfMemory();
         return (0);
     }
+
+    data = (struct SDL_VideoData *) SDL_calloc(1, sizeof(SDL_VideoData));
+    if (!data) {
+        SDL_free(device);
+        SDL_OutOfMemory();
+        return NULL;
+    }
+    device->driverdata = data;
 
     /* Firefox sends blur event which would otherwise prevent full screen
      * when the user clicks to allow full screen.
@@ -187,6 +197,7 @@ Emscripten_PumpEvents(_THIS)
 static int
 Emscripten_CreateWindow(_THIS, SDL_Window * window)
 {
+    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
     SDL_WindowData *wdata;
     double scaled_w, scaled_h;
     double css_w, css_h;
@@ -257,6 +268,8 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
 
     Emscripten_RegisterEventHandlers(wdata);
 
+    data->num_windows++;
+
     /* Window has been successfully created */
     return 0;
 }
@@ -284,6 +297,7 @@ static void
 Emscripten_DestroyWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *data;
+    SDL_VideoData *video_data = (SDL_VideoData *) _this->driverdata;
 
     if(window->driverdata) {
         data = (SDL_WindowData *) window->driverdata;
@@ -301,6 +315,8 @@ Emscripten_DestroyWindow(_THIS, SDL_Window * window)
         SDL_free(window->driverdata);
         window->driverdata = NULL;
     }
+
+    video_data->num_windows--;
 }
 
 static void
