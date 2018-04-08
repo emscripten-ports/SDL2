@@ -44,6 +44,7 @@ static int Emscripten_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_Disp
 static void Emscripten_VideoQuit(_THIS);
 
 static int Emscripten_CreateWindow(_THIS, SDL_Window * window);
+static int Emscripten_CreateWindowFrom(_THIS, SDL_Window * window, const void *data);
 static void Emscripten_SetWindowSize(_THIS, SDL_Window * window);
 static void Emscripten_DestroyWindow(_THIS, SDL_Window * window);
 static void Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen);
@@ -102,6 +103,7 @@ Emscripten_CreateDevice(int devindex)
     device->PumpEvents = Emscripten_PumpEvents;
 
     device->CreateSDLWindow = Emscripten_CreateWindow;
+    device->CreateSDLWindowFrom = Emscripten_CreateWindowFrom;
     device->SetWindowTitle = Emscripten_SetWindowTitle;
     /*device->SetWindowIcon = Emscripten_SetWindowIcon;
     device->SetWindowPosition = Emscripten_SetWindowPosition;*/
@@ -269,6 +271,40 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     Emscripten_RegisterEventHandlers(wdata, data->num_windows == 0);
 
     data->num_windows++;
+
+    /* Window has been successfully created */
+    return 0;
+}
+
+static int
+Emscripten_CreateWindowFrom(_THIS, SDL_Window * window, const void *data)
+{
+    const char *canvas_id = (char *)data;
+    SDL_VideoData *video_data = (SDL_VideoData *) _this->driverdata;
+    SDL_WindowData *wdata;
+
+    /* Allocate window internal data */
+    wdata = (SDL_WindowData *) SDL_calloc(1, sizeof(SDL_WindowData));
+    if (wdata == NULL) {
+        return SDL_OutOfMemory();
+    }
+
+    wdata->canvas_id = SDL_strdup(canvas_id);
+
+    emscripten_get_canvas_element_size(wdata->canvas_id, &window->w, &window->h);
+
+    if (window->flags & SDL_WINDOW_OPENGL) {
+        return SDL_SetError("OpenGL not supported for non-default canvases");
+    }
+
+    wdata->window = window;
+
+    /* Setup driver data for this window */
+    window->driverdata = wdata;
+
+    Emscripten_RegisterEventHandlers(wdata, video_data->num_windows == 0);
+
+    video_data->num_windows++;
 
     /* Window has been successfully created */
     return 0;
