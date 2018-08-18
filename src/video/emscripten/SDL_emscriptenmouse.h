@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,8 +20,10 @@
 */
 
 
-#ifndef _SDL_emscriptenmouse_h
-#define _SDL_emscriptenmouse_h
+#ifndef SDL_emscriptenmouse_h_
+#define SDL_emscriptenmouse_h_
+
+#include "SDL_stdinc.h"
 
 #include "SDL_stdinc.h"
 
@@ -37,6 +39,6 @@ Emscripten_InitMouse();
 extern void
 Emscripten_FiniMouse();
 
-#endif /* _SDL_emscriptenmouse_h */
+#endif /* SDL_emscriptenmouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */
