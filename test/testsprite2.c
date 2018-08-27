@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 
 #include "SDL_test.h"
 #include "SDL_test_common.h"
@@ -37,6 +41,8 @@ static SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND;
 /* Number of iterations to move sprites - used for visual tests. */
 /* -1: infinite random moves (default); >=0: enables N deterministic moves */
 static int iterations = -1;
+
+int done;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -93,7 +99,12 @@ LoadSprite(const char *file)
             SDL_FreeSurface(temp);
             return (-1);
         }
-        SDL_SetTextureBlendMode(sprites[i], blendMode);
+        if (SDL_SetTextureBlendMode(sprites[i], blendMode) < 0) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set blend mode: %s\n", SDL_GetError());
+            SDL_FreeSurface(temp);
+            SDL_DestroyTexture(sprites[i]);
+            return (-1);
+        }
     }
     SDL_FreeSurface(temp);
 
@@ -197,13 +208,13 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
             velocity = &velocities[i];
             position->x += velocity->x;
             if ((position->x < 0) || (position->x >= (viewport.w - sprite_w))) {
-            	velocity->x = -velocity->x;
-            	position->x += velocity->x;
+                velocity->x = -velocity->x;
+                position->x += velocity->x;
             }
             position->y += velocity->y;
             if ((position->y < 0) || (position->y >= (viewport.h - sprite_h))) {
-            	velocity->y = -velocity->y;
-            	position->y += velocity->y;
+                velocity->y = -velocity->y;
+                position->y += velocity->y;
             }
 
         }
@@ -221,7 +232,7 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     /* Draw sprites */
     for (i = 0; i < num_sprites; ++i) {
         position = &positions[i];
-		
+
         /* Blit the sprite onto the screen */
         SDL_RenderCopy(renderer, sprite, NULL, position);
     }
@@ -230,13 +241,34 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     SDL_RenderPresent(renderer);
 }
 
+void
+loop()
+{
+    int i;
+    SDL_Event event;
+
+    /* Check for events */
+    while (SDL_PollEvent(&event)) {
+        SDLTest_CommonEvent(state, &event, &done);
+    }
+    for (i = 0; i < state->num_windows; ++i) {
+        if (state->windows[i] == NULL)
+            continue;
+        MoveSprites(state->renderers[i], sprites[i]);
+    }
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
 int
 main(int argc, char *argv[])
 {
-    int i, done;
-    SDL_Event event;
+    int i;
     Uint32 then, now, frames;
-	Uint64 seed;
+    Uint64 seed;
     const char *icon = "icon.bmp";
 
     /* Initialize parameters */
@@ -247,8 +279,6 @@ main(int argc, char *argv[])
     if (!state) {
         return 1;
     }
-
-    state->window_flags |= SDL_WINDOW_RESIZABLE;
 
     for (i = 1; i < argc;) {
         int consumed;
@@ -269,6 +299,9 @@ main(int argc, char *argv[])
                         consumed = 2;
                     } else if (SDL_strcasecmp(argv[i + 1], "mod") == 0) {
                         blendMode = SDL_BLENDMODE_MOD;
+                        consumed = 2;
+                    } else if (SDL_strcasecmp(argv[i + 1], "sub") == 0) {
+                        blendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_SRC_ALPHA, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_SUBTRACT);
                         consumed = 2;
                     }
                 }
@@ -353,18 +386,15 @@ main(int argc, char *argv[])
     frames = 0;
     then = SDL_GetTicks();
     done = 0;
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, 0, 1);
+#else
     while (!done) {
-        /* Check for events */
         ++frames;
-        while (SDL_PollEvent(&event)) {
-            SDLTest_CommonEvent(state, &event, &done);
-        }
-        for (i = 0; i < state->num_windows; ++i) {
-            if (state->windows[i] == NULL)
-                continue;
-            MoveSprites(state->renderers[i], sprites[i]);
-        }
+        loop();
     }
+#endif
 
     /* Print out some timing information */
     now = SDL_GetTicks();

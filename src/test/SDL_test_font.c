@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1569,7 +1569,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 128 0x80 'ï¿½'
+    * 128 0x80 '€'
     */
     0x7c,           /* 01111100 */
     0xc6,           /* 11000110 */
@@ -1581,7 +1581,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x78,           /* 01111000 */
 
     /*
-    * 129 0x81 'ï¿½'
+    * 129 0x81 ''
     */
     0xcc,           /* 11001100 */
     0x00,           /* 00000000 */
@@ -1593,7 +1593,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 130 0x82 'ï¿½'
+    * 130 0x82 '‚'
     */
     0x0c,           /* 00001100 */
     0x18,           /* 00011000 */
@@ -1605,7 +1605,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 131 0x83 'ï¿½'
+    * 131 0x83 'ƒ'
     */
     0x7c,           /* 01111100 */
     0x82,           /* 10000010 */
@@ -1617,7 +1617,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 132 0x84 'ï¿½'
+    * 132 0x84 '„'
     */
     0xc6,           /* 11000110 */
     0x00,           /* 00000000 */
@@ -1629,7 +1629,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 133 0x85 'ï¿½'
+    * 133 0x85 '…'
     */
     0x30,           /* 00110000 */
     0x18,           /* 00011000 */
@@ -1641,7 +1641,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 134 0x86 'ï¿½'
+    * 134 0x86 '†'
     */
     0x30,           /* 00110000 */
     0x30,           /* 00110000 */
@@ -1653,7 +1653,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 135 0x87 'ï¿½'
+    * 135 0x87 '‡'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -1665,7 +1665,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x38,           /* 00111000 */
 
     /*
-    * 136 0x88 'ï¿½'
+    * 136 0x88 'ˆ'
     */
     0x7c,           /* 01111100 */
     0x82,           /* 10000010 */
@@ -1677,7 +1677,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 137 0x89 'ï¿½'
+    * 137 0x89 '‰'
     */
     0xc6,           /* 11000110 */
     0x00,           /* 00000000 */
@@ -1689,7 +1689,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 138 0x8a 'ï¿½'
+    * 138 0x8a 'Š'
     */
     0x30,           /* 00110000 */
     0x18,           /* 00011000 */
@@ -1701,7 +1701,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 139 0x8b 'ï¿½'
+    * 139 0x8b '‹'
     */
     0x66,           /* 01100110 */
     0x00,           /* 00000000 */
@@ -1713,7 +1713,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 140 0x8c 'ï¿½'
+    * 140 0x8c 'Œ'
     */
     0x7c,           /* 01111100 */
     0x82,           /* 10000010 */
@@ -1725,7 +1725,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 141 0x8d 'ï¿½'
+    * 141 0x8d ''
     */
     0x30,           /* 00110000 */
     0x18,           /* 00011000 */
@@ -1737,7 +1737,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 142 0x8e 'ï¿½'
+    * 142 0x8e 'Ž'
     */
     0xc6,           /* 11000110 */
     0x38,           /* 00111000 */
@@ -1749,7 +1749,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 143 0x8f 'ï¿½'
+    * 143 0x8f ''
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -1761,7 +1761,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 144 0x90 'ï¿½'
+    * 144 0x90 ''
     */
     0x18,           /* 00011000 */
     0x30,           /* 00110000 */
@@ -1773,7 +1773,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 145 0x91 'ï¿½'
+    * 145 0x91 '‘'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -1785,7 +1785,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 146 0x92 'ï¿½'
+    * 146 0x92 '’'
     */
     0x3e,           /* 00111110 */
     0x6c,           /* 01101100 */
@@ -1797,7 +1797,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 147 0x93 'ï¿½'
+    * 147 0x93 '“'
     */
     0x7c,           /* 01111100 */
     0x82,           /* 10000010 */
@@ -1809,7 +1809,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 148 0x94 'ï¿½'
+    * 148 0x94 '”'
     */
     0xc6,           /* 11000110 */
     0x00,           /* 00000000 */
@@ -1821,7 +1821,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 149 0x95 'ï¿½'
+    * 149 0x95 '•'
     */
     0x30,           /* 00110000 */
     0x18,           /* 00011000 */
@@ -1833,7 +1833,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 150 0x96 'ï¿½'
+    * 150 0x96 '–'
     */
     0x78,           /* 01111000 */
     0x84,           /* 10000100 */
@@ -1845,7 +1845,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 151 0x97 'ï¿½'
+    * 151 0x97 '—'
     */
     0x60,           /* 01100000 */
     0x30,           /* 00110000 */
@@ -1857,7 +1857,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 152 0x98 'ï¿½'
+    * 152 0x98 '˜'
     */
     0xc6,           /* 11000110 */
     0x00,           /* 00000000 */
@@ -1869,7 +1869,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xfc,           /* 11111100 */
 
     /*
-    * 153 0x99 'ï¿½'
+    * 153 0x99 '™'
     */
     0xc6,           /* 11000110 */
     0x38,           /* 00111000 */
@@ -1881,7 +1881,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 154 0x9a 'ï¿½'
+    * 154 0x9a 'š'
     */
     0xc6,           /* 11000110 */
     0x00,           /* 00000000 */
@@ -1893,7 +1893,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 155 0x9b 'ï¿½'
+    * 155 0x9b '›'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -1905,7 +1905,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 156 0x9c 'ï¿½'
+    * 156 0x9c 'œ'
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -1917,7 +1917,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 157 0x9d 'ï¿½'
+    * 157 0x9d ''
     */
     0x66,           /* 01100110 */
     0x66,           /* 01100110 */
@@ -1929,7 +1929,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 158 0x9e 'ï¿½'
+    * 158 0x9e 'ž'
     */
     0xf8,           /* 11111000 */
     0xcc,           /* 11001100 */
@@ -1941,7 +1941,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xc7,           /* 11000111 */
 
     /*
-    * 159 0x9f 'ï¿½'
+    * 159 0x9f 'Ÿ'
     */
     0x0e,           /* 00001110 */
     0x1b,           /* 00011011 */
@@ -1953,7 +1953,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 160 0xa0 'ï¿½'
+    * 160 0xa0 ' '
     */
     0x18,           /* 00011000 */
     0x30,           /* 00110000 */
@@ -1965,7 +1965,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 161 0xa1 'ï¿½'
+    * 161 0xa1 '¡'
     */
     0x0c,           /* 00001100 */
     0x18,           /* 00011000 */
@@ -1977,7 +1977,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 162 0xa2 'ï¿½'
+    * 162 0xa2 '¢'
     */
     0x0c,           /* 00001100 */
     0x18,           /* 00011000 */
@@ -1989,7 +1989,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 163 0xa3 'ï¿½'
+    * 163 0xa3 '£'
     */
     0x18,           /* 00011000 */
     0x30,           /* 00110000 */
@@ -2001,7 +2001,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 164 0xa4 'ï¿½'
+    * 164 0xa4 '¤'
     */
     0x76,           /* 01110110 */
     0xdc,           /* 11011100 */
@@ -2013,7 +2013,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 165 0xa5 'ï¿½'
+    * 165 0xa5 '¥'
     */
     0x76,           /* 01110110 */
     0xdc,           /* 11011100 */
@@ -2025,7 +2025,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 166 0xa6 'ï¿½'
+    * 166 0xa6 '¦'
     */
     0x3c,           /* 00111100 */
     0x6c,           /* 01101100 */
@@ -2037,7 +2037,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 167 0xa7 'ï¿½'
+    * 167 0xa7 '§'
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -2049,7 +2049,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 168 0xa8 'ï¿½'
+    * 168 0xa8 '¨'
     */
     0x18,           /* 00011000 */
     0x00,           /* 00000000 */
@@ -2061,7 +2061,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 169 0xa9 'ï¿½'
+    * 169 0xa9 '©'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2073,7 +2073,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 170 0xaa 'ï¿½'
+    * 170 0xaa 'ª'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2085,7 +2085,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 171 0xab 'ï¿½'
+    * 171 0xab '«'
     */
     0x63,           /* 01100011 */
     0xe6,           /* 11100110 */
@@ -2097,7 +2097,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x0f,           /* 00001111 */
 
     /*
-    * 172 0xac 'ï¿½'
+    * 172 0xac '¬'
     */
     0x63,           /* 01100011 */
     0xe6,           /* 11100110 */
@@ -2109,7 +2109,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x06,           /* 00000110 */
 
     /*
-    * 173 0xad 'ï¿½'
+    * 173 0xad '­'
     */
     0x18,           /* 00011000 */
     0x00,           /* 00000000 */
@@ -2121,7 +2121,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 174 0xae 'ï¿½'
+    * 174 0xae '®'
     */
     0x00,           /* 00000000 */
     0x33,           /* 00110011 */
@@ -2133,7 +2133,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 175 0xaf 'ï¿½'
+    * 175 0xaf '¯'
     */
     0x00,           /* 00000000 */
     0xcc,           /* 11001100 */
@@ -2145,7 +2145,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 176 0xb0 'ï¿½'
+    * 176 0xb0 '°'
     */
     0x22,           /* 00100010 */
     0x88,           /* 10001000 */
@@ -2157,7 +2157,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x88,           /* 10001000 */
 
     /*
-    * 177 0xb1 'ï¿½'
+    * 177 0xb1 '±'
     */
     0x55,           /* 01010101 */
     0xaa,           /* 10101010 */
@@ -2169,7 +2169,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xaa,           /* 10101010 */
 
     /*
-    * 178 0xb2 'ï¿½'
+    * 178 0xb2 '²'
     */
     0x77,           /* 01110111 */
     0xdd,           /* 11011101 */
@@ -2181,7 +2181,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xdd,           /* 11011101 */
 
     /*
-    * 179 0xb3 'ï¿½'
+    * 179 0xb3 '³'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2193,7 +2193,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 180 0xb4 'ï¿½'
+    * 180 0xb4 '´'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2205,7 +2205,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 181 0xb5 'ï¿½'
+    * 181 0xb5 'µ'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2217,7 +2217,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 182 0xb6 'ï¿½'
+    * 182 0xb6 '¶'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2229,7 +2229,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 183 0xb7 'ï¿½'
+    * 183 0xb7 '·'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2241,7 +2241,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 184 0xb8 'ï¿½'
+    * 184 0xb8 '¸'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2253,7 +2253,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 185 0xb9 'ï¿½'
+    * 185 0xb9 '¹'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2265,7 +2265,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 186 0xba 'ï¿½'
+    * 186 0xba 'º'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2277,7 +2277,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 187 0xbb 'ï¿½'
+    * 187 0xbb '»'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2289,7 +2289,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 188 0xbc 'ï¿½'
+    * 188 0xbc '¼'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2301,7 +2301,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 189 0xbd 'ï¿½'
+    * 189 0xbd '½'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2313,7 +2313,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 190 0xbe 'ï¿½'
+    * 190 0xbe '¾'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2325,7 +2325,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 191 0xbf 'ï¿½'
+    * 191 0xbf '¿'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2337,7 +2337,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 192 0xc0 'ï¿½'
+    * 192 0xc0 'À'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2349,7 +2349,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 193 0xc1 'ï¿½'
+    * 193 0xc1 'Á'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2361,7 +2361,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 194 0xc2 'ï¿½'
+    * 194 0xc2 'Â'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2373,7 +2373,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 195 0xc3 'ï¿½'
+    * 195 0xc3 'Ã'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2385,7 +2385,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 196 0xc4 'ï¿½'
+    * 196 0xc4 'Ä'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2397,7 +2397,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 197 0xc5 'ï¿½'
+    * 197 0xc5 'Å'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2409,7 +2409,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 198 0xc6 'ï¿½'
+    * 198 0xc6 'Æ'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2421,7 +2421,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 199 0xc7 'ï¿½'
+    * 199 0xc7 'Ç'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2433,7 +2433,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 200 0xc8 'ï¿½'
+    * 200 0xc8 'È'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2445,7 +2445,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 201 0xc9 'ï¿½'
+    * 201 0xc9 'É'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2457,7 +2457,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 202 0xca 'ï¿½'
+    * 202 0xca 'Ê'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2469,7 +2469,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 203 0xcb 'ï¿½'
+    * 203 0xcb 'Ë'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2481,7 +2481,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 204 0xcc 'ï¿½'
+    * 204 0xcc 'Ì'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2493,7 +2493,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 205 0xcd 'ï¿½'
+    * 205 0xcd 'Í'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2505,7 +2505,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 206 0xce 'ï¿½'
+    * 206 0xce 'Î'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2517,7 +2517,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 207 0xcf 'ï¿½'
+    * 207 0xcf 'Ï'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2529,7 +2529,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 208 0xd0 'ï¿½'
+    * 208 0xd0 'Ð'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2541,7 +2541,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 209 0xd1 'ï¿½'
+    * 209 0xd1 'Ñ'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2553,7 +2553,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 210 0xd2 'ï¿½'
+    * 210 0xd2 'Ò'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2565,7 +2565,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 211 0xd3 'ï¿½'
+    * 211 0xd3 'Ó'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2577,7 +2577,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 212 0xd4 'ï¿½'
+    * 212 0xd4 'Ô'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2589,7 +2589,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 213 0xd5 'ï¿½'
+    * 213 0xd5 'Õ'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2601,7 +2601,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 214 0xd6 'ï¿½'
+    * 214 0xd6 'Ö'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2613,7 +2613,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 215 0xd7 'ï¿½'
+    * 215 0xd7 '×'
     */
     0x36,           /* 00110110 */
     0x36,           /* 00110110 */
@@ -2625,7 +2625,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x36,           /* 00110110 */
 
     /*
-    * 216 0xd8 'ï¿½'
+    * 216 0xd8 'Ø'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2637,7 +2637,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 217 0xd9 'ï¿½'
+    * 217 0xd9 'Ù'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2649,7 +2649,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 218 0xda 'ï¿½'
+    * 218 0xda 'Ú'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2661,7 +2661,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 219 0xdb 'ï¿½'
+    * 219 0xdb 'Û'
     */
     0xff,           /* 11111111 */
     0xff,           /* 11111111 */
@@ -2673,7 +2673,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xff,           /* 11111111 */
 
     /*
-    * 220 0xdc 'ï¿½'
+    * 220 0xdc 'Ü'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2685,7 +2685,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xff,           /* 11111111 */
 
     /*
-    * 221 0xdd 'ï¿½'
+    * 221 0xdd 'Ý'
     */
     0xf0,           /* 11110000 */
     0xf0,           /* 11110000 */
@@ -2697,7 +2697,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xf0,           /* 11110000 */
 
     /*
-    * 222 0xde 'ï¿½'
+    * 222 0xde 'Þ'
     */
     0x0f,           /* 00001111 */
     0x0f,           /* 00001111 */
@@ -2709,7 +2709,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x0f,           /* 00001111 */
 
     /*
-    * 223 0xdf 'ï¿½'
+    * 223 0xdf 'ß'
     */
     0xff,           /* 11111111 */
     0xff,           /* 11111111 */
@@ -2721,7 +2721,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 224 0xe0 'ï¿½'
+    * 224 0xe0 'à'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2733,7 +2733,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 225 0xe1 'ï¿½'
+    * 225 0xe1 'á'
     */
     0x78,           /* 01111000 */
     0xcc,           /* 11001100 */
@@ -2745,7 +2745,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 226 0xe2 'ï¿½'
+    * 226 0xe2 'â'
     */
     0xfe,           /* 11111110 */
     0xc6,           /* 11000110 */
@@ -2757,7 +2757,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 227 0xe3 'ï¿½'
+    * 227 0xe3 'ã'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2769,7 +2769,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 228 0xe4 'ï¿½'
+    * 228 0xe4 'ä'
     */
     0xfe,           /* 11111110 */
     0xc6,           /* 11000110 */
@@ -2781,7 +2781,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 229 0xe5 'ï¿½'
+    * 229 0xe5 'å'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2793,7 +2793,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 230 0xe6 'ï¿½'
+    * 230 0xe6 'æ'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2805,7 +2805,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xc0,           /* 11000000 */
 
     /*
-    * 231 0xe7 'ï¿½'
+    * 231 0xe7 'ç'
     */
     0x00,           /* 00000000 */
     0x76,           /* 01110110 */
@@ -2817,7 +2817,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 232 0xe8 'ï¿½'
+    * 232 0xe8 'è'
     */
     0x7e,           /* 01111110 */
     0x18,           /* 00011000 */
@@ -2829,7 +2829,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x7e,           /* 01111110 */
 
     /*
-    * 233 0xe9 'ï¿½'
+    * 233 0xe9 'é'
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -2841,7 +2841,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 234 0xea 'ï¿½'
+    * 234 0xea 'ê'
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -2853,7 +2853,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 235 0xeb 'ï¿½'
+    * 235 0xeb 'ë'
     */
     0x0e,           /* 00001110 */
     0x18,           /* 00011000 */
@@ -2865,7 +2865,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 236 0xec 'ï¿½'
+    * 236 0xec 'ì'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -2877,7 +2877,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 237 0xed 'ï¿½'
+    * 237 0xed 'í'
     */
     0x06,           /* 00000110 */
     0x0c,           /* 00001100 */
@@ -2889,7 +2889,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0xc0,           /* 11000000 */
 
     /*
-    * 238 0xee 'ï¿½'
+    * 238 0xee 'î'
     */
     0x1e,           /* 00011110 */
     0x30,           /* 00110000 */
@@ -2901,7 +2901,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 239 0xef 'ï¿½'
+    * 239 0xef 'ï'
     */
     0x00,           /* 00000000 */
     0x7c,           /* 01111100 */
@@ -2913,7 +2913,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 240 0xf0 'ï¿½'
+    * 240 0xf0 'ð'
     */
     0x00,           /* 00000000 */
     0xfe,           /* 11111110 */
@@ -2925,7 +2925,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 241 0xf1 'ï¿½'
+    * 241 0xf1 'ñ'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2937,7 +2937,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 242 0xf2 'ï¿½'
+    * 242 0xf2 'ò'
     */
     0x30,           /* 00110000 */
     0x18,           /* 00011000 */
@@ -2949,7 +2949,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 243 0xf3 'ï¿½'
+    * 243 0xf3 'ó'
     */
     0x0c,           /* 00001100 */
     0x18,           /* 00011000 */
@@ -2961,7 +2961,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 244 0xf4 'ï¿½'
+    * 244 0xf4 'ô'
     */
     0x0e,           /* 00001110 */
     0x1b,           /* 00011011 */
@@ -2973,7 +2973,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x18,           /* 00011000 */
 
     /*
-    * 245 0xf5 'ï¿½'
+    * 245 0xf5 'õ'
     */
     0x18,           /* 00011000 */
     0x18,           /* 00011000 */
@@ -2985,7 +2985,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x70,           /* 01110000 */
 
     /*
-    * 246 0xf6 'ï¿½'
+    * 246 0xf6 'ö'
     */
     0x00,           /* 00000000 */
     0x18,           /* 00011000 */
@@ -2997,7 +2997,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 247 0xf7 'ï¿½'
+    * 247 0xf7 '÷'
     */
     0x00,           /* 00000000 */
     0x76,           /* 01110110 */
@@ -3009,7 +3009,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 248 0xf8 'ï¿½'
+    * 248 0xf8 'ø'
     */
     0x38,           /* 00111000 */
     0x6c,           /* 01101100 */
@@ -3021,7 +3021,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 249 0xf9 'ï¿½'
+    * 249 0xf9 'ù'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -3033,7 +3033,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 250 0xfa 'ï¿½'
+    * 250 0xfa 'ú'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -3045,7 +3045,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 251 0xfb 'ï¿½'
+    * 251 0xfb 'û'
     */
     0x0f,           /* 00001111 */
     0x0c,           /* 00001100 */
@@ -3057,7 +3057,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x1c,           /* 00011100 */
 
     /*
-    * 252 0xfc 'ï¿½'
+    * 252 0xfc 'ü'
     */
     0x6c,           /* 01101100 */
     0x36,           /* 00110110 */
@@ -3069,7 +3069,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 253 0xfd 'ï¿½'
+    * 253 0xfd 'ý'
     */
     0x78,           /* 01111000 */
     0x0c,           /* 00001100 */
@@ -3081,7 +3081,7 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
     0x00,           /* 00000000 */
 
     /*
-    * 254 0xfe 'ï¿½'
+    * 254 0xfe 'þ'
     */
     0x00,           /* 00000000 */
     0x00,           /* 00000000 */
@@ -3109,16 +3109,16 @@ static unsigned char SDLTest_FontData[SDL_TESTFONTDATAMAX] = {
 
 /* ---- Character */
 
-/* !
+/*!
 \brief Global cache for 8x8 pixel font textures created at runtime.
 */
 static SDL_Texture *SDLTest_CharTextureCache[256];
 
 int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
 {
-    const Uint32 charWidth = 8;
-    const Uint32 charHeight = 8;
-    const Uint32 charSize = 8;
+    const Uint32 charWidth = FONT_CHARACTER_SIZE;
+    const Uint32 charHeight = FONT_CHARACTER_SIZE;
+    const Uint32 charSize = FONT_CHARACTER_SIZE;
     SDL_Rect srect;
     SDL_Rect drect;
     int result;
@@ -3133,16 +3133,16 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
     Uint8 r, g, b, a;
 
     /*
-    * Setup source rectangle
-    */
+     * Setup source rectangle
+     */
     srect.x = 0;
     srect.y = 0;
     srect.w = charWidth;
     srect.h = charHeight;
 
     /*
-    * Setup destination rectangle
-    */
+     * Setup destination rectangle
+     */
     drect.x = x;
     drect.y = y;
     drect.w = charWidth;
@@ -3152,12 +3152,12 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
     ci = (unsigned char)c;
 
     /*
-    * Create new charWidth x charHeight bitmap surface if not already present.
-    */
+     * Create new charWidth x charHeight bitmap surface if not already present.
+     */
     if (SDLTest_CharTextureCache[ci] == NULL) {
         /*
-        * Redraw character into surface
-        */
+         * Redraw character into surface
+         */
         character = SDL_CreateRGBSurface(SDL_SWSURFACE,
             charWidth, charHeight, 32,
             0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
@@ -3170,8 +3170,8 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
         pitch = character->pitch;
 
         /*
-        * Drawing loop
-        */
+         * Drawing loop
+         */
         patt = 0;
         for (iy = 0; iy < charWidth; iy++) {
             mask = 0x00;
@@ -3196,24 +3196,24 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
         SDL_FreeSurface(character);
 
         /*
-        * Check pointer
-        */
+         * Check pointer
+         */
         if (SDLTest_CharTextureCache[ci] == NULL) {
             return (-1);
         }
     }
 
     /*
-    * Set color
-    */
+     * Set color
+     */
     result = 0;
     result |= SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
     result |= SDL_SetTextureColorMod(SDLTest_CharTextureCache[ci], r, g, b);
     result |= SDL_SetTextureAlphaMod(SDLTest_CharTextureCache[ci], a);
 
     /*
-    * Draw texture onto destination
-    */
+     * Draw texture onto destination
+     */
     result |= SDL_RenderCopy(renderer, SDLTest_CharTextureCache[ci], &srect, &drect);
 
     return (result);
@@ -3221,7 +3221,7 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c)
 
 int SDLTest_DrawString(SDL_Renderer * renderer, int x, int y, const char *s)
 {
-    const Uint32 charWidth = 8;
+    const Uint32 charWidth = FONT_CHARACTER_SIZE;
     int result = 0;
     int curx = x;
     int cury = y;
@@ -3236,3 +3236,15 @@ int SDLTest_DrawString(SDL_Renderer * renderer, int x, int y, const char *s)
     return (result);
 }
 
+void SDLTest_CleanupTextDrawing(void)
+{
+    unsigned int i;
+    for (i = 0; i < SDL_arraysize(SDLTest_CharTextureCache); ++i) {
+        if (SDLTest_CharTextureCache[i]) {
+            SDL_DestroyTexture(SDLTest_CharTextureCache[i]);
+            SDLTest_CharTextureCache[i] = NULL;
+        }
+    }
+}
+
+/* vi: set ts=4 sw=4 expandtab: */

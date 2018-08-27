@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,10 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
-#ifndef _SDL_DirectFB_video_h
-#define _SDL_DirectFB_video_h
+#ifndef SDL_DirectFB_video_h_
+#define SDL_DirectFB_video_h_
 
 #include <directfb.h>
 #include <directfb_version.h>
@@ -167,4 +167,4 @@ DFBSurfacePixelFormat DirectFB_SDLToDFBPixelFormat(Uint32 format);
 void DirectFB_SetSupportedPixelFormats(SDL_RendererInfo *ri);
 
 
-#endif /* _SDL_DirectFB_video_h */
+#endif /* SDL_DirectFB_video_h_ */

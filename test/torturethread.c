@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,11 +18,10 @@
 #include <string.h>
 
 #include "SDL.h"
-#include "SDL_thread.h"
 
 #define NUMTHREADS 10
 
-static char volatile time_for_threads_to_die[NUMTHREADS];
+static SDL_atomic_t time_for_threads_to_die[NUMTHREADS];
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -59,7 +58,7 @@ ThreadFunc(void *data)
     }
 
     SDL_Log("Thread '%d' waiting for signal\n", tid);
-    while (time_for_threads_to_die[tid] != 1) {
+    while (SDL_AtomicGet(&time_for_threads_to_die[tid]) != 1) {
         ;                       /* do nothing */
     }
 
@@ -80,7 +79,7 @@ main(int argc, char *argv[])
     SDL_Thread *threads[NUMTHREADS];
     int i;
 
-	/* Enable standard application logging */
+    /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Load the SDL library */
@@ -93,7 +92,7 @@ main(int argc, char *argv[])
     for (i = 0; i < NUMTHREADS; i++) {
         char name[64];
         SDL_snprintf(name, sizeof (name), "Parent%d", i);
-        time_for_threads_to_die[i] = 0;
+        SDL_AtomicSet(&time_for_threads_to_die[i], 0);
         threads[i] = SDL_CreateThread(ThreadFunc, name, (void*) (uintptr_t) i);
 
         if (threads[i] == NULL) {
@@ -103,7 +102,7 @@ main(int argc, char *argv[])
     }
 
     for (i = 0; i < NUMTHREADS; i++) {
-        time_for_threads_to_die[i] = 1;
+        SDL_AtomicSet(&time_for_threads_to_die[i], 1);
     }
 
     for (i = 0; i < NUMTHREADS; i++) {

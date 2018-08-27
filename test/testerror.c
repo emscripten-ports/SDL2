@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -14,10 +14,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
 
 #include "SDL.h"
-#include "SDL_thread.h"
 
 static int alive = 0;
 

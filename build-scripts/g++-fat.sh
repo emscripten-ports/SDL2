@@ -7,10 +7,10 @@
 DEVELOPER="`xcode-select -print-path`/Platforms/MacOSX.platform/Developer"
 
 # Intel 32-bit compiler flags (10.6 runtime compatibility)
-GCC_COMPILE_X86="g++ -arch i386 -mmacosx-version-min=10.5 \
+GCC_COMPILE_X86="g++ -arch i386 -mmacosx-version-min=10.6 \
 -I/usr/local/include"
 
-GCC_LINK_X86="-mmacosx-version-min=10.5"
+GCC_LINK_X86="-mmacosx-version-min=10.6"
 
 # Intel 64-bit compiler flags (10.6 runtime compatibility)
 GCC_COMPILE_X64="g++ -arch x86_64 -mmacosx-version-min=10.6 \
@@ -34,7 +34,7 @@ while test x$1 != x; do
             compile=no; link=no;;
         -c) link=no;;
         -o) output=$2;;
-        *.c|*.cc|*.cpp|*.S) source=$1;;
+        *.c|*.cc|*.cpp|*.S|*.m|*.mm) source=$1;;
     esac
     shift
 done

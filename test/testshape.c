@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,12 +19,11 @@
 #define SHAPED_WINDOW_Y 150
 #define SHAPED_WINDOW_DIMENSION 640
 
-#define TICK_INTERVAL 1000/10
-
 typedef struct LoadedPicture {
     SDL_Surface *surface;
     SDL_Texture *texture;
     SDL_WindowShapeMode mode;
+    const char* name;
 } LoadedPicture;
 
 void render(SDL_Renderer *renderer,SDL_Texture *texture,SDL_Rect texture_dimensions)
@@ -39,17 +38,6 @@ void render(SDL_Renderer *renderer,SDL_Texture *texture,SDL_Rect texture_dimensi
     SDL_RenderPresent(renderer);
 }
 
-static Uint32 next_time;
-
-Uint32 time_left()
-{
-    Uint32 now = SDL_GetTicks();
-    if(next_time <= now)
-        return 0;
-    else
-        return next_time - now;
-}
-
 int main(int argc,char** argv)
 {
     Uint8 num_pictures;
@@ -60,19 +48,18 @@ int main(int argc,char** argv)
     SDL_Renderer *renderer;
     SDL_Color black = {0,0,0,0xff};
     SDL_Event event;
-    int event_pending = 0;
     int should_exit = 0;
     unsigned int current_picture;
     int button_down;
     Uint32 pixelFormat = 0;
     int access = 0;
-    SDL_Rect texture_dimensions;;
+    SDL_Rect texture_dimensions;
 
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     if(argc < 2) {
-		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Shape requires at least one bitmap file as argument.");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Shape requires at least one bitmap file as argument.");
         exit(-1);
     }
 
@@ -83,22 +70,26 @@ int main(int argc,char** argv)
 
     num_pictures = argc - 1;
     pictures = (LoadedPicture *)SDL_malloc(sizeof(LoadedPicture)*num_pictures);
+    if (!pictures) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Could not allocate memory.");
+        exit(1);
+    }
     for(i=0;i<num_pictures;i++)
         pictures[i].surface = NULL;
     for(i=0;i<num_pictures;i++) {
         pictures[i].surface = SDL_LoadBMP(argv[i+1]);
+        pictures[i].name = argv[i+1];
         if(pictures[i].surface == NULL) {
-            j = 0;
             for(j=0;j<num_pictures;j++)
                 SDL_FreeSurface(pictures[j].surface);
             SDL_free(pictures);
             SDL_VideoQuit();
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Could not load surface from named bitmap file.");
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Could not load surface from named bitmap file: %s", argv[i+1]);
             exit(-3);
         }
 
         format = pictures[i].surface->format;
-        if(format->Amask != 0) {
+        if(SDL_ISPIXELFORMAT_ALPHA(format->format)) {
             pictures[i].mode.mode = ShapeModeBinarizeAlpha;
             pictures[i].mode.parameters.binarizationCutoff = 255;
         }
@@ -108,7 +99,11 @@ int main(int argc,char** argv)
         }
     }
 
-    window = SDL_CreateShapedWindow("SDL_Shape test",SHAPED_WINDOW_X,SHAPED_WINDOW_Y,SHAPED_WINDOW_DIMENSION,SHAPED_WINDOW_DIMENSION,SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateShapedWindow("SDL_Shape test",
+        SHAPED_WINDOW_X, SHAPED_WINDOW_Y,
+        SHAPED_WINDOW_DIMENSION,SHAPED_WINDOW_DIMENSION,
+        0);
+    SDL_SetWindowPosition(window, SHAPED_WINDOW_X, SHAPED_WINDOW_Y);
     if(window == NULL) {
         for(i=0;i<num_pictures;i++)
             SDL_FreeSurface(pictures[i].surface);
@@ -133,8 +128,7 @@ int main(int argc,char** argv)
     for(i=0;i<num_pictures;i++) {
         pictures[i].texture = SDL_CreateTextureFromSurface(renderer,pictures[i].surface);
         if(pictures[i].texture == NULL) {
-            j = 0;
-            for(j=0;j<num_pictures;i++)
+            for(i=0;i<num_pictures;i++)
                 if(pictures[i].texture != NULL)
                     SDL_DestroyTexture(pictures[i].texture);
             for(i=0;i<num_pictures;i++)
@@ -148,43 +142,43 @@ int main(int argc,char** argv)
         }
     }
 
-    event_pending = 0;
     should_exit = 0;
-    event_pending = SDL_PollEvent(&event);
     current_picture = 0;
     button_down = 0;
     texture_dimensions.h = 0;
     texture_dimensions.w = 0;
     texture_dimensions.x = 0;
     texture_dimensions.y = 0;
+    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Changing to shaped bmp: %s", pictures[current_picture].name);
     SDL_QueryTexture(pictures[current_picture].texture,(Uint32 *)&pixelFormat,(int *)&access,&texture_dimensions.w,&texture_dimensions.h);
     SDL_SetWindowSize(window,texture_dimensions.w,texture_dimensions.h);
     SDL_SetWindowShape(window,pictures[current_picture].surface,&pictures[current_picture].mode);
-    next_time = SDL_GetTicks() + TICK_INTERVAL;
     while(should_exit == 0) {
-        event_pending = SDL_PollEvent(&event);
-        if(event_pending == 1) {
+        while (SDL_PollEvent(&event)) {
             if(event.type == SDL_KEYDOWN) {
                 button_down = 1;
-                if(event.key.keysym.sym == SDLK_ESCAPE)
+                if(event.key.keysym.sym == SDLK_ESCAPE) {
                     should_exit = 1;
+                    break;
+                }
             }
             if(button_down && event.type == SDL_KEYUP) {
                 button_down = 0;
                 current_picture += 1;
                 if(current_picture >= num_pictures)
                     current_picture = 0;
+                SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Changing to shaped bmp: %s", pictures[current_picture].name);
                 SDL_QueryTexture(pictures[current_picture].texture,(Uint32 *)&pixelFormat,(int *)&access,&texture_dimensions.w,&texture_dimensions.h);
                 SDL_SetWindowSize(window,texture_dimensions.w,texture_dimensions.h);
                 SDL_SetWindowShape(window,pictures[current_picture].surface,&pictures[current_picture].mode);
             }
-            if(event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT) {
                 should_exit = 1;
-            event_pending = 0;
+                break;
+            }
         }
         render(renderer,pictures[current_picture].texture,texture_dimensions);
-        SDL_Delay(time_left());
-        next_time += TICK_INTERVAL;
+        SDL_Delay(10);
     }
 
     /* Free the textures. */

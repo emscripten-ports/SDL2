@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "./SDL_internal.h"
 
 #include "SDL_hints.h"
 #include "SDL_error.h"
@@ -118,6 +118,19 @@ SDL_GetHint(const char *name)
     return env;
 }
 
+SDL_bool
+SDL_GetHintBoolean(const char *name, SDL_bool default_value)
+{
+    const char *hint = SDL_GetHint(name);
+    if (!hint || !*hint) {
+        return default_value;
+    }
+    if (*hint == '0' || SDL_strcasecmp(hint, "false") == 0) {
+        return SDL_FALSE;
+    }
+    return SDL_TRUE;
+}
+
 void
 SDL_AddHintCallback(const char *name, SDL_HintCallback callback, void *userdata)
 {
@@ -137,6 +150,10 @@ SDL_AddHintCallback(const char *name, SDL_HintCallback callback, void *userdata)
     SDL_DelHintCallback(name, callback, userdata);
 
     entry = (SDL_HintWatch *)SDL_malloc(sizeof(*entry));
+    if (!entry) {
+        SDL_OutOfMemory();
+        return;
+    }
     entry->callback = callback;
     entry->userdata = userdata;
 
@@ -149,6 +166,8 @@ SDL_AddHintCallback(const char *name, SDL_HintCallback callback, void *userdata)
         /* Need to add a hint entry for this watcher */
         hint = (SDL_Hint *)SDL_malloc(sizeof(*hint));
         if (!hint) {
+            SDL_OutOfMemory();
+            SDL_free(entry);
             return;
         }
         hint->name = SDL_strdup(name);

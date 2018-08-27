@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -14,12 +14,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
 
 #include "SDL.h"
-#include "SDL_thread.h"
-
-static int alive = 0;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -29,7 +25,7 @@ quit(int rc)
     exit(rc);
 }
 
-static int
+static int SDLCALL
 button_messagebox(void *eventNumber)
 {
     const SDL_MessageBoxButtonData buttons[] = {
@@ -50,12 +46,13 @@ button_messagebox(void *eventNumber)
         "Custom MessageBox",
         "This is a custom messagebox",
         2,
-        buttons,
+        NULL,/* buttons */
         NULL /* Default color scheme */
     };
 
     int button = -1;
     int success = 0;
+    data.buttons = buttons;
     if (eventNumber) {
         data.message = "This is a custom messagebox from a background thread.";
     }
@@ -72,7 +69,7 @@ button_messagebox(void *eventNumber)
             quit(2);
         }
     }
-    SDL_Log("Pressed button: %d, %s\n", button, button == 1 ? "Cancel" : "OK");
+    SDL_Log("Pressed button: %d, %s\n", button, button == -1 ? "[closed]" : button == 1 ? "Cancel" : "OK");
 
     if (eventNumber) {
         SDL_UserEvent event;
@@ -88,7 +85,7 @@ main(int argc, char *argv[])
 {
     int success;
 
-	/* Enable standard application logging */
+    /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
@@ -123,6 +120,16 @@ main(int argc, char *argv[])
     success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
                 "UTF-8 Simple MessageBox",
                 "Unicode text and newline:\r\n'牛肉西蘭花'\n'牛肉西蘭花'",
+                NULL);
+    if (success == -1) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error Presenting MessageBox: %s\n", SDL_GetError());
+        quit(1);
+    }
+
+    /* Google says this is Traditional Chinese for "beef with broccoli" */
+    success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+                "牛肉西蘭花",
+                "Unicode text in the title.",
                 NULL);
     if (success == -1) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error Presenting MessageBox: %s\n", SDL_GetError());
