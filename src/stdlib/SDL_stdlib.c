@@ -497,6 +497,7 @@ void * memcpy ( void * destination, const void * source, size_t num )
 
 #ifdef _M_IX86
 
+
 /* Float to long */
 void
 __declspec(naked)
@@ -547,12 +548,6 @@ localexit:
         ret
     }
     /* *INDENT-ON* */
-}
-
-void
-_ftol2_sse()
-{
-    _ftol();
 }
 
 /* 64-bit math operators for 32-bit systems */
