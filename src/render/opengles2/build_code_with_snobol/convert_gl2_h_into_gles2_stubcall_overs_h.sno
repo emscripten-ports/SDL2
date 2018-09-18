@@ -1,0 +1,116 @@
+
+
+
+* usage:
+* sbl convert_gl2_h_into_gles2_stubcall_overs_h.sno <gl2.h >SDL_gles2_stubcall_overs_wrapper.h
+* -or-
+* snobol4 convert_gl2_h_into_gles2_stubcall_overs_h.sno <gl2.h >SDL_gles2_stubcall_overs_wrapper.h
+
+
+*
+
+	sz = ( span(' 	') | '' )
+	s = span(' 	') 
+	
+	
+	funcname = any('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_')
++		 ( span('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789') | '' )
+	
+	
+	parameters = '(' arbno(any(&alphabet)) . the_parameter_list ')'
+
+
+	everything_no_comma = &alphabet
+	&anchor = 0
+	everything_no_comma ',' = ''
+	&anchor = 1
+
+	apicall_line = sz 'GL_APICALL' s  ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . the_return_datatype sz 'GL_APIENTRY' s 
++                                    funcname . the_function_name sz parameters . the_parameters sz ';' sz rpos(0) 
+
+	define('noname_protocol(par),a,b,c,d,e,f') :(done_noname_protocol)
+noname_protocol
+	par sz = ''
+	d = ''
+	c = ''
+np_loop
+	ident(par,'')	:s(np_done)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz ',' sz  = ''	:f(np_junk_left)s(np_extract_parameter)
+np_junk_left
+	ident(par,'')	:s(np_done)
+	par 'void' sz rpos(0) :s(np_is_void)
+	par sz ( any(everything_no_comma) arbno(any(everything_no_comma)) ) . b sz funcname . f sz rpos(0)  = '' :s(np_extract_parameter)
+	b = par
+	par = ''
+np_extract_parameter
+	d = d c b 
+	c = ','
+	:(np_loop)
+np_is_void
+	d = d c par
+	par = ''
+	:(np_loop)
+
+
+np_done
+	noname_protocol = d
+	:(return)
+done_noname_protocol
+
+	
+			
+
+	&anchor = 1
+	
+	
+	
+	output = '/* generated with convert_gl2_h_into_gles2_stubcall_overs_h.sno '
+	output = '  Generator by Hibbard M. Engler'
+	output = '  */'
+	output = ''
+	output = ''
+	output = '#include <stdlib.h>'
+	output = '#include <stdio.h>'
+	output = '#include <string.h>'
+	output = '#include <math.h>'
+	output = '#ifdef __EMSCRIPTEN__'
+	output = '#include <emscripten/emscripten.h>'
+	output = '#endif'
+	output = '#include <SDL2/SDL_test_common.h>'
+	output = ''
+	output = '#if defined(__IPHONEOS__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__NACL__) \'
+	output = '  || defined(__WINDOWS__) || defined(__LINUX__)'
+	output = '  #define HAVE_OPENGLES2'
+	output = ' #endif'
+	output = ''
+	output = '#ifdef HAVE_OPENGLES2'
+	output = ''
+	output = '#include <SDL2/SDL_opengles2.h>'
+	output = ''
+	output = 'typedef struct GLES2_Context'
+	output = '{'
+	output = '#define SDL_PROC(ret,func,params) ret (APIENTRY *func) params;'
+	output = '#include "SDL_gles2funcs.h"'
+	output = '#undef SDL_PROC'
+	output = '} GLES2_Context;'
+	output = ''
+	output = '#endif // HAVE_OPENGLES2'
+	output = ''
+	output = 'extern int LoadContext(GLES2_Context * data);'
+	output = ''
+	output = ''
+	
+loop	x = input	:f(endd)	
+	x apicall_line	:f(nokeep)
+
+*	output = x
+	
+	:(loop)
+	
+nokeep	
+	:(loop)	
+		
+endd
+	output = ''
+	output = ''
+end
