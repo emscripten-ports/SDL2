@@ -562,6 +562,12 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
     }
     else
     {
+        if ((window_data->requested_fullscreen_mode & FULLSCREEN_MASK)
+	    != (window_data->window->flags & FULLSCREEN_MASK)) {
+	  // User pressed Escape
+	  // State inconsistent as SDL_SetWindowFullscreen was not called, let's fix:
+	  SDL_SetWindowFullscreen(window_data->window, 0);
+	}
         window_data->window->flags &= ~FULLSCREEN_MASK;
     }
 
