@@ -210,7 +210,7 @@ Emscripten_CreateWindow(_THIS, SDL_Window * window)
     emscripten_set_canvas_size(1, 1);
     emscripten_get_element_css_size(NULL, &css_w, &css_h);
 
-    wdata->external_size = SDL_floor(css_w) != scaled_w || SDL_floor(css_h) != scaled_h;
+    wdata->external_size = SDL_floor(css_w) != 1 || SDL_floor(css_h) != 1;
 
     if ((window->flags & SDL_WINDOW_RESIZABLE) && wdata->external_size) {
         /* external css has resized us */
