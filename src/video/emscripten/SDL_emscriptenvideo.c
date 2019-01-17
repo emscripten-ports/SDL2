@@ -291,6 +291,8 @@ Emscripten_CreateWindowFrom(_THIS, SDL_Window * window, const void *data)
 
     wdata->canvas_id = SDL_strdup(canvas_id);
 
+    wdata->pixel_ratio = 1.0f;
+
     emscripten_get_canvas_element_size(wdata->canvas_id, &window->w, &window->h);
 
     if (window->flags & SDL_WINDOW_OPENGL) {
