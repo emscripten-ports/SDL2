@@ -295,9 +295,19 @@ Emscripten_CreateWindowFrom(_THIS, SDL_Window * window, const void *data)
 
     emscripten_get_canvas_element_size(wdata->canvas_id, &window->w, &window->h);
 
-    if (window->flags & SDL_WINDOW_OPENGL) {
-        return SDL_SetError("OpenGL not supported for non-default canvases");
+#if SDL_VIDEO_OPENGL_EGL
+    /* we don't know if GL will be used, but we can't recreate the window later */
+    if (!_this->egl_data) {
+        if (SDL_GL_LoadLibrary(NULL) < 0) {
+            return -1;
+        }
     }
+    wdata->egl_surface = SDL_EGL_CreateSurface(_this, wdata->canvas_id);
+
+    if (wdata->egl_surface == EGL_NO_SURFACE) {
+        return SDL_SetError("Could not create GLES window surface");
+    }
+#endif
 
     wdata->window = window;
 
