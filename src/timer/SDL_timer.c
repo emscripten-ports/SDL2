@@ -436,7 +436,7 @@ SDL_AddTimer(Uint32 interval, SDL_TimerCallback callback, void *param)
         SDL_OutOfMemory();
         return 0;
     }
-    entry->timerID = data->nextID++;
+    entry->timerID = ++data->nextID;
 
     entry->timeoutID = EM_ASM_INT({
         return Browser.safeSetTimeout(function() {
