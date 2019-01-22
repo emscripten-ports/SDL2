@@ -672,9 +672,9 @@ Emscripten_RegisterEventHandlers(SDL_WindowData *data, SDL_bool global)
         keyElement = SDL_GetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT);
         if (!keyElement) keyElement = "#window";
 
-        emscripten_set_keydown_callback(keyElement, data, 0, Emscripten_HandleKey);
-        emscripten_set_keyup_callback(keyElement, data, 0, Emscripten_HandleKey);
-        emscripten_set_keypress_callback(keyElement, data, 0, Emscripten_HandleKeyPress);
+        emscripten_set_keydown_callback(keyElement, NULL, 0, Emscripten_HandleKey);
+        emscripten_set_keyup_callback(keyElement, NULL, 0, Emscripten_HandleKey);
+        emscripten_set_keypress_callback(keyElement, NULL, 0, Emscripten_HandleKeyPress);
 
         emscripten_set_fullscreenchange_callback("#document", data, 0, Emscripten_HandleFullscreenChange);
 
