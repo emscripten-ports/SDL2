@@ -342,10 +342,10 @@ static EM_BOOL
 Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
+    SDL_Window *window = window_data->window;
     Uint8 sdl_button;
     Uint8 sdl_button_state;
     SDL_EventType sdl_event_type;
-    double css_w, css_h;
 
     switch (mouseEvent->button) {
         case 0:
@@ -370,13 +370,14 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
     } else {
         sdl_button_state = SDL_RELEASED;
         sdl_event_type = SDL_MOUSEBUTTONUP;
+
+        /* avoid setting focus when releasing outside canvas */
+        window = SDL_GetMouse()->focus;
     }
-    SDL_SendMouseButton(window_data->window, 0, sdl_button_state, sdl_button);
+    SDL_SendMouseButton(window, 0, sdl_button_state, sdl_button);
 
     /* Do not consume the event if the mouse is outside of the canvas. */
-    emscripten_get_element_css_size(NULL, &css_w, &css_h);
-    if (mouseEvent->targetX < 0 || mouseEvent->targetX >= css_w ||
-        mouseEvent->targetY < 0 || mouseEvent->targetY >= css_h) {
+    if (!window) {
         return 0;
     }
 
