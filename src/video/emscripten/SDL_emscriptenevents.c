@@ -330,8 +330,8 @@ Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent
         my = residualy;
         residualy -= my;
     } else {
-        mx = mouseEvent->canvasX * xscale;
-        my = mouseEvent->canvasY * yscale;
+        mx = mouseEvent->targetX * xscale;
+        my = mouseEvent->targetY * yscale;
     }
 
     SDL_SendMouseMotion(window_data->window, 0, isPointerLocked, mx, my);
@@ -375,8 +375,8 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
 
     /* Do not consume the event if the mouse is outside of the canvas. */
     emscripten_get_element_css_size(window_data->canvas_id, &css_w, &css_h);
-    if (mouseEvent->canvasX < 0 || mouseEvent->canvasX >= css_w ||
-        mouseEvent->canvasY < 0 || mouseEvent->canvasY >= css_h) {
+    if (mouseEvent->targetX < 0 || mouseEvent->targetX >= css_w ||
+        mouseEvent->targetY < 0 || mouseEvent->targetY >= css_h) {
         return 0;
     }
 
@@ -388,7 +388,7 @@ Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEven
 {
     SDL_WindowData *window_data = userData;
 
-    int mx = mouseEvent->canvasX, my = mouseEvent->canvasY;
+    int mx = mouseEvent->targetX, my = mouseEvent->targetY;
     const int isPointerLocked = window_data->has_pointer_lock;
 
     if (!isPointerLocked) {
@@ -452,8 +452,8 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
             continue;
 
         id = touchEvent->touches[i].identifier;
-        x = touchEvent->touches[i].canvasX / client_w;
-        y = touchEvent->touches[i].canvasY / client_h;
+        x = touchEvent->touches[i].targetX / client_w;
+        y = touchEvent->touches[i].targetY / client_h;
 
         mx = x * window_data->window->w;
         my = y * window_data->window->h;
