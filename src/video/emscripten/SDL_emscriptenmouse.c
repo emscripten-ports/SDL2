@@ -68,13 +68,6 @@ static SDL_Cursor*
 Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
 {
     const char *cursor_url = NULL;
-    SDL_Surface *conv_surf;
-
-    conv_surf = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_ABGR8888, 0);
-
-    if (!conv_surf) {
-        return NULL;
-    }
 
     cursor_url = (const char *)EM_ASM_INT({
         var w = $0;
@@ -103,16 +96,21 @@ Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
             while (dst < num) {
                 var val = HEAP32[src]; // This is optimized. Instead, we could do {{{ makeGetValue('buffer', 'dst', 'i32') }}};
                 data[dst  ] = val & 0xff;
-                data[dst+1] = (val >> 8) & 0xff;
+                data[dst+1] = (val >> 24) & 0xff;
                 data[dst+2] = (val >> 16) & 0xff;
-                data[dst+3] = (val >> 24) & 0xff;
+                data[dst+3] = (val >> 8) & 0xff;
                 src++;
                 dst += 4;
             }
         } else {
             var data32 = new Int32Array(data.buffer);
             num = data32.length;
-            data32.set(HEAP32.subarray(src, src + num));
+
+            // SDL converts the cursor image to ARGB888, so we need to swap R/B
+            while (dst < num) {
+                var val = HEAP32[src++];
+                data32[dst++] = (val & 0xFF00FF00) | ((val & 0xFF) << 16) | ((val & 0xFF0000) >> 16);
+            }
         }
 
         ctx.putImageData(image, 0, 0);
@@ -124,9 +122,7 @@ Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
         stringToUTF8(url, urlBuf, url.length + 1);
 
         return urlBuf;
-    }, surface->w, surface->h, hot_x, hot_y, conv_surf->pixels);
-
-    SDL_FreeSurface(conv_surf);
+    }, surface->w, surface->h, hot_x, hot_y, surface->pixels);
 
     return Emscripten_CreateCursorFromString(cursor_url, SDL_TRUE);
 }
