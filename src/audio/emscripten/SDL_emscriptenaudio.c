@@ -35,6 +35,7 @@ FeedAudioDevice(_THIS, const void *buf, const int buflen)
 {
     const int framelen = (SDL_AUDIO_BITSIZE(this->spec.format) / 8) * this->spec.channels;
     EM_ASM_ARGS({
+        var SDL2 = Module['SDL2'];
         var numChannels = SDL2.audio.currentOutputBuffer['numberOfChannels'];
         for (var c = 0; c < numChannels; ++c) {
             var channelData = SDL2.audio.currentOutputBuffer['getChannelData'](c);
@@ -100,6 +101,7 @@ HandleCaptureProcess(_THIS)
     }
 
     EM_ASM_ARGS({
+        var SDL2 = Module['SDL2'];
         var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels;
         for (var c = 0; c < numChannels; ++c) {
             var channelData = SDL2.capture.currentCaptureBuffer.getChannelData(c);
@@ -145,6 +147,7 @@ static void
 EMSCRIPTENAUDIO_CloseDevice(_THIS)
 {
     EM_ASM_({
+        var SDL2 = Module['SDL2'];
         if ($0) {
             if (SDL2.capture.silenceTimer !== undefined) {
                 clearTimeout(SDL2.capture.silenceTimer);
@@ -198,9 +201,10 @@ EMSCRIPTENAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscaptu
 
     /* create context (TODO: this puts stuff in the global namespace...)*/
     result = EM_ASM_INT({
-        if(typeof(SDL2) === 'undefined') {
-            SDL2 = {};
+        if(typeof(Module['SDL2']) === 'undefined') {
+            Module['SDL2'] = {};
         }
+        var SDL2 = Module['SDL2'];
         if (!$0) {
             SDL2.audio = {};
         } else {
@@ -271,6 +275,7 @@ EMSCRIPTENAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscaptu
            to be honest. */
 
         EM_ASM_({
+            var SDL2 = Module['SDL2'];
             var have_microphone = function(stream) {
                 //console.log('SDL audio capture: we have a microphone! Replacing silence callback.');
                 if (SDL2.capture.silenceTimer !== undefined) {
@@ -313,6 +318,7 @@ EMSCRIPTENAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscaptu
     } else {
         /* setup a ScriptProcessorNode */
         EM_ASM_ARGS({
+            var SDL2 = Module['SDL2'];
             SDL2.audio.scriptProcessorNode = SDL2.audioContext['createScriptProcessor']($1, 0, $0);
             SDL2.audio.scriptProcessorNode['onaudioprocess'] = function (e) {
                 if ((SDL2 === undefined) || (SDL2.audio === undefined)) { return; }
