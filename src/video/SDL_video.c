@@ -170,6 +170,14 @@ ShouldUseTextureFramebuffer()
 {
     const char *hint;
 
+#if SDL_VIDEO_DRIVER_EMSCRIPTEN && !SDL_VIDEO_DRIVER_DUMMY
+    /* If we don't have the dummy driver we should always have framebuffer
+       support, and doing this up here allows us to avoid pulling in
+       renderers if they aren't otherwise used
+    */
+    return SDL_FALSE;
+#endif
+
     /* If there's no native framebuffer support then there's no option */
     if (!_this->CreateWindowFramebuffer) {
         return SDL_TRUE;
