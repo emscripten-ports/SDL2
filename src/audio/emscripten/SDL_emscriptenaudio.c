@@ -199,7 +199,7 @@ EMSCRIPTENAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscaptu
 
     /* based on parts of library_sdl.js */
 
-    /* create context (TODO: this puts stuff in the global namespace...)*/
+    /* create context */
     result = EM_ASM_INT({
         if(typeof(Module['SDL2']) === 'undefined') {
             Module['SDL2'] = {};
