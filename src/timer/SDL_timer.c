@@ -400,7 +400,7 @@ SDL_Emscripten_TimerHelper(SDL_TimerMap *entry, Uint32 interval, SDL_TimerCallba
     if (new_timeout != 0) {
         entry->timeoutID = EM_ASM_INT({
             return Browser.safeSetTimeout(function() {
-                Runtime.dynCall('viiii', $0, [$1, $2, $3, $4]);
+                dynCall('viiii', $0, [$1, $2, $3, $4]);
             }, $2);
         }, &SDL_Emscripten_TimerHelper, entry, interval, callback, param);
     }
@@ -440,7 +440,7 @@ SDL_AddTimer(Uint32 interval, SDL_TimerCallback callback, void *param)
 
     entry->timeoutID = EM_ASM_INT({
         return Browser.safeSetTimeout(function() {
-            Runtime.dynCall('viiii', $0, [$1, $2, $3, $4]);
+            dynCall('viiii', $0, [$1, $2, $3, $4]);
         }, $2);
     }, &SDL_Emscripten_TimerHelper, entry, interval, callback, param);
 
