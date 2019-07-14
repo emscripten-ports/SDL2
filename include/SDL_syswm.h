@@ -43,6 +43,13 @@
  */
 #ifdef SDL_PROTOTYPES_ONLY
 struct SDL_SysWMinfo;
+
+#include "begin_code.h"
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
 #else
 
 #if defined(SDL_VIDEO_DRIVER_WINDOWS)
