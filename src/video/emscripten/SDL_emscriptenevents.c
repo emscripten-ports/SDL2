@@ -652,14 +652,14 @@ Emscripten_HandleVisibilityChange(int eventType, const EmscriptenVisibilityChang
     return 0;
 }
 
-static EM_BOOL
-Emscripten_HandleBeforeUnload(int eventType, const void* reserved, void *userData)
+static const char*
+Emscripten_HandleBeforeUnload(int eventType, const void *reserved, void *userData)
 {
     /* This event will need to be handled synchronously, e.g. using
        SDL_AddEventWatch, as the page is being closed *now*. */
     /* No need to send a SDL_QUIT, the app won't get control again. */
     SDL_SendAppEvent(SDL_APP_TERMINATING);
-    return 0;
+    return ""; /* don't trigger confirmation dialog */
 }
 
 void
