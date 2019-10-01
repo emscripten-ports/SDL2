@@ -361,6 +361,21 @@ stdio_size(SDL_RWops * context)
 static Sint64 SDLCALL
 stdio_seek(SDL_RWops * context, Sint64 offset, int whence)
 {
+    // XXX EMSCRIPTEN this seems like an SDL bug?
+    switch (whence) {
+    case RW_SEEK_SET:
+        whence = SEEK_SET;
+        break;
+    case RW_SEEK_CUR:
+        whence = SEEK_CUR;
+        break;
+    case RW_SEEK_END:
+        whence = SEEK_END;
+        break;
+    default:
+        return SDL_SetError("stdio_seek: Unknown value for 'whence'");
+    }
+
 #if defined(FSEEK_OFF_MIN) && defined(FSEEK_OFF_MAX)
     if (offset < (Sint64)(FSEEK_OFF_MIN) || offset > (Sint64)(FSEEK_OFF_MAX)) {
         return SDL_SetError("Seek offset out of range");
