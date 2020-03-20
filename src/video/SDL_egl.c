@@ -221,13 +221,16 @@ SDL_EGL_GetProcAddress(_THIS, const char *proc)
         }
     }
 #endif
-    
+
+#ifndef __EMSCRIPTEN__  /* LoadFunction isn't needed on Emscripten and will call dlsym(), causing other problems. */
     retval = SDL_LoadFunction(_this->egl_data->egl_dll_handle, proc);
     if (!retval && SDL_strlen(proc) <= 1022) {
         procname[0] = '_';
         SDL_strlcpy(procname + 1, proc, 1022);
         retval = SDL_LoadFunction(_this->egl_data->egl_dll_handle, procname);
     }
+#endif
+
     return retval;
 }
 
