@@ -77,7 +77,7 @@ Emscripten_CreateCursor(SDL_Surface* surface, int hot_x, int hot_y)
         return NULL;
     }
 
-    cursor_url = (const char *)EM_ASM_INT({
+    cursor_url = (const char *)MAIN_THREAD_EM_ASM_INT({
         var w = $0;
         var h = $1;
         var hot_x = $2;
@@ -209,7 +209,7 @@ Emscripten_ShowCursor(SDL_Cursor* cursor)
             curdata = (Emscripten_CursorData *) cursor->driverdata;
 
             if(curdata->system_cursor) {
-                EM_ASM_INT({
+                MAIN_THREAD_EM_ASM_INT({
                     if (Module['canvas']) {
                         Module['canvas'].style['cursor'] = UTF8ToString($0);
                     }
@@ -218,7 +218,7 @@ Emscripten_ShowCursor(SDL_Cursor* cursor)
             }
         }
         else {
-            EM_ASM(
+            MAIN_THREAD_EM_ASM(
                 if (Module['canvas']) {
                     Module['canvas'].style['cursor'] = 'none';
                 }

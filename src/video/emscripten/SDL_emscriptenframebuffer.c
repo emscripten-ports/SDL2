@@ -68,7 +68,7 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
 
     /* Send the data to the display */
 
-    EM_ASM_INT({
+    MAIN_THREAD_EM_ASM_INT({
         var w = $0;
         var h = $1;
         var pixels = $2;

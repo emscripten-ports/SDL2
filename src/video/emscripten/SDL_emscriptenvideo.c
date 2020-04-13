@@ -144,11 +144,11 @@ Emscripten_VideoInit(_THIS)
     /* Use a fake 32-bpp desktop mode */
     mode.format = SDL_PIXELFORMAT_RGB888;
 
-    mode.w = EM_ASM_INT_V({
+    mode.w = MAIN_THREAD_EM_ASM_INT({
         return screen.width;
     });
 
-    mode.h = EM_ASM_INT_V({
+    mode.h = MAIN_THREAD_EM_ASM_INT({
         return screen.height;
     });
 
@@ -185,10 +185,10 @@ Emscripten_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * 
     if (rect) {
         rect->x = 0;
         rect->y = 0;
-        rect->w = EM_ASM_INT_V({
+        rect->w = MAIN_THREAD_EM_ASM_INT({
             return window.innerWidth;
         });
-        rect->h = EM_ASM_INT_V({
+        rect->h = MAIN_THREAD_EM_ASM_INT({
             return window.innerHeight;
         });
     }
@@ -365,7 +365,7 @@ Emscripten_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * di
 
 static void
 Emscripten_SetWindowTitle(_THIS, SDL_Window * window) {
-    EM_ASM_INT({
+    MAIN_THREAD_EM_ASM_INT({
       if (typeof Module['setWindowTitle'] !== 'undefined') {
         Module['setWindowTitle'](UTF8ToString($0));
       }
