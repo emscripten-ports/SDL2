@@ -297,20 +297,6 @@ Emscripten_ConvertUTF32toUTF8(Uint32 codepoint, char * text)
     return SDL_TRUE;
 }
 
-void
-Emscripten_ResumeAudio(void)
-{
-    /* this is a workaround for chrome disabling audio unless it was caused by user interaction*/
-    EM_ASM({
-        var SDL2 = Module['SDL2'];
-        if(!SDL2 || !SDL2.audioContext)
-            return;
-
-        if(SDL2.audioContext.state == 'suspended')
-            SDL2.audioContext.resume();
-    });
-}
-
 static EM_BOOL
 Emscripten_HandlePointerLockChange(int eventType, const EmscriptenPointerlockChangeEvent *changeEvent, void *userData)
 {
@@ -382,8 +368,6 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
         sdl_button_state = SDL_PRESSED;
         sdl_event_type = SDL_MOUSEBUTTONDOWN;
     } else {
-        Emscripten_ResumeAudio();
-
         sdl_button_state = SDL_RELEASED;
         sdl_event_type = SDL_MOUSEBUTTONUP;
     }
@@ -477,8 +461,6 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
             if (!preventDefault && SDL_GetEventState(SDL_FINGERDOWN) == SDL_ENABLE) {
                 preventDefault = 1;
             }
-
-            Emscripten_ResumeAudio();
         } else if (eventType == EMSCRIPTEN_EVENT_TOUCHMOVE) {
             SDL_SendTouchMotion(deviceId, id, x, y, 1.0f);
         } else {
@@ -573,8 +555,6 @@ Emscripten_HandleKey(int eventType, const EmscriptenKeyboardEvent *keyEvent, voi
             SDL_SendKeyboardKey(eventType == EMSCRIPTEN_EVENT_KEYDOWN ? SDL_PRESSED : SDL_RELEASED, scancode);
         }
     }
-
-    Emscripten_ResumeAudio();
 
     prevent_default = SDL_GetEventState(eventType == EMSCRIPTEN_EVENT_KEYDOWN ? SDL_KEYDOWN : SDL_KEYUP) == SDL_ENABLE;
 
