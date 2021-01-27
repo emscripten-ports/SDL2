@@ -134,14 +134,14 @@ SDL_CondWaitTimeout(SDL_cond * cond, SDL_mutex * mutex, Uint32 ms)
         retval = SDL_MUTEX_TIMEDOUT;
         break;
     case 0:
-#if FAKE_RECURSIVE_MUTEX
-        mutex->owner = pthread_self();
-        mutex->recursive = 0;
-#endif
         break;
     default:
         retval = SDL_SetError("pthread_cond_timedwait() failed");
     }
+#if FAKE_RECURSIVE_MUTEX
+    mutex->owner = pthread_self();
+    mutex->recursive = 0;
+#endif
     return retval;
 }
 
