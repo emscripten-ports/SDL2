@@ -24,6 +24,7 @@ TARGETS = \
 	testdrawchessboard$(EXE) \
 	testdropfile$(EXE) \
 	testerror$(EXE) \
+	testevdev$(EXE) \
 	testfile$(EXE) \
 	testfilesystem$(EXE) \
 	testgamecontroller$(EXE) \
@@ -37,6 +38,7 @@ TARGETS = \
 	testjoystick$(EXE) \
 	testkeys$(EXE) \
 	testloadso$(EXE) \
+	testlocale$(EXE) \
 	testlock$(EXE) \
 	testmessage$(EXE) \
 	testmultiaudio$(EXE) \
@@ -60,6 +62,7 @@ TARGETS = \
 	teststreaming$(EXE) \
 	testthread$(EXE) \
 	testtimer$(EXE) \
+	testurl$(EXE) \
 	testver$(EXE) \
 	testviewport$(EXE) \
 	testvulkan$(EXE) \
@@ -148,6 +151,9 @@ testdropfile$(EXE): $(srcdir)/testdropfile.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 testerror$(EXE): $(srcdir)/testerror.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+testevdev$(EXE): $(srcdir)/testevdev.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 testfile$(EXE): $(srcdir)/testfile.c
@@ -268,6 +274,9 @@ teststreaming$(EXE): $(srcdir)/teststreaming.c
 testtimer$(EXE): $(srcdir)/testtimer.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
+testurl$(EXE): $(srcdir)/testurl.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
 testver$(EXE): $(srcdir)/testver.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
@@ -307,6 +316,10 @@ controllermap$(EXE): $(srcdir)/controllermap.c
 testvulkan$(EXE): $(srcdir)/testvulkan.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
+testlocale$(EXE): $(srcdir)/testlocale.c
+	$(CC) -o $@ $? $(CFLAGS) $(LIBS)
+
+
 
 clean:
 	rm -f $(TARGETS)
@@ -316,7 +329,7 @@ distclean: clean
 	rm -f config.status config.cache config.log
 	rm -rf $(srcdir)/autom4te*
 
-
+ifneq ($(srcdir), .)
 %.bmp: $(srcdir)/%.bmp
 	cp $< $@
 
@@ -325,6 +338,7 @@ distclean: clean
 
 %.dat: $(srcdir)/%.dat
 	cp $< $@
+endif
 
 copydatafiles: copybmpfiles copywavfiles copydatfiles
 .PHONY : copydatafiles

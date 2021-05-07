@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -103,6 +103,9 @@ static const AudioBootStrap *const bootstrap[] = {
 #endif
 #if SDL_AUDIO_DRIVER_JACK
     &JACK_bootstrap,
+#endif
+#if SDL_AUDIO_DRIVER_OS2
+    &OS2AUDIO_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_DISK
     &DISKAUDIO_bootstrap,
@@ -574,7 +577,7 @@ SDL_BufferQueueDrainCallback(void *userdata, Uint8 *stream, int len)
 
     if (len > 0) {  /* fill any remaining space in the stream with silence. */
         SDL_assert(SDL_CountDataQueue(device->buffer_queue) == 0);
-        SDL_memset(stream, device->spec.silence, len);
+        SDL_memset(stream, device->callbackspec.silence, len);
     }
 }
 
@@ -730,7 +733,7 @@ SDL_RunAudio(void *devicep)
         /* !!! FIXME: this should be LockDevice. */
         SDL_LockMutex(device->mixer_lock);
         if (SDL_AtomicGet(&device->paused)) {
-            SDL_memset(data, device->spec.silence, data_len);
+            SDL_memset(data, device->callbackspec.silence, data_len);
         } else {
             callback(udata, data, data_len);
         }
@@ -948,7 +951,7 @@ SDL_AudioInit(const char *driver_name)
     }
 
     SDL_zero(current_audio);
-    SDL_zero(open_devices);
+    SDL_zeroa(open_devices);
 
     /* Select the proper audio driver */
     if (driver_name == NULL) {
@@ -1076,7 +1079,7 @@ SDL_GetAudioDeviceName(int index, int iscapture)
         return NULL;
     }
 
-    if ((iscapture) && (!current_audio.impl.HasCaptureSupport)) {
+    if (iscapture && !current_audio.impl.HasCaptureSupport) {
         SDL_SetError("No capture support");
         return NULL;
     }
@@ -1230,7 +1233,7 @@ open_audio_device(const char *devname, int iscapture,
         return 0;
     }
 
-    if ((iscapture) && (!current_audio.impl.HasCaptureSupport)) {
+    if (iscapture && !current_audio.impl.HasCaptureSupport) {
         SDL_SetError("No capture support");
         return 0;
     }
@@ -1608,7 +1611,7 @@ SDL_AudioQuit(void)
     SDL_DestroyMutex(current_audio.detectionLock);
 
     SDL_zero(current_audio);
-    SDL_zero(open_devices);
+    SDL_zeroa(open_devices);
 
 #ifdef HAVE_LIBSAMPLERATE_H
     UnloadLibSampleRate();
@@ -1664,17 +1667,28 @@ SDL_NextAudioFormat(void)
     return format_list[format_idx][format_idx_sub++];
 }
 
+Uint8
+SDL_SilenceValueForFormat(const SDL_AudioFormat format)
+{
+    switch (format) {
+        /* !!! FIXME: 0x80 isn't perfect for U16, but we can't fit 0x8000 in a
+           !!! FIXME:  byte for memset() use. This is actually 0.1953 percent
+           !!! FIXME:  off from silence. Maybe just don't use U16. */
+        case AUDIO_U16LSB:
+        case AUDIO_U16MSB:
+        case AUDIO_U8:
+            return 0x80;
+
+        default: break;
+    }            
+
+    return 0x00;
+}
+
 void
 SDL_CalculateAudioSpec(SDL_AudioSpec * spec)
 {
-    switch (spec->format) {
-    case AUDIO_U8:
-        spec->silence = 0x80;
-        break;
-    default:
-        spec->silence = 0x00;
-        break;
-    }
+    spec->silence = SDL_SilenceValueForFormat(spec->format);
     spec->size = SDL_AUDIO_BITSIZE(spec->format) / 8;
     spec->size *= spec->channels;
     spec->size *= spec->samples;

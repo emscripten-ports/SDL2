@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -164,8 +164,7 @@ static const char *getVulkanResultString(VkResult result)
         return "VK_ERROR_OUT_OF_POOL_MEMORY_KHR";
     case VK_ERROR_INVALID_SHADER_NV:
         return "VK_ERROR_INVALID_SHADER_NV";
-    case VK_RESULT_MAX_ENUM:
-    case VK_RESULT_RANGE_SIZE:
+    default:
         break;
     }
     if(result < 0)

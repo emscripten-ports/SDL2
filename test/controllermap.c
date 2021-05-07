@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,13 +21,11 @@
 
 #ifndef SDL_JOYSTICK_DISABLED
 
-#ifdef __IPHONEOS__
-#define SCREEN_WIDTH    320
-#define SCREEN_HEIGHT   480
-#else
+/* Define this for verbose output while mapping controllers */
+#define DEBUG_CONTROLLERMAP
+
 #define SCREEN_WIDTH    512
 #define SCREEN_HEIGHT   320
-#endif
 
 #define MARKER_BUTTON 1
 #define MARKER_AXIS 2
@@ -61,7 +59,7 @@ static struct
     { 342, 132, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_X */
     { 389, 101, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_Y */
     { 174, 132, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_BACK */
-    { 233, 132, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_GUIDE */
+    { 232, 128, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_GUIDE */
     { 289, 132, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_START */
     {  75, 154, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_LEFTSTICK */
     { 305, 230, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_RIGHTSTICK */
@@ -71,6 +69,12 @@ static struct
     { 154, 249, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_DPAD_DOWN */
     { 116, 217, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_DPAD_LEFT */
     { 186, 217, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_DPAD_RIGHT */
+    { 232, 174, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_MISC1 */
+    { 132, 135, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_PADDLE1 */
+    { 330, 135, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_PADDLE2 */
+    { 132, 175, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_PADDLE3 */
+    { 330, 175, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_PADDLE4 */
+    {   0,   0, 0.0, MARKER_BUTTON }, /* SDL_CONTROLLER_BUTTON_TOUCHPAD */
     {  74, 153, 270.0, MARKER_AXIS }, /* SDL_CONTROLLER_BINDING_AXIS_LEFTX_NEGATIVE */
     {  74, 153, 90.0,  MARKER_AXIS }, /* SDL_CONTROLLER_BINDING_AXIS_LEFTX_POSITIVE */
     {  74, 153, 0.0,   MARKER_AXIS }, /* SDL_CONTROLLER_BINDING_AXIS_LEFTY_NEGATIVE */
@@ -109,6 +113,11 @@ static int s_arrBindingOrder[BINDING_COUNT] = {
     SDL_CONTROLLER_BUTTON_BACK,
     SDL_CONTROLLER_BUTTON_GUIDE,
     SDL_CONTROLLER_BUTTON_START,
+    SDL_CONTROLLER_BUTTON_MISC1,
+    SDL_CONTROLLER_BUTTON_PADDLE1,
+    SDL_CONTROLLER_BUTTON_PADDLE2,
+    SDL_CONTROLLER_BUTTON_PADDLE3,
+    SDL_CONTROLLER_BUTTON_PADDLE4,
 };
 
 typedef struct
@@ -140,6 +149,7 @@ static SDL_GameControllerExtendedBind s_arrBindings[BINDING_COUNT];
 typedef struct
 {
     SDL_bool m_bMoving;
+    int m_nLastValue;
     int m_nStartingValue;
     int m_nFarthestValue;
 } AxisState;
@@ -150,6 +160,9 @@ static AxisState *s_arrAxisState;
 static int s_iCurrentBinding;
 static Uint32 s_unPendingAdvanceTime;
 static SDL_bool s_bBindingComplete;
+
+static SDL_Window *window;
+static SDL_bool done = SDL_FALSE;
 
 SDL_Texture *
 LoadTexture(SDL_Renderer *renderer, const char *file, SDL_bool transparent)
@@ -353,35 +366,23 @@ BMergeAxisBindings(int iIndex)
 static void
 WatchJoystick(SDL_Joystick * joystick)
 {
-    SDL_Window *window = NULL;
     SDL_Renderer *screen = NULL;
-    SDL_Texture *background, *button, *axis, *marker;
+    SDL_Texture *background_front, *background_back, *button, *axis, *marker;
     const char *name = NULL;
-    SDL_bool done = SDL_FALSE;
     SDL_Event event;
     SDL_Rect dst;
     Uint8 alpha=200, alpha_step = -1;
     Uint32 alpha_ticks = 0;
     SDL_JoystickID nJoystickID;
-    int iIndex;
-
-    /* Create a window to display joystick axis position */
-    window = SDL_CreateWindow("Game Controller Map", SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-                              SCREEN_HEIGHT, 0);
-    if (window == NULL) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window: %s\n", SDL_GetError());
-        return;
-    }
 
     screen = SDL_CreateRenderer(window, -1, 0);
     if (screen == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create renderer: %s\n", SDL_GetError());
-        SDL_DestroyWindow(window);
         return;
     }
     
-    background = LoadTexture(screen, "controllermap.bmp", SDL_FALSE);
+    background_front = LoadTexture(screen, "controllermap.bmp", SDL_FALSE);
+    background_back = LoadTexture(screen, "controllermap_back.bmp", SDL_FALSE);
     button = LoadTexture(screen, "button.bmp", SDL_TRUE);
     axis = LoadTexture(screen, "axis.bmp", SDL_TRUE);
     SDL_RaiseWindow(window);
@@ -410,13 +411,11 @@ WatchJoystick(SDL_Joystick * joystick)
 
     s_nNumAxes = SDL_JoystickNumAxes(joystick);
     s_arrAxisState = (AxisState *)SDL_calloc(s_nNumAxes, sizeof(*s_arrAxisState));
-    for (iIndex = 0; iIndex < s_nNumAxes; ++iIndex) {
-        AxisState *pAxisState = &s_arrAxisState[iIndex];
-        Sint16 nInitialValue;
-        pAxisState->m_bMoving = SDL_JoystickGetAxisInitialState(joystick, iIndex, &nInitialValue);
-        pAxisState->m_nStartingValue = nInitialValue;
-        pAxisState->m_nFarthestValue = nInitialValue;
-    }
+
+	/* Skip any spurious events at start */
+	while (SDL_PollEvent(&event) > 0) {
+		continue;
+	}
 
     /* Loop, getting joystick events! */
     while (!done && !s_bBindingComplete) {
@@ -450,7 +449,12 @@ WatchJoystick(SDL_Joystick * joystick)
 
         SDL_SetRenderDrawColor(screen, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(screen);
-        SDL_RenderCopy(screen, background, NULL, NULL);
+        if (s_arrBindingOrder[s_iCurrentBinding] >= SDL_CONTROLLER_BUTTON_PADDLE1 &&
+            s_arrBindingOrder[s_iCurrentBinding] <= SDL_CONTROLLER_BUTTON_PADDLE4) {
+            SDL_RenderCopy(screen, background_back, NULL, NULL);
+        } else {
+            SDL_RenderCopy(screen, background_front, NULL, NULL);
+        }
         SDL_SetTextureAlphaMod(marker, alpha);
         SDL_SetTextureColorMod(marker, 10, 255, 21);
         SDL_RenderCopyEx(screen, marker, NULL, &dst, s_arrBindingDisplay[iElement].angle, NULL, SDL_FLIP_NONE);
@@ -465,13 +469,20 @@ WatchJoystick(SDL_Joystick * joystick)
                 break;
             case SDL_JOYAXISMOTION:
                 if (event.jaxis.which == nJoystickID) {
+                    const int MAX_ALLOWED_JITTER = SDL_JOYSTICK_AXIS_MAX / 80;  /* ShanWan PS3 controller needed 96 */
                     AxisState *pAxisState = &s_arrAxisState[event.jaxis.axis];
                     int nValue = event.jaxis.value;
                     int nCurrentDistance, nFarthestDistance;
                     if (!pAxisState->m_bMoving) {
-                        pAxisState->m_bMoving = SDL_TRUE;
-                        pAxisState->m_nStartingValue = nValue;
-                        pAxisState->m_nFarthestValue = nValue;
+                        Sint16 nInitialValue;
+                        pAxisState->m_bMoving = SDL_JoystickGetAxisInitialState(joystick, event.jaxis.axis, &nInitialValue);
+                        pAxisState->m_nLastValue = nValue;
+                        pAxisState->m_nStartingValue = nInitialValue;
+                        pAxisState->m_nFarthestValue = nInitialValue;
+                    } else if (SDL_abs(nValue - pAxisState->m_nLastValue) <= MAX_ALLOWED_JITTER) {
+                        break;
+                    } else {
+                        pAxisState->m_nLastValue = nValue;
                     }
                     nCurrentDistance = SDL_abs(nValue - pAxisState->m_nStartingValue);
                     nFarthestDistance = SDL_abs(pAxisState->m_nFarthestValue - pAxisState->m_nStartingValue);
@@ -697,7 +708,6 @@ WatchJoystick(SDL_Joystick * joystick)
     s_arrAxisState = NULL;
     
     SDL_DestroyRenderer(screen);
-    SDL_DestroyWindow(window);
 }
 
 int
@@ -707,6 +717,8 @@ main(int argc, char *argv[])
     int i;
     SDL_Joystick *joystick;
 
+    SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
+
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
@@ -714,6 +726,34 @@ main(int argc, char *argv[])
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
         exit(1);
+    }
+
+    /* Create a window to display joystick axis position */
+    window = SDL_CreateWindow("Game Controller Map", SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
+                              SCREEN_HEIGHT, 0);
+    if (window == NULL) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window: %s\n", SDL_GetError());
+        return 2;
+    }
+
+    while (SDL_NumJoysticks() == 0) {
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event) > 0) {
+            switch (event.type) {
+            case SDL_KEYDOWN:
+                if ((event.key.keysym.sym != SDLK_ESCAPE)) {
+                    break;
+                }
+                /* Fall through to signal quit */
+            case SDL_QUIT:
+                done = SDL_TRUE;
+                break;
+            default:
+                break;
+            }
+        }
     }
 
     /* Print information about the joysticks */
@@ -740,28 +780,16 @@ main(int argc, char *argv[])
         }
     }
 
-#ifdef __ANDROID__
-    if (SDL_NumJoysticks() > 0) {
-#else
-    if (argv[1]) {
-#endif
-        int device;
-#ifdef __ANDROID__
-        device = 0;
-#else
-        device = atoi(argv[1]);
-#endif
-        joystick = SDL_JoystickOpen(device);
-        if (joystick == NULL) {
-            SDL_Log("Couldn't open joystick %d: %s\n", device, SDL_GetError());
-        } else {
-            WatchJoystick(joystick);
-            SDL_JoystickClose(joystick);
-        }
+    joystick = SDL_JoystickOpen(0);
+    if (joystick == NULL) {
+        SDL_Log("Couldn't open joystick 0: %s\n", SDL_GetError());
+    } else {
+        WatchJoystick(joystick);
+        SDL_JoystickClose(joystick);
     }
-    else {
-        SDL_Log("\n\nUsage: ./controllermap number\nFor example: ./controllermap 0\nOr: ./controllermap 0 >> gamecontrollerdb.txt");
-    }
+
+    SDL_DestroyWindow(window);
+
     SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
 
     return 0;
@@ -773,7 +801,7 @@ int
 main(int argc, char *argv[])
 {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL compiled without Joystick support.\n");
-    exit(1);
+    return 1;
 }
 
 #endif

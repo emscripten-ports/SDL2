@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -100,6 +100,24 @@ main(int argc, char *argv[])
     success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
                 "Simple MessageBox",
                 "This is a simple MessageBox with a newline:\r\nHello world!",
+                NULL);
+    if (success == -1) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error Presenting MessageBox: %s\n", SDL_GetError());
+        quit(1);
+    }
+
+    success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+                NULL,
+                "NULL Title",
+                NULL);
+    if (success == -1) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error Presenting MessageBox: %s\n", SDL_GetError());
+        quit(1);
+    }
+
+    success = SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+                "NULL Message",
+                NULL,
                 NULL);
     if (success == -1) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error Presenting MessageBox: %s\n", SDL_GetError());
