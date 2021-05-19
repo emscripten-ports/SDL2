@@ -27,7 +27,7 @@
 /**
  *  \file SDL_config_emscripten.h
  *
- *  This is a configuration that can be used to build SDL for Android
+ *  This is a configuration that can be used to build SDL for Emscripten.
  */
 
 #ifdef __LP64__
