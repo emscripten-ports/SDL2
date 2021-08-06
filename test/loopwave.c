@@ -70,6 +70,10 @@ loop()
 int
 main(int argc, char *argv[])
 {
+    EM_ASM(
+    var waVe = new Uint8Array(fs.readFileSync('./sample.wav')); 
+    FS.writeFile('/sample.wav', waVe)
+        );
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
