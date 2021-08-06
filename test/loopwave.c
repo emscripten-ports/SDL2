@@ -74,8 +74,8 @@ main(int argc, char *argv[])
         function assm(){
     var waVe = new Uint8Array(FS.readFileSync('./sample.wav')); 
     FS.writeFile('/sample.wav', waVe)
-        );}
-        assm();
+       }
+        assm(); );
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
