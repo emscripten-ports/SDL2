@@ -69,12 +69,12 @@ loop()
 }
 
 int
-main(int argc, char *argv[])
+main()
 {
     return (0);
 }
 
-int pl(){
+int pl(int argc, char *argv[]){
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
