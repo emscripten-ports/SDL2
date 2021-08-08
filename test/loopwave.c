@@ -67,22 +67,10 @@ loop()
     if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
         emscripten_cancel_main_loop();
 }
-EM_JS(void,b,(),{
-let load=() => {
-let request=new XMLHttpRequest();
-request.open("GET","./sample.wav");
-request.responseType="arraybuffer";
-request.onload=function(){
-let uint8_=new Uint8Array(request.response);
-FS.writeFile('/sample.wav',uint8_);
-};
-request.send();
-};
-});
+
 int
 main(int argc, char *argv[])
 {
-b();
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
