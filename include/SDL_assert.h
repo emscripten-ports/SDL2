@@ -21,15 +21,12 @@
 
 #ifndef SDL_assert_h_
 #define SDL_assert_h_
-
 #include "SDL_config.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #ifndef SDL_ASSERT_LEVEL
 #ifdef SDL_DEFAULT_ASSERT_LEVEL
 #define SDL_ASSERT_LEVEL SDL_DEFAULT_ASSERT_LEVEL
@@ -50,19 +47,18 @@ assert can have unique static variables associated with it.
 #if defined(_MSC_VER)
 /* Don't include intrin.h here because it contains C++ code */
     extern void __cdecl __debugbreak(void);
-    #define SDL_TriggerBreakpoint() __debugbreak()
-#elif ( (!defined(__NACL__)) && ((defined(__GNUC__) || defined(__clang__)) && (defined(__i386__) || defined(__x86_64__))) )
-    #define SDL_TriggerBreakpoint() __asm__ __volatile__ ( "int $3\n\t" )
+#define SDL_TriggerBreakpoint() __debugbreak()
+#elif ((!defined(__NACL__)) && ((defined(__GNUC__) || defined(__clang__)) && (defined(__i386__) || defined(__x86_64__))))
+#define SDL_TriggerBreakpoint() __asm__ __volatile__ ( "int $3\n\t" )
 #elif defined(__386__) && defined(__WATCOMC__)
-    #define SDL_TriggerBreakpoint() { _asm { int 0x03 } }
+#define SDL_TriggerBreakpoint() { _asm { int 0x03 } }
 #elif defined(HAVE_SIGNAL_H) && !defined(__WATCOMC__)
-    #include <signal.h>
-    #define SDL_TriggerBreakpoint() raise(SIGTRAP)
+#include <signal.h>
+#define SDL_TriggerBreakpoint() raise(SIGTRAP)
 #else
-    /* How do we trigger breakpoints on this platform? */
-    #define SDL_TriggerBreakpoint()
+/* How do we trigger breakpoints on this platform? */
+#define SDL_TriggerBreakpoint()
 #endif
-
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 supports __func__ as a standard. */
 #   define SDL_FUNCTION __func__
 #elif ((__GNUC__ >= 2) || defined(_MSC_VER) || defined (__WATCOMC__))
@@ -95,36 +91,29 @@ disable assertions.
 #else
 #define SDL_NULL_WHILE_LOOP_CONDITION (0)
 #endif
-
 #define SDL_disabled_assert(condition) \
     do { (void) sizeof ((condition)); } while (SDL_NULL_WHILE_LOOP_CONDITION)
-
-typedef enum
-{
-    SDL_ASSERTION_RETRY,  /**< Retry the assert immediately. */
-    SDL_ASSERTION_BREAK,  /**< Make the debugger trigger a breakpoint. */
-    SDL_ASSERTION_ABORT,  /**< Terminate the program. */
-    SDL_ASSERTION_IGNORE,  /**< Ignore the assert. */
-    SDL_ASSERTION_ALWAYS_IGNORE  /**< Ignore the assert from now on. */
-} SDL_AssertState;
-
-typedef struct SDL_AssertData
-{
-    int always_ignore;
-    unsigned int trigger_count;
-    const char *condition;
-    const char *filename;
-    int linenum;
-    const char *function;
-    const struct SDL_AssertData *next;
-} SDL_AssertData;
-
+typedef enum{
+SDL_ASSERTION_RETRY,  /**< Retry the assert immediately. */
+SDL_ASSERTION_BREAK,  /**< Make the debugger trigger a breakpoint. */
+SDL_ASSERTION_ABORT,  /**< Terminate the program. */
+SDL_ASSERTION_IGNORE,  /**< Ignore the assert. */
+SDL_ASSERTION_ALWAYS_IGNORE  /**< Ignore the assert from now on. */
+}SDL_AssertState;
+typedef struct SDL_AssertData{
+int always_ignore;
+unsigned int trigger_count;
+const char *condition;
+const char *filename;
+int linenum;
+const char *function;
+const struct SDL_AssertData *next;
+}SDL_AssertData;
 #if (SDL_ASSERT_LEVEL > 0)
-
 /* Never call this directly. Use the SDL_assert* macros. */
 extern DECLSPEC SDL_AssertState SDLCALL SDL_ReportAssertion(SDL_AssertData *,
-                                                             const char *,
-                                                             const char *, int)
+                                                            const char *,
+                                                            const char *,int)
 #if defined(__clang__)
 #if __has_feature(attribute_analyzer_noreturn)
 /* this tells Clang's static analysis that we're a custom assert function,
@@ -157,7 +146,6 @@ extern DECLSPEC SDL_AssertState SDLCALL SDL_ReportAssertion(SDL_AssertData *,
             break; /* not retrying. */ \
         } \
     } while (SDL_NULL_WHILE_LOOP_CONDITION)
-
 #endif  /* enabled assertions support code */
 
 /* Enable various levels of assertions. */
@@ -183,11 +171,8 @@ extern DECLSPEC SDL_AssertState SDLCALL SDL_ReportAssertion(SDL_AssertData *,
 
 /* this assertion is never disabled at any level. */
 #define SDL_assert_always(condition) SDL_enabled_assert(condition)
-
-
 typedef SDL_AssertState (SDLCALL *SDL_AssertionHandler)(
-                                 const SDL_AssertData* data, void* userdata);
-
+const SDL_AssertData *data,void *userdata);
 /**
  *  \brief Set an application-defined assertion handler.
  *
@@ -209,9 +194,8 @@ typedef SDL_AssertState (SDLCALL *SDL_AssertionHandler)(
  *  \param userdata A pointer passed to the callback as-is.
  */
 extern DECLSPEC void SDLCALL SDL_SetAssertionHandler(
-                                            SDL_AssertionHandler handler,
-                                            void *userdata);
-
+SDL_AssertionHandler handler,
+void *userdata);
 /**
  *  \brief Get the default assertion handler.
  *
@@ -223,7 +207,6 @@ extern DECLSPEC void SDLCALL SDL_SetAssertionHandler(
  *  \return The default SDL_AssertionHandler that is called when an assert triggers.
  */
 extern DECLSPEC SDL_AssertionHandler SDLCALL SDL_GetDefaultAssertionHandler(void);
-
 /**
  *  \brief Get the current assertion handler.
  *
@@ -240,7 +223,6 @@ extern DECLSPEC SDL_AssertionHandler SDLCALL SDL_GetDefaultAssertionHandler(void
  *  \return The SDL_AssertionHandler that is called when an assert triggers.
  */
 extern DECLSPEC SDL_AssertionHandler SDLCALL SDL_GetAssertionHandler(void **puserdata);
-
 /**
  *  \brief Get a list of all assertion failures.
  *
@@ -263,8 +245,7 @@ extern DECLSPEC SDL_AssertionHandler SDLCALL SDL_GetAssertionHandler(void **puse
  *  \return List of all assertions.
  *  \sa SDL_ResetAssertionReport
  */
-extern DECLSPEC const SDL_AssertData * SDLCALL SDL_GetAssertionReport(void);
-
+extern DECLSPEC const SDL_AssertData *SDLCALL SDL_GetAssertionReport(void);
 /**
  *  \brief Reset the list of all assertion failures.
  *
@@ -285,7 +266,6 @@ extern DECLSPEC void SDLCALL SDL_ResetAssertionReport(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_assert_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

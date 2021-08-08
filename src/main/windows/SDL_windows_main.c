@@ -4,7 +4,6 @@
     The WinMain function -- calls your program's main() function
 */
 #include "SDL_config.h"
-
 #ifdef __WIN32__
 
 /* Include this so we define UNICODE properly */

@@ -19,17 +19,14 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 #ifndef SDL_winrtgamebar_h_
 #define SDL_winrtgamebar_h_
-
 #ifdef __cplusplus
 /* These are exported as C++ functions, rather than C, to fix a compilation
    bug with MSVC 2013, for Windows 8.x builds. */
 extern void WINRT_InitGameBar(_THIS);
 extern void WINRT_QuitGameBar(_THIS);
 #endif
-
 #endif /* SDL_winrtgamebar_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

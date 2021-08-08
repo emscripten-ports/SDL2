@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if defined(__WIN32__) || defined(__WINRT__)
 
 #include "SDL_windows.h"

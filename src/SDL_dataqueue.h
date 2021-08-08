@@ -20,20 +20,17 @@
 */
 #ifndef SDL_dataqueue_h_
 #define SDL_dataqueue_h_
-
 /* this is not (currently) a public API. But maybe it should be! */
 
 struct SDL_DataQueue;
 typedef struct SDL_DataQueue SDL_DataQueue;
-
-SDL_DataQueue *SDL_NewDataQueue(const size_t packetlen, const size_t initialslack);
+SDL_DataQueue *SDL_NewDataQueue(const size_t packetlen,const size_t initialslack);
 void SDL_FreeDataQueue(SDL_DataQueue *queue);
-void SDL_ClearDataQueue(SDL_DataQueue *queue, const size_t slack);
-int SDL_WriteToDataQueue(SDL_DataQueue *queue, const void *data, const size_t len);
-size_t SDL_ReadFromDataQueue(SDL_DataQueue *queue, void *buf, const size_t len);
-size_t SDL_PeekIntoDataQueue(SDL_DataQueue *queue, void *buf, const size_t len);
+void SDL_ClearDataQueue(SDL_DataQueue *queue,const size_t slack);
+int SDL_WriteToDataQueue(SDL_DataQueue *queue,const void *data,const size_t len);
+size_t SDL_ReadFromDataQueue(SDL_DataQueue *queue,void *buf,const size_t len);
+size_t SDL_PeekIntoDataQueue(SDL_DataQueue *queue,void *buf,const size_t len);
 size_t SDL_CountDataQueue(SDL_DataQueue *queue);
-
 /* this sets a section of the data queue aside (possibly allocating memory for it)
    as if it's been written to, but returns a pointer to that space. You may write
    to this space until a read would consume it. Writes (and other calls to this
@@ -47,8 +44,7 @@ size_t SDL_CountDataQueue(SDL_DataQueue *queue);
    SDL_WriteToDataQueue() unless you know what you're doing.
    Returns pointer to buffer of at least (len) bytes, NULL on error.
 */
-void *SDL_ReserveSpaceInDataQueue(SDL_DataQueue *queue, const size_t len);
-
+void *SDL_ReserveSpaceInDataQueue(SDL_DataQueue *queue,const size_t len);
 #endif /* SDL_dataqueue_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

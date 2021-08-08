@@ -19,16 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_coreaudio_h_
 #define SDL_coreaudio_h_
-
 #include "../SDL_sysaudio.h"
-
 #if !defined(__IPHONEOS__)
 #define MACOSX_COREAUDIO 1
 #endif
-
 #if MACOSX_COREAUDIO
 #include <CoreAudio/CoreAudio.h>
 #include <CoreServices/CoreServices.h>
@@ -36,33 +32,29 @@
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIApplication.h>
 #endif
-
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioUnit/AudioUnit.h>
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    SDL_Thread *thread;
-    AudioQueueRef audioQueue;
-    AudioQueueBufferRef *audioBuffer;
-    void *buffer;
-    UInt32 bufferOffset;
-    UInt32 bufferSize;
-    AudioStreamBasicDescription strdesc;
-    SDL_sem *ready_semaphore;
-    char *thread_error;
-    SDL_atomic_t shutdown;
+struct SDL_PrivateAudioData{
+SDL_Thread *thread;
+AudioQueueRef audioQueue;
+AudioQueueBufferRef *audioBuffer;
+void *buffer;
+UInt32 bufferOffset;
+UInt32 bufferSize;
+AudioStreamBasicDescription strdesc;
+SDL_sem *ready_semaphore;
+char *thread_error;
+SDL_atomic_t shutdown;
 #if MACOSX_COREAUDIO
-    AudioDeviceID deviceID;
+AudioDeviceID deviceID;
 #else
-    SDL_bool interrupted;
-    CFTypeRef interruption_listener;
+SDL_bool interrupted;
+CFTypeRef interruption_listener;
 #endif
 };
-
 #endif /* SDL_coreaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

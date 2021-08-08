@@ -35,25 +35,21 @@
 
 #ifndef SDL_test_images_h_
 #define SDL_test_images_h_
-
 #include "SDL.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *Type for test images.
  */
-typedef struct SDLTest_SurfaceImage_s {
-  int width;
-  int height;
-  unsigned int bytes_per_pixel; /* 3:RGB, 4:RGBA */
-  const char *pixel_data;
-} SDLTest_SurfaceImage_t;
-
+typedef struct SDLTest_SurfaceImage_s{
+int width;
+int height;
+unsigned int bytes_per_pixel; /* 3:RGB, 4:RGBA */
+const char *pixel_data;
+}SDLTest_SurfaceImage_t;
 /* Test images */
 SDL_Surface *SDLTest_ImageBlit(void);
 SDL_Surface *SDLTest_ImageBlitColor(void);
@@ -72,7 +68,6 @@ SDL_Surface *SDLTest_ImagePrimitivesBlend(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_images_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

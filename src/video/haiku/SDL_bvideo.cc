@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_HAIKU
 
 
@@ -38,9 +37,9 @@ extern "C" {
 
 /* FIXME: Undefined functions */
 //    #define HAIKU_PumpEvents NULL
-    #define HAIKU_StartTextInput NULL
-    #define HAIKU_StopTextInput NULL
-    #define HAIKU_SetTextInputRect NULL
+#define HAIKU_StartTextInput NULL
+#define HAIKU_StopTextInput NULL
+#define HAIKU_SetTextInputRect NULL
 
 //    #define HAIKU_DeleteDevice NULL
 

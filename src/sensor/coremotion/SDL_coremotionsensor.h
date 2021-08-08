@@ -19,11 +19,9 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 /* The private structure used to keep track of a sensor */
-struct sensor_hwdata
-{
-    float data[3];
+struct sensor_hwdata{
+float data[3];
 };
 
 

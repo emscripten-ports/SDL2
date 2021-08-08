@@ -19,25 +19,19 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_dspaudio_h_
 #define SDL_dspaudio_h_
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    /* The file descriptor for the audio device */
-    int audio_fd;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
+struct SDL_PrivateAudioData{
+/* The file descriptor for the audio device */
+int audio_fd;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
 };
 #define FUDGE_TICKS 10      /* The scheduler overhead ticks per frame */
-
 #endif /* SDL_dspaudio_h_ */
 /* vi: set ts=4 sw=4 expandtab: */

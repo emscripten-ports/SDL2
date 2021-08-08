@@ -38,9 +38,7 @@
 
 #ifndef SDL_hints_h_
 #define SDL_hints_h_
-
 #include "SDL_stdinc.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -831,7 +829,7 @@ extern "C" {
  * By default this hint is not set and the APK expansion files are not searched.
  */
 #define SDL_HINT_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION "SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION"
- 
+
 /**
  * \brief Android APK expansion patch file version. Should be a string number like "1", "2" etc.
  *
@@ -884,16 +882,16 @@ extern "C" {
  */
 #define SDL_HINT_ANDROID_BLOCK_ON_PAUSE "SDL_ANDROID_BLOCK_ON_PAUSE"
 
- /**
- * \brief A variable to control whether the return key on the soft keyboard
- *        should hide the soft keyboard on Android and iOS.
- *
- * The variable can be set to the following values:
- *   "0"       - The return key will be handled as a key event. This is the behaviour of SDL <= 2.0.3. (default)
- *   "1"       - The return key will hide the keyboard.
- *
- * The value of this hint is used at runtime, so it can be changed at any time.
- */
+/**
+* \brief A variable to control whether the return key on the soft keyboard
+*        should hide the soft keyboard on Android and iOS.
+*
+* The variable can be set to the following values:
+*   "0"       - The return key will be handled as a key event. This is the behaviour of SDL <= 2.0.3. (default)
+*   "1"       - The return key will hide the keyboard.
+*
+* The value of this hint is used at runtime, so it can be changed at any time.
+*/
 #define SDL_HINT_RETURN_KEY_HIDES_IME "SDL_RETURN_KEY_HIDES_IME"
 
 /**
@@ -1188,18 +1186,14 @@ extern "C" {
  *    "ignore"      - Ignore fact chunk entirely (default)
  */
 #define SDL_HINT_WAVE_FACT_CHUNK   "SDL_WAVE_FACT_CHUNK"
-
 /**
  *  \brief  An enumeration of hint priorities
  */
-typedef enum
-{
-    SDL_HINT_DEFAULT,
-    SDL_HINT_NORMAL,
-    SDL_HINT_OVERRIDE
-} SDL_HintPriority;
-
-
+typedef enum{
+SDL_HINT_DEFAULT,
+SDL_HINT_NORMAL,
+SDL_HINT_OVERRIDE
+}SDL_HintPriority;
 /**
  *  \brief Set a hint with a specific priority
  *
@@ -1212,7 +1206,6 @@ typedef enum
 extern DECLSPEC SDL_bool SDLCALL SDL_SetHintWithPriority(const char *name,
                                                          const char *value,
                                                          SDL_HintPriority priority);
-
 /**
  *  \brief Set a hint with normal priority
  *
@@ -1220,26 +1213,22 @@ extern DECLSPEC SDL_bool SDLCALL SDL_SetHintWithPriority(const char *name,
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_SetHint(const char *name,
                                              const char *value);
-
 /**
  *  \brief Get a hint
  *
  *  \return The string value of a hint variable.
  */
-extern DECLSPEC const char * SDLCALL SDL_GetHint(const char *name);
-
+extern DECLSPEC const char *SDLCALL SDL_GetHint(const char *name);
 /**
  *  \brief Get a hint
  *
  *  \return The boolean value of a hint variable.
  */
-extern DECLSPEC SDL_bool SDLCALL SDL_GetHintBoolean(const char *name, SDL_bool default_value);
-
+extern DECLSPEC SDL_bool SDLCALL SDL_GetHintBoolean(const char *name,SDL_bool default_value);
 /**
  * \brief type definition of the hint callback function.
  */
-typedef void (SDLCALL *SDL_HintCallback)(void *userdata, const char *name, const char *oldValue, const char *newValue);
-
+typedef void (SDLCALL *SDL_HintCallback)(void *userdata,const char *name,const char *oldValue,const char *newValue);
 /**
  *  \brief Add a function to watch a particular hint
  *
@@ -1250,7 +1239,6 @@ typedef void (SDLCALL *SDL_HintCallback)(void *userdata, const char *name, const
 extern DECLSPEC void SDLCALL SDL_AddHintCallback(const char *name,
                                                  SDL_HintCallback callback,
                                                  void *userdata);
-
 /**
  *  \brief Remove a function watching a particular hint
  *
@@ -1261,7 +1249,6 @@ extern DECLSPEC void SDLCALL SDL_AddHintCallback(const char *name,
 extern DECLSPEC void SDLCALL SDL_DelHintCallback(const char *name,
                                                  SDL_HintCallback callback,
                                                  void *userdata);
-
 /**
  *  \brief  Clear all hints
  *
@@ -1275,7 +1262,6 @@ extern DECLSPEC void SDLCALL SDL_ClearHints(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_hints_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

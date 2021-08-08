@@ -19,12 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 /* The private structure used to keep track of a sensor */
-struct sensor_hwdata
-{
-    ASensorRef asensor;
-    ASensorEventQueue *eventqueue;
+struct sensor_hwdata{
+ASensorRef asensor;
+ASensorEventQueue *eventqueue;
 };
 
 

@@ -20,16 +20,12 @@
 */
 #ifndef SDL_vulkan_internal_h_
 #define SDL_vulkan_internal_h_
-
 #include "../SDL_internal.h"
-
 #include "SDL_stdinc.h"
-
 #if defined(SDL_LOADSO_DISABLED)
 #undef SDL_VIDEO_VULKAN
 #define SDL_VIDEO_VULKAN 0
 #endif
-
 #if SDL_VIDEO_VULKAN
 
 #if SDL_VIDEO_DRIVER_ANDROID
@@ -84,12 +80,9 @@ extern SDL_bool SDL_Vulkan_Display_CreateSurface(void *vkGetInstanceProcAddr,
 
 /* No SDL Vulkan support, just include the header for typedefs */
 #include "SDL_vulkan.h"
-
-typedef void (*PFN_vkGetInstanceProcAddr) (void);
-typedef int  (*PFN_vkEnumerateInstanceExtensionProperties) (void);
-
+typedef void (*PFN_vkGetInstanceProcAddr)(void);
+typedef int  (*PFN_vkEnumerateInstanceExtensionProperties)(void);
 #endif /* SDL_VIDEO_VULKAN */
-
 #endif /* SDL_vulkan_internal_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

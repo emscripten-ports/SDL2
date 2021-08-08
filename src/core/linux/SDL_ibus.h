@@ -20,10 +20,8 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_ibus_h_
 #define SDL_ibus_h_
-
 #ifdef HAVE_IBUS_IBUS_H
 #define SDL_USE_IBUS 1
 #include "SDL_stdinc.h"
@@ -52,7 +50,6 @@ extern void SDL_IBus_UpdateTextRect(SDL_Rect *window_relative_rect);
 extern void SDL_IBus_PumpEvents(void);
 
 #endif /* HAVE_IBUS_IBUS_H */
-
 #endif /* SDL_ibus_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

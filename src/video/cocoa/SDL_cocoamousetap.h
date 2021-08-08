@@ -19,16 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_cocoamousetap_h_
 #define SDL_cocoamousetap_h_
-
 #include "SDL_cocoamouse.h"
-
 extern void Cocoa_InitMouseEventTap(SDL_MouseData *driverdata);
-extern void Cocoa_EnableMouseEventTap(SDL_MouseData *driverdata, SDL_bool enabled);
+extern void Cocoa_EnableMouseEventTap(SDL_MouseData *driverdata,SDL_bool enabled);
 extern void Cocoa_QuitMouseEventTap(SDL_MouseData *driverdata);
-
 #endif /* SDL_cocoamousetap_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

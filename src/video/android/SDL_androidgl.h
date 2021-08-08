@@ -19,16 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_androidgl_h_
 #define SDL_androidgl_h_
-
-SDL_GLContext Android_GLES_CreateContext(_THIS, SDL_Window * window);
-int Android_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
-int Android_GLES_SwapWindow(_THIS, SDL_Window * window);
-int Android_GLES_LoadLibrary(_THIS, const char *path);
-
-
+SDL_GLContext Android_GLES_CreateContext(_THIS,SDL_Window *window);
+int Android_GLES_MakeCurrent(_THIS,SDL_Window *window,SDL_GLContext context);
+int Android_GLES_SwapWindow(_THIS,SDL_Window *window);
+int Android_GLES_LoadLibrary(_THIS,const char *path);
 #endif /* SDL_androidgl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -25,7 +25,6 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_X11
 #include <X11/X.h>
 #include "imKStoUCS.h"
@@ -301,49 +300,49 @@ X11_KeySymToUcs4(KeySym keysym)
         return (keysym & 0x00ffffff);
 
     if (keysym > 0 && keysym < 0x100)
-	return keysym;
+    return keysym;
     else if (keysym > 0x1a0 && keysym < 0x200)
-	return keysym_to_unicode_1a1_1ff[keysym - 0x1a1];
+    return keysym_to_unicode_1a1_1ff[keysym - 0x1a1];
     else if (keysym > 0x2a0 && keysym < 0x2ff)
-	return keysym_to_unicode_2a1_2fe[keysym - 0x2a1];
+    return keysym_to_unicode_2a1_2fe[keysym - 0x2a1];
     else if (keysym > 0x3a1 && keysym < 0x3ff)
-	return keysym_to_unicode_3a2_3fe[keysym - 0x3a2];
+    return keysym_to_unicode_3a2_3fe[keysym - 0x3a2];
     else if (keysym > 0x4a0 && keysym < 0x4e0)
-	return keysym_to_unicode_4a1_4df[keysym - 0x4a1];
+    return keysym_to_unicode_4a1_4df[keysym - 0x4a1];
     else if (keysym > 0x589 && keysym < 0x5ff)
-	return keysym_to_unicode_590_5fe[keysym - 0x590];
+    return keysym_to_unicode_590_5fe[keysym - 0x590];
     else if (keysym > 0x67f && keysym < 0x700)
-	return keysym_to_unicode_680_6ff[keysym - 0x680];
+    return keysym_to_unicode_680_6ff[keysym - 0x680];
     else if (keysym > 0x7a0 && keysym < 0x7fa)
-	return keysym_to_unicode_7a1_7f9[keysym - 0x7a1];
+    return keysym_to_unicode_7a1_7f9[keysym - 0x7a1];
     else if (keysym > 0x8a3 && keysym < 0x8ff)
-	return keysym_to_unicode_8a4_8fe[keysym - 0x8a4];
+    return keysym_to_unicode_8a4_8fe[keysym - 0x8a4];
     else if (keysym > 0x9de && keysym < 0x9f9)
-	return keysym_to_unicode_9df_9f8[keysym - 0x9df];
+    return keysym_to_unicode_9df_9f8[keysym - 0x9df];
     else if (keysym > 0xaa0 && keysym < 0xaff)
-	return keysym_to_unicode_aa1_afe[keysym - 0xaa1];
+    return keysym_to_unicode_aa1_afe[keysym - 0xaa1];
     else if (keysym > 0xcde && keysym < 0xcfb)
-	return keysym_to_unicode_cdf_cfa[keysym - 0xcdf];
+    return keysym_to_unicode_cdf_cfa[keysym - 0xcdf];
     else if (keysym > 0xda0 && keysym < 0xdfa)
-	return keysym_to_unicode_da1_df9[keysym - 0xda1];
+    return keysym_to_unicode_da1_df9[keysym - 0xda1];
     else if (keysym > 0xe9f && keysym < 0xf00)
-	return keysym_to_unicode_ea0_eff[keysym - 0xea0];
+    return keysym_to_unicode_ea0_eff[keysym - 0xea0];
     else if (keysym > 0x12a0 && keysym < 0x12ff)
-	return keysym_to_unicode_12a1_12fe[keysym - 0x12a1];
+    return keysym_to_unicode_12a1_12fe[keysym - 0x12a1];
     else if (keysym > 0x13bb && keysym < 0x13bf)
-	return keysym_to_unicode_13bc_13be[keysym - 0x13bc];
+    return keysym_to_unicode_13bc_13be[keysym - 0x13bc];
     else if (keysym > 0x14a0 && keysym < 0x1500)
         return keysym_to_unicode_14a1_14ff[keysym - 0x14a1];
     else if (keysym > 0x15cf && keysym < 0x15f7)
-	return keysym_to_unicode_15d0_15f6[keysym - 0x15d0];
+    return keysym_to_unicode_15d0_15f6[keysym - 0x15d0];
     else if (keysym > 0x169f && keysym < 0x16f7)
-	return keysym_to_unicode_16a0_16f6[keysym - 0x16a0];
+    return keysym_to_unicode_16a0_16f6[keysym - 0x16a0];
     else if (keysym > 0x1e9e && keysym < 0x1f00)
-	return keysym_to_unicode_1e9f_1eff[keysym - 0x1e9f];
+    return keysym_to_unicode_1e9f_1eff[keysym - 0x1e9f];
     else if (keysym > 0x209f && keysym < 0x20ad)
-	return keysym_to_unicode_20a0_20ac[keysym - 0x20a0];
+    return keysym_to_unicode_20a0_20ac[keysym - 0x20a0];
     else
-	return 0;
+    return 0;
 }
 
 #endif /* SDL_VIDEO_DRIVER_X11 */

@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_waylandvideo_h_
 #define SDL_waylandvideo_h_
 
@@ -36,57 +35,47 @@
 #define MESA_EGL_NO_X11_HEADERS
 #include <EGL/egl.h>
 #include "wayland-util.h"
-
 struct xkb_context;
 struct SDL_WaylandInput;
-
 #ifdef SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH
 struct SDL_WaylandTouch;
 struct qt_surface_extension;
 struct qt_windowmanager;
 #endif /* SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH */
-
-typedef struct {
-    struct wl_display *display;
-    struct wl_registry *registry;
-    struct wl_compositor *compositor;
-    struct wl_shm *shm;
-    struct wl_cursor_theme *cursor_theme;
-    struct wl_pointer *pointer;
-    struct {
-        struct xdg_wm_base *xdg;
-        struct zxdg_shell_v6 *zxdg;
-        struct wl_shell *wl;
-    } shell;
-    struct zwp_relative_pointer_manager_v1 *relative_pointer_manager;
-    struct zwp_pointer_constraints_v1 *pointer_constraints;
-    struct wl_data_device_manager *data_device_manager;
-    struct zxdg_decoration_manager_v1 *decoration_manager;
-    struct org_kde_kwin_server_decoration_manager *kwin_server_decoration_manager;
-
-    EGLDisplay edpy;
-    EGLContext context;
-    EGLConfig econf;
-
-    struct xkb_context *xkb_context;
-    struct SDL_WaylandInput *input;
-
+typedef struct{
+struct wl_display *display;
+struct wl_registry *registry;
+struct wl_compositor *compositor;
+struct wl_shm *shm;
+struct wl_cursor_theme *cursor_theme;
+struct wl_pointer *pointer;
+struct{
+struct xdg_wm_base *xdg;
+struct zxdg_shell_v6 *zxdg;
+struct wl_shell *wl;
+}shell;
+struct zwp_relative_pointer_manager_v1 *relative_pointer_manager;
+struct zwp_pointer_constraints_v1 *pointer_constraints;
+struct wl_data_device_manager *data_device_manager;
+struct zxdg_decoration_manager_v1 *decoration_manager;
+struct org_kde_kwin_server_decoration_manager *kwin_server_decoration_manager;
+EGLDisplay edpy;
+EGLContext context;
+EGLConfig econf;
+struct xkb_context *xkb_context;
+struct SDL_WaylandInput *input;
 #ifdef SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH
-    struct SDL_WaylandTouch *touch;
-    struct qt_surface_extension *surface_extension;
-    struct qt_windowmanager *windowmanager;
+struct SDL_WaylandTouch *touch;
+struct qt_surface_extension *surface_extension;
+struct qt_windowmanager *windowmanager;
 #endif /* SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH */
-
-    char *classname;
-
-    int relative_mouse_mode;
-} SDL_VideoData;
-
-typedef struct {
-    struct wl_output *output;
-    float scale_factor;
-} SDL_WaylandOutputData;
-
+char *classname;
+int relative_mouse_mode;
+}SDL_VideoData;
+typedef struct{
+struct wl_output *output;
+float scale_factor;
+}SDL_WaylandOutputData;
 #endif /* SDL_waylandvideo_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

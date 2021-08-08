@@ -29,26 +29,21 @@
  */
 
 #include "SDL_stdinc.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *  \brief The basic state for the system's power supply.
  */
-typedef enum
-{
-    SDL_POWERSTATE_UNKNOWN,      /**< cannot determine power status */
-    SDL_POWERSTATE_ON_BATTERY,   /**< Not plugged in, running on the battery */
-    SDL_POWERSTATE_NO_BATTERY,   /**< Plugged in, no battery available */
-    SDL_POWERSTATE_CHARGING,     /**< Plugged in, charging battery */
-    SDL_POWERSTATE_CHARGED       /**< Plugged in, battery charged */
-} SDL_PowerState;
-
-
+typedef enum{
+SDL_POWERSTATE_UNKNOWN,      /**< cannot determine power status */
+SDL_POWERSTATE_ON_BATTERY,   /**< Not plugged in, running on the battery */
+SDL_POWERSTATE_NO_BATTERY,   /**< Plugged in, no battery available */
+SDL_POWERSTATE_CHARGING,     /**< Plugged in, charging battery */
+SDL_POWERSTATE_CHARGED       /**< Plugged in, battery charged */
+}SDL_PowerState;
 /**
  *  \brief Get the current power supply details.
  *
@@ -62,14 +57,13 @@ typedef enum
  *
  *  \return The state of the battery (if any).
  */
-extern DECLSPEC SDL_PowerState SDLCALL SDL_GetPowerInfo(int *secs, int *pct);
+extern DECLSPEC SDL_PowerState SDLCALL SDL_GetPowerInfo(int *secs,int *pct);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_power_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

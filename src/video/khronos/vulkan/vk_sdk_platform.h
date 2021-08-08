@@ -21,7 +21,6 @@
 
 #ifndef VK_SDK_PLATFORM_H
 #define VK_SDK_PLATFORM_H
-
 #if defined(_WIN32)
 #define NOMINMAX
 #ifndef __cplusplus
@@ -50,7 +49,7 @@
 #define HAS_NOEXCEPT
 #endif
 #else
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) && __GNUC__ * 10 + __GNUC_MINOR__ >= 46
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) && __GNUC__ * 10+__GNUC_MINOR__ >= 46
 #define HAS_NOEXCEPT
 #else
 #if defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 190023026 && defined(_HAS_EXCEPTIONS) && _HAS_EXCEPTIONS
@@ -58,12 +57,10 @@
 #endif
 #endif
 #endif
-
 #ifdef HAS_NOEXCEPT
 #define NOEXCEPT noexcept
 #else
 #define NOEXCEPT
 #endif
 #endif
-
 #endif  // VK_SDK_PLATFORM_H

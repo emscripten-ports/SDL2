@@ -19,17 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #ifndef SDL_gesture_c_h_
 #define SDL_gesture_c_h_
-
 extern int SDL_GestureAddTouch(SDL_TouchID touchId);
 extern int SDL_GestureDelTouch(SDL_TouchID touchId);
-
-extern void SDL_GestureProcessEvent(SDL_Event* event);
-
+extern void SDL_GestureProcessEvent(SDL_Event *event);
 extern void SDL_GestureQuit(void);
-
 #endif /* SDL_gesture_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

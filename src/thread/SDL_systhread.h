@@ -24,7 +24,6 @@
 
 #ifndef SDL_systhread_h_
 #define SDL_systhread_h_
-
 #include "SDL_thread.h"
 #include "SDL_thread_c.h"
 
@@ -37,34 +36,26 @@ extern int SDL_SYS_CreateThread(SDL_Thread * thread, void *args,
                                 pfnSDL_CurrentBeginThread pfnBeginThread,
                                 pfnSDL_CurrentEndThread pfnEndThread);
 #else
-extern int SDL_SYS_CreateThread(SDL_Thread * thread, void *args);
+extern int SDL_SYS_CreateThread(SDL_Thread *thread,void *args);
 #endif
-
 /* This function does any necessary setup in the child thread */
 extern void SDL_SYS_SetupThread(const char *name);
-
 /* This function sets the current thread priority */
 extern int SDL_SYS_SetThreadPriority(SDL_ThreadPriority priority);
-
 /* This function waits for the thread to finish and frees any data
    allocated by SDL_SYS_CreateThread()
  */
-extern void SDL_SYS_WaitThread(SDL_Thread * thread);
-
+extern void SDL_SYS_WaitThread(SDL_Thread *thread);
 /* Mark thread as cleaned up as soon as it exits, without joining. */
-extern void SDL_SYS_DetachThread(SDL_Thread * thread);
-
+extern void SDL_SYS_DetachThread(SDL_Thread *thread);
 /* Get the thread local storage for this thread */
 extern SDL_TLSData *SDL_SYS_GetTLSData(void);
-
 /* Set the thread local storage for this thread */
 extern int SDL_SYS_SetTLSData(SDL_TLSData *data);
-
 /* This is for internal SDL use, so we don't need #ifdefs everywhere. */
 extern SDL_Thread *
-SDL_CreateThreadInternal(int (SDLCALL * fn) (void *), const char *name,
-                         const size_t stacksize, void *data);
-
+SDL_CreateThreadInternal(int (SDLCALL *fn)(void *),const char *name,
+                         const size_t stacksize,void *data);
 #endif /* SDL_systhread_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

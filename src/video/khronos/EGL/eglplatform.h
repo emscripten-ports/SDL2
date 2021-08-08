@@ -49,7 +49,6 @@
 #ifndef EGLAPI
 #define EGLAPI KHRONOS_APICALL
 #endif
-
 #ifndef EGLAPIENTRY
 #define EGLAPIENTRY  KHRONOS_APIENTRY
 #endif
@@ -105,13 +104,10 @@ typedef Window   EGLNativeWindowType;
 #else
 #error "Platform not recognized"
 #endif
-
 /* EGL 1.2 types, renamed for consistency in EGL 1.3 */
 typedef EGLNativeDisplayType NativeDisplayType;
-typedef EGLNativePixmapType  NativePixmapType;
-typedef EGLNativeWindowType  NativeWindowType;
-
-
+typedef EGLNativePixmapType NativePixmapType;
+typedef EGLNativeWindowType NativeWindowType;
 /* Define EGLint. This must be a signed integral type large enough to contain
  * all legal attribute names and values passed into and out of EGL, whether
  * their type is boolean, bitmask, enumerant (symbolic constant), integer,
@@ -126,7 +122,6 @@ typedef khronos_int32_t EGLint;
 #if defined(__cplusplus)
 #define EGL_CAST(type, value) (static_cast<type>(value))
 #else
-#define EGL_CAST(type, value) ((type) (value))
+#define EGL_CAST(type,value) ((type) (value))
 #endif
-
 #endif /* __eglplatform_h */

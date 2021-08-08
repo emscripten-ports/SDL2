@@ -22,7 +22,6 @@
 #ifndef SDL_config_winrt_h_
 #define SDL_config_winrt_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
 
 /* Make sure the Windows SDK's NTDDI_VERSION macro gets defined.  This is used
@@ -85,7 +84,6 @@ typedef unsigned int size_t;
 typedef unsigned int uintptr_t;
 #endif /* __GNUC__ || _MSC_VER */
 #endif /* !_STDINT_H_ && !HAVE_STDINT_H */
-
 #ifdef _WIN64
 # define SIZEOF_VOIDP 8
 #else
@@ -97,11 +95,9 @@ typedef unsigned int uintptr_t;
 #if WINAPI_FAMILY != WINAPI_FAMILY_PHONE_APP
 #define HAVE_XINPUT_H 1
 #endif
-
 #define HAVE_MMDEVICEAPI_H 1
 #define HAVE_AUDIOCLIENT_H 1
 #define HAVE_ENDPOINTVOLUME_H 1
-
 #define HAVE_LIBC 1
 #define STDC_HEADERS 1
 #define HAVE_CTYPE_H 1
@@ -224,7 +220,6 @@ typedef unsigned int uintptr_t;
 
 /* Enable appropriate renderer(s) */
 #define SDL_VIDEO_RENDER_D3D11  1
-
 #if SDL_VIDEO_OPENGL_ES2
 #define SDL_VIDEO_RENDER_OGL_ES2 1
 #endif
@@ -236,5 +231,4 @@ typedef unsigned int uintptr_t;
 #ifndef _WIN64
 #define SDL_ASSEMBLY_ROUTINES   1
 #endif
-
 #endif /* SDL_config_winrt_h_ */

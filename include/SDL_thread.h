@@ -34,41 +34,34 @@
 /* Thread synchronization primitives */
 #include "SDL_atomic.h"
 #include "SDL_mutex.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /* The SDL thread structure, defined in SDL_thread.c */
 struct SDL_Thread;
 typedef struct SDL_Thread SDL_Thread;
-
 /* The SDL thread ID */
 typedef unsigned long SDL_threadID;
-
 /* Thread local storage ID, 0 is the invalid ID */
 typedef unsigned int SDL_TLSID;
-
 /**
  *  The SDL thread priority.
  *
  *  \note On many systems you require special privileges to set high or time critical priority.
  */
-typedef enum {
-    SDL_THREAD_PRIORITY_LOW,
-    SDL_THREAD_PRIORITY_NORMAL,
-    SDL_THREAD_PRIORITY_HIGH,
-    SDL_THREAD_PRIORITY_TIME_CRITICAL
-} SDL_ThreadPriority;
-
+typedef enum{
+SDL_THREAD_PRIORITY_LOW,
+SDL_THREAD_PRIORITY_NORMAL,
+SDL_THREAD_PRIORITY_HIGH,
+SDL_THREAD_PRIORITY_TIME_CRITICAL
+}SDL_ThreadPriority;
 /**
  *  The function passed to SDL_CreateThread().
  *  It is passed a void* user context parameter and returns an int.
  */
-typedef int (SDLCALL * SDL_ThreadFunction) (void *data);
-
+typedef int (SDLCALL *SDL_ThreadFunction)(void *data);
 #if defined(__WIN32__) && !defined(HAVE_LIBC)
 /**
  *  \file SDL_thread.h
@@ -158,7 +151,6 @@ SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const char *name, const siz
 #endif
 
 #else
-
 /**
  *  Create a thread with a default stack size.
  *
@@ -166,8 +158,7 @@ SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const char *name, const siz
  *  SDL_CreateThreadWithStackSize(fn, name, 0, data);
  */
 extern DECLSPEC SDL_Thread *SDLCALL
-SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
-
+SDL_CreateThread(SDL_ThreadFunction fn,const char *name,void *data);
 /**
  *  Create a thread.
  *
@@ -195,10 +186,8 @@ SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
  *    function.
  */
 extern DECLSPEC SDL_Thread *SDLCALL
-SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const char *name, const size_t stacksize, void *data);
-
+SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn,const char *name,const size_t stacksize,void *data);
 #endif
-
 /**
  * Get the thread name, as it was specified in SDL_CreateThread().
  *  This function returns a pointer to a UTF-8 string that names the
@@ -207,24 +196,20 @@ SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const char *name, const siz
  *  specified thread is cleaned up by SDL_WaitThread().
  */
 extern DECLSPEC const char *SDLCALL SDL_GetThreadName(SDL_Thread *thread);
-
 /**
  *  Get the thread identifier for the current thread.
  */
 extern DECLSPEC SDL_threadID SDLCALL SDL_ThreadID(void);
-
 /**
  *  Get the thread identifier for the specified thread.
  *
  *  Equivalent to SDL_ThreadID() if the specified thread is NULL.
  */
-extern DECLSPEC SDL_threadID SDLCALL SDL_GetThreadID(SDL_Thread * thread);
-
+extern DECLSPEC SDL_threadID SDLCALL SDL_GetThreadID(SDL_Thread *thread);
 /**
  *  Set the priority for the current thread
  */
 extern DECLSPEC int SDLCALL SDL_SetThreadPriority(SDL_ThreadPriority priority);
-
 /**
  *  Wait for a thread to finish. Threads that haven't been detached will
  *  remain (as a "zombie") until this function cleans them up. Not doing so
@@ -243,8 +228,7 @@ extern DECLSPEC int SDLCALL SDL_SetThreadPriority(SDL_ThreadPriority priority);
  *
  *  It is safe to pass NULL to this function; it is a no-op.
  */
-extern DECLSPEC void SDLCALL SDL_WaitThread(SDL_Thread * thread, int *status);
-
+extern DECLSPEC void SDLCALL SDL_WaitThread(SDL_Thread *thread,int *status);
 /**
  *  A thread may be "detached" to signify that it should not remain until
  *  another thread has called SDL_WaitThread() on it. Detaching a thread
@@ -271,8 +255,7 @@ extern DECLSPEC void SDLCALL SDL_WaitThread(SDL_Thread * thread, int *status);
  *
  *  It is safe to pass NULL to this function; it is a no-op.
  */
-extern DECLSPEC void SDLCALL SDL_DetachThread(SDL_Thread * thread);
-
+extern DECLSPEC void SDLCALL SDL_DetachThread(SDL_Thread *thread);
 /**
  *  \brief Create an identifier that is globally visible to all threads but refers to data that is thread-specific.
  *
@@ -304,7 +287,6 @@ extern DECLSPEC void SDLCALL SDL_DetachThread(SDL_Thread * thread);
  *  \sa SDL_TLSSet()
  */
 extern DECLSPEC SDL_TLSID SDLCALL SDL_TLSCreate(void);
-
 /**
  *  \brief Get the value associated with a thread local storage ID for the current thread.
  *
@@ -315,8 +297,7 @@ extern DECLSPEC SDL_TLSID SDLCALL SDL_TLSCreate(void);
  *  \sa SDL_TLSCreate()
  *  \sa SDL_TLSSet()
  */
-extern DECLSPEC void * SDLCALL SDL_TLSGet(SDL_TLSID id);
-
+extern DECLSPEC void *SDLCALL SDL_TLSGet(SDL_TLSID id);
 /**
  *  \brief Set the value associated with a thread local storage ID for the current thread.
  *
@@ -329,7 +310,7 @@ extern DECLSPEC void * SDLCALL SDL_TLSGet(SDL_TLSID id);
  *  \sa SDL_TLSCreate()
  *  \sa SDL_TLSGet()
  */
-extern DECLSPEC int SDLCALL SDL_TLSSet(SDL_TLSID id, const void *value, void (SDLCALL *destructor)(void*));
+extern DECLSPEC int SDLCALL SDL_TLSSet(SDL_TLSID id,const void *value,void (SDLCALL *destructor)(void *));
 
 
 /* Ends C function definitions when using C++ */
@@ -337,7 +318,6 @@ extern DECLSPEC int SDLCALL SDL_TLSSet(SDL_TLSID id, const void *value, void (SD
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_thread_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

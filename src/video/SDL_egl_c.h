@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #ifndef SDL_egl_h_
 #define SDL_egl_h_
-
 #if SDL_VIDEO_OPENGL_EGL
 
 #include "SDL_egl.h"
@@ -146,7 +144,6 @@ BACKEND ## _GLES_CreateContext(_THIS, SDL_Window * window) \
 }
 
 #endif /* SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_egl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

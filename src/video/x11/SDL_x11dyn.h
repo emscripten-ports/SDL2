@@ -19,14 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_x11dyn_h_
 #define SDL_x11dyn_h_
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
-
 #if SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
 #include <X11/XKBlib.h>
 #endif
@@ -36,17 +33,14 @@
 #define SDL_INCLUDED_XLIBINT_H 1
 #include <X11/Xlibint.h>
 #endif
-
 #include <X11/Xproto.h>
 #include <X11/extensions/Xext.h>
 #include <X11/extensions/extutil.h>
-
 #ifndef NO_SHARED_MEMORY
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <X11/extensions/XShm.h>
 #endif
-
 #if SDL_VIDEO_DRIVER_X11_XCURSOR
 #include <X11/Xcursor/Xcursor.h>
 #endif
@@ -71,17 +65,14 @@
 #if SDL_VIDEO_DRIVER_X11_XVIDMODE
 #include <X11/extensions/xf86vmode.h>
 #endif
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
 /* evil function signatures... */
-typedef Bool(*SDL_X11_XESetWireToEventRetType) (Display *, XEvent *, xEvent *);
-typedef int (*SDL_X11_XSynchronizeRetType) (Display *);
-typedef Status(*SDL_X11_XESetEventToWireRetType) (Display *, XEvent *, xEvent *);
-
+typedef Bool(*SDL_X11_XESetWireToEventRetType)(Display *,XEvent *,xEvent *);
+typedef int (*SDL_X11_XSynchronizeRetType)(Display *);
+typedef Status(*SDL_X11_XESetEventToWireRetType)(Display *,XEvent *,xEvent *);
 int SDL_X11_LoadSymbols(void);
 void SDL_X11_UnloadSymbols(void);
 
@@ -102,10 +93,8 @@ extern SDL_DYNX11FN_XGetICValues X11_XGetICValues;
 /* These SDL_X11_HAVE_* flags are here whether you have dynamic X11 or not. */
 #define SDL_X11_MODULE(modname) extern int SDL_X11_HAVE_##modname;
 #include "SDL_x11sym.h"
-
 #ifdef __cplusplus
 }
 #endif
-
 #endif                          /* !defined SDL_x11dyn_h_ */
 /* vi: set ts=4 sw=4 expandtab: */

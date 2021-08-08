@@ -21,14 +21,11 @@
 
 #ifndef SDL_DirectFB_events_h_
 #define SDL_DirectFB_events_h_
-
 #include "../SDL_sysvideo.h"
-
 /* Functions to be exported */
 extern void DirectFB_InitKeyboard(_THIS);
 extern void DirectFB_QuitKeyboard(_THIS);
 extern void DirectFB_PumpEventsWindow(_THIS);
-
 #endif /* SDL_DirectFB_events_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

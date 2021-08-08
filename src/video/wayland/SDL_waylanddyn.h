@@ -21,10 +21,8 @@
 
 #ifndef SDL_waylanddyn_h_
 #define SDL_waylanddyn_h_
-
 #include "../../SDL_internal.h"
-
-/* We can't include wayland-client.h here 
+/* We can't include wayland-client.h here
  * but we need some structs from it
  */
 struct wl_interface;
@@ -33,32 +31,25 @@ struct wl_event_queue;
 struct wl_display;
 struct wl_surface;
 struct wl_shm;
-
 #include <stdint.h>
 #include "wayland-cursor.h"
 #include "wayland-util.h"
 #include "xkbcommon/xkbcommon.h"
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
 int SDL_WAYLAND_LoadSymbols(void);
 void SDL_WAYLAND_UnloadSymbols(void);
-
 #define SDL_WAYLAND_MODULE(modname) extern int SDL_WAYLAND_HAVE_##modname;
 #define SDL_WAYLAND_SYM(rc,fn,params) \
     typedef rc (*SDL_DYNWAYLANDFN_##fn) params; \
     extern SDL_DYNWAYLANDFN_##fn WAYLAND_##fn;
 #define SDL_WAYLAND_INTERFACE(iface) extern const struct wl_interface *WAYLAND_##iface;
 #include "SDL_waylandsym.h"
-
-
 #ifdef __cplusplus
 }
 #endif
-
 #ifdef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC
 
 #ifdef _WAYLAND_CLIENT_H
@@ -97,11 +88,9 @@ void SDL_WAYLAND_UnloadSymbols(void);
 #define wl_data_device_manager_interface (*WAYLAND_wl_data_device_manager_interface)
 
 #endif /* SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC */
-
 #include "wayland-client-core.h"
 #include "wayland-client-protocol.h"
 #include "wayland-egl.h"
-
 #endif /* SDL_waylanddyn_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

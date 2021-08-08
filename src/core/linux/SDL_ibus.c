@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef HAVE_IBUS_IBUS_H
 #include "SDL.h"
 #include "SDL_syswm.h"
@@ -29,7 +28,7 @@
 #include "../../events/SDL_keyboard_c.h"
 
 #if SDL_VIDEO_DRIVER_X11
-    #include "../../video/x11/SDL_x11video.h"
+#include "../../video/x11/SDL_x11video.h"
 #endif
 
 #include <sys/inotify.h>

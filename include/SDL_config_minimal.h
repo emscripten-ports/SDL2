@@ -22,7 +22,6 @@
 #ifndef SDL_config_minimal_h_
 #define SDL_config_minimal_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
 
 /**
@@ -50,7 +49,6 @@ typedef unsigned long uintptr_t;
 #else
 #define HAVE_STDINT_H 1
 #endif /* Visual Studio 2008 */
-
 #ifdef __GNUC__
 #define HAVE_GCC_SYNC_LOCK_TEST_AND_SET 1
 #endif
@@ -81,5 +79,4 @@ typedef unsigned long uintptr_t;
 
 /* Enable the dummy filesystem driver (src/filesystem/dummy/\*.c) */
 #define SDL_FILESYSTEM_DUMMY  1
-
 #endif /* SDL_config_minimal_h_ */

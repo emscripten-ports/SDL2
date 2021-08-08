@@ -19,14 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_mutex_c_h_
 #define SDL_mutex_c_h_
-
-struct SDL_mutex
-{
-    pthread_mutex_t id;
+struct SDL_mutex{
+pthread_mutex_t id;
 };
-
 #endif /* SDL_mutex_c_h_ */
 /* vi: set ts=4 sw=4 expandtab: */

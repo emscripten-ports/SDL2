@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_OPENSLES
 
 /* For more discussion of low latency audio on Android, see this:

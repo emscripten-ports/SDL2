@@ -19,37 +19,30 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_nasaudio_h_
 #define SDL_nasaudio_h_
-
 #ifdef __sgi
 #include <nas/audiolib.h>
 #else
 #include <audio/audiolib.h>
 #endif
 #include <sys/time.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    AuServer *aud;
-    AuFlowID flow;
-    AuDeviceID dev;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-
-    int written;
-    int really;
-    int bps;
-    struct timeval last_tv;
-    int buf_free;
+struct SDL_PrivateAudioData{
+AuServer *aud;
+AuFlowID flow;
+AuDeviceID dev;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
+int written;
+int really;
+int bps;
+struct timeval last_tv;
+int buf_free;
 };
 #endif /* SDL_nasaudio_h_ */
 

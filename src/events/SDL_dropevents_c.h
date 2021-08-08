@@ -19,14 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #ifndef SDL_dropevents_c_h_
 #define SDL_dropevents_c_h_
-
-extern int SDL_SendDropFile(SDL_Window *window, const char *file);
-extern int SDL_SendDropText(SDL_Window *window, const char *text);
+extern int SDL_SendDropFile(SDL_Window *window,const char *file);
+extern int SDL_SendDropText(SDL_Window *window,const char *text);
 extern int SDL_SendDropComplete(SDL_Window *window);
-
 #endif /* SDL_dropevents_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

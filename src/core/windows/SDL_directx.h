@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_directx_h_
 #define SDL_directx_h_
 
@@ -42,18 +41,15 @@
 #define MAKE_HRESULT(sev,fac,code) \
     ((HRESULT)(((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code))))
 #endif
-
 #ifndef S_OK
 #define S_OK        (HRESULT)0x00000000L
 #endif
-
 #ifndef SUCCEEDED
 #define SUCCEEDED(x)    ((HRESULT)(x) >= 0)
 #endif
 #ifndef FAILED
 #define FAILED(x)   ((HRESULT)(x)<0)
 #endif
-
 #ifndef E_FAIL
 #define E_FAIL      (HRESULT)0x80000008L
 #endif
@@ -82,9 +78,8 @@
 #ifndef FACILITY_WIN32
 #define FACILITY_WIN32  7
 #endif
-
 #ifndef FIELD_OFFSET
-#define FIELD_OFFSET(type, field)    ((LONG)&(((type *)0)->field))
+#define FIELD_OFFSET(type,field)    ((LONG)&(((type *)0)->field))
 #endif
 
 /* DirectX headers (if it isn't included, I haven't tested it yet)
@@ -93,7 +88,6 @@
 #define DIRECTDRAW_VERSION  0x0700
 #define DIRECTSOUND_VERSION 0x0800
 #define DIRECTINPUT_VERSION 0x0800 /* Need version 7 for force feedback. Need version 8 so IDirectInput8_EnumDevices doesn't leak like a sieve... */
-
 #ifdef HAVE_DDRAW_H
 #include <ddraw.h>
 #endif
@@ -103,9 +97,10 @@
 #ifdef HAVE_DINPUT_H
 #include <dinput.h>
 #else
-typedef struct { int unused; } DIDEVICEINSTANCE;
+typedef struct{
+int unused;
+}DIDEVICEINSTANCE;
 #endif
-
 #endif /* SDL_directx_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

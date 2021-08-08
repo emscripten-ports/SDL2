@@ -32,7 +32,6 @@
 #error Nested inclusion of begin_code.h
 #endif
 #define _begin_code_h
-
 #ifndef SDL_DEPRECATED
 #  if (__GNUC__ >= 4)  /* technically, this arrived in gcc 3.1, but oh well. */
 #    define SDL_DEPRECATED __attribute__((deprecated))
@@ -40,7 +39,6 @@
 #    define SDL_DEPRECATED
 #  endif
 #endif
-
 #ifndef SDL_UNUSED
 #  ifdef __GNUC__
 #    define SDL_UNUSED __attribute__((unused))
@@ -118,7 +116,6 @@
 #pragma pack(push,4)
 #endif
 #endif /* Compiler needs structure packing set */
-
 #ifndef SDL_INLINE
 #if defined(__GNUC__)
 #define SDL_INLINE __inline__
@@ -137,17 +134,15 @@
 #endif
 #endif
 #endif /* SDL_INLINE not defined */
-
 #ifndef SDL_FORCE_INLINE
 #if defined(_MSC_VER)
 #define SDL_FORCE_INLINE __forceinline
-#elif ( (defined(__GNUC__) && (__GNUC__ >= 4)) || defined(__clang__) )
+#elif ((defined(__GNUC__) && (__GNUC__ >= 4)) || defined(__clang__))
 #define SDL_FORCE_INLINE __attribute__((always_inline)) static __inline__
 #else
 #define SDL_FORCE_INLINE static SDL_INLINE
 #endif
 #endif /* SDL_FORCE_INLINE not defined */
-
 #ifndef SDL_NORETURN
 #if defined(__GNUC__)
 #define SDL_NORETURN __attribute__((noreturn))

@@ -25,9 +25,7 @@
  *  This is a simple file to encapsulate the OpenGL ES 2.0 API headers.
  */
 #include "SDL_config.h"
-
 #ifndef _MSC_VER
-
 #ifdef __IPHONEOS__
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
@@ -36,7 +34,6 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #endif
-
 #else /* _MSC_VER */
 
 /* OpenGL ES2 headers for Visual Studio */
@@ -46,7 +43,6 @@
 #include "SDL_opengles2_gl2ext.h"
 
 #endif /* _MSC_VER */
-
 #ifndef APIENTRY
 #define APIENTRY GL_APIENTRY
 #endif

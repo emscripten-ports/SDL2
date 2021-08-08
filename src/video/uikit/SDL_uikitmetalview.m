@@ -27,7 +27,6 @@
  */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_UIKIT && (SDL_VIDEO_RENDER_METAL || SDL_VIDEO_VULKAN)
 
 #import "../SDL_sysvideo.h"

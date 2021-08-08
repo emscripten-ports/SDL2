@@ -20,14 +20,11 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_BCLIPBOARD_H
 #define SDL_BCLIPBOARD_H
-
-extern int HAIKU_SetClipboardText(_THIS, const char *text);
+extern int HAIKU_SetClipboardText(_THIS,const char *text);
 extern char *HAIKU_GetClipboardText(_THIS);
 extern SDL_bool HAIKU_HasClipboardText(_THIS);
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

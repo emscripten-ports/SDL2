@@ -19,17 +19,13 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_waylandopengles_h_
 #define SDL_waylandopengles_h_
-
 #include "../SDL_sysvideo.h"
 #include "../SDL_egl_c.h"
-
-typedef struct SDL_PrivateGLESData
-{
-    int dummy;
-} SDL_PrivateGLESData;
+typedef struct SDL_PrivateGLESData{
+int dummy;
+}SDL_PrivateGLESData;
 
 /* OpenGLES functions */
 #define Wayland_GLES_GetAttribute SDL_EGL_GetAttribute
@@ -37,14 +33,12 @@ typedef struct SDL_PrivateGLESData
 #define Wayland_GLES_UnloadLibrary SDL_EGL_UnloadLibrary
 #define Wayland_GLES_SetSwapInterval SDL_EGL_SetSwapInterval
 #define Wayland_GLES_GetSwapInterval SDL_EGL_GetSwapInterval
-
-extern int Wayland_GLES_LoadLibrary(_THIS, const char *path);
-extern SDL_GLContext Wayland_GLES_CreateContext(_THIS, SDL_Window * window);
-extern int Wayland_GLES_SwapWindow(_THIS, SDL_Window * window);
-extern int Wayland_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
-extern void Wayland_GLES_GetDrawableSize(_THIS, SDL_Window * window, int * w, int * h);
-extern void Wayland_GLES_DeleteContext(_THIS, SDL_GLContext context);
-
+extern int Wayland_GLES_LoadLibrary(_THIS,const char *path);
+extern SDL_GLContext Wayland_GLES_CreateContext(_THIS,SDL_Window *window);
+extern int Wayland_GLES_SwapWindow(_THIS,SDL_Window *window);
+extern int Wayland_GLES_MakeCurrent(_THIS,SDL_Window *window,SDL_GLContext context);
+extern void Wayland_GLES_GetDrawableSize(_THIS,SDL_Window *window,int *w,int *h);
+extern void Wayland_GLES_DeleteContext(_THIS,SDL_GLContext context);
 #endif /* SDL_waylandopengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

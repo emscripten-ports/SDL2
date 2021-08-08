@@ -20,15 +20,10 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_poll_h_
 #define SDL_poll_h_
-
 #include "SDL_stdinc.h"
-
-
-extern int SDL_IOReady(int fd, SDL_bool forWrite, int timeoutMS);
-
+extern int SDL_IOReady(int fd,SDL_bool forWrite,int timeoutMS);
 #endif /* SDL_poll_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

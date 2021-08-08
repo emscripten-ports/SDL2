@@ -22,7 +22,6 @@
    Code and logic contributed by Valve Corporation under the SDL zlib license.
 */
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_HIDAPI
 
 #include "SDL_hints.h"

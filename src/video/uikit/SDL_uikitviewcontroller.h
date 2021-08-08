@@ -19,51 +19,37 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #import <UIKit/UIKit.h>
-
 #include "../SDL_sysvideo.h"
-
 #include "SDL_touch.h"
-
 #if TARGET_OS_TV
 #import <GameController/GameController.h>
 #define SDLRootViewController GCEventViewController
 #else
 #define SDLRootViewController UIViewController
 #endif
-
 #if SDL_IPHONE_KEYBOARD
 @interface SDL_uikitviewcontroller : SDLRootViewController <UITextFieldDelegate>
 #else
 @interface SDL_uikitviewcontroller : SDLRootViewController
 #endif
-
-@property (nonatomic, assign) SDL_Window *window;
-
+@property(nonatomic,assign) SDL_Window *window;
 - (instancetype)initWithSDLWindow:(SDL_Window *)_window;
-
 - (void)setAnimationCallback:(int)interval
-                    callback:(void (*)(void*))callback
-               callbackParam:(void*)callbackParam;
-
+                    callback:(void (*)(void *))callback
+               callbackParam:(void *)callbackParam;
 - (void)startAnimation;
 - (void)stopAnimation;
-
-- (void)doLoop:(CADisplayLink*)sender;
-
+- (void)doLoop:(CADisplayLink *)sender;
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
-
 #if !TARGET_OS_TV
 - (NSUInteger)supportedInterfaceOrientations;
 - (BOOL)prefersStatusBarHidden;
 - (BOOL)prefersHomeIndicatorAutoHidden;
 - (UIRectEdge)preferredScreenEdgesDeferringSystemGestures;
-
-@property (nonatomic, assign) int homeIndicatorHidden;
+@property(nonatomic,assign) int homeIndicatorHidden;
 #endif
-
 #if SDL_IPHONE_KEYBOARD
 - (void)showKeyboard;
 - (void)hideKeyboard;
@@ -81,7 +67,6 @@
 #endif
 
 @end
-
 #if SDL_IPHONE_KEYBOARD
 SDL_bool UIKit_HasScreenKeyboardSupport(_THIS);
 void UIKit_ShowScreenKeyboard(_THIS, SDL_Window *window);

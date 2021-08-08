@@ -26,7 +26,6 @@
  * udevadm info --query=property -n input/event2
  */
 #include "SDL_udev.h"
-
 #ifdef SDL_USE_LIBUDEV
 
 #include <linux/input.h>
@@ -62,7 +61,7 @@ static int
 SDL_UDEV_load_syms(void)
 {
     /* cast funcs to char* first, to please GCC's strict aliasing rules. */
-    #define SDL_UDEV_SYM(x) \
+#define SDL_UDEV_SYM(x) \
         if (!SDL_UDEV_load_sym(#x, (void **) (char *) & _this->syms.x)) return -1
 
     SDL_UDEV_SYM(udev_device_get_action);
@@ -91,7 +90,7 @@ SDL_UDEV_load_syms(void)
     SDL_UDEV_SYM(udev_unref);
     SDL_UDEV_SYM(udev_device_new_from_devnum);
     SDL_UDEV_SYM(udev_device_get_devnum);
-    #undef SDL_UDEV_SYM
+#undef SDL_UDEV_SYM
 
     return 0;
 }

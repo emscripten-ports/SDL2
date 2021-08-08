@@ -27,7 +27,7 @@
 */
 #ifndef SDL_WINRT_METADATA_FILE_AVAILABLE
 #ifndef __cplusplus_winrt
-#error SDL_winrt_main_NonXAML.cpp must be compiled with /ZW, otherwise build errors due to missing .winmd files can occur.
+#error SDL_winrt_main_NonXAML.cpp must be compiled with /ZW,otherwise build errors due to missing .winmd files can occur.
 #endif
 #endif
 
@@ -47,8 +47,11 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "runtimeobject.lib")
 #endif
-
-int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int CALLBACK
+WinMain(HINSTANCE,HINSTANCE,LPSTR,
+int)
 {
-    return SDL_WinRTRunApp(SDL_main, NULL);
+return
+SDL_WinRTRunApp(SDL_main,NULL
+);
 }

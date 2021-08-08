@@ -35,17 +35,13 @@
 
 #ifndef SDL_test_compare_h_
 #define SDL_test_compare_h_
-
 #include "SDL.h"
-
 #include "SDL_test_images.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  * \brief Compares a surface and with reference image data for equality
  *
@@ -55,7 +51,7 @@ extern "C" {
  *
  * \returns 0 if comparison succeeded, >0 (=number of pixels for which the comparison failed) if comparison failed, -1 if any of the surfaces were NULL, -2 if the surface sizes differ.
  */
-int SDLTest_CompareSurfaces(SDL_Surface *surface, SDL_Surface *referenceSurface, int allowable_error);
+int SDLTest_CompareSurfaces(SDL_Surface *surface,SDL_Surface *referenceSurface,int allowable_error);
 
 
 /* Ends C function definitions when using C++ */
@@ -63,7 +59,6 @@ int SDLTest_CompareSurfaces(SDL_Surface *surface, SDL_Surface *referenceSurface,
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_compare_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

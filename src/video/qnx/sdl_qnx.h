@@ -21,28 +21,22 @@
 
 #ifndef __SDL_QNX_H__
 #define __SDL_QNX_H__
-
 #include "../SDL_sysvideo.h"
 #include <screen/screen.h>
 #include <EGL/egl.h>
-
-typedef struct
-{
-    screen_window_t window;
-    EGLSurface      surface;
-    EGLConfig       conf;
-} window_impl_t;
-
+typedef struct{
+screen_window_t window;
+EGLSurface surface;
+EGLConfig conf;
+}window_impl_t;
 extern void handleKeyboardEvent(screen_event_t event);
-
-extern int glGetConfig(EGLConfig *pconf, int *pformat);
-extern int glLoadLibrary(_THIS, const char *name);
-void *glGetProcAddress(_THIS, const char *proc);
-extern SDL_GLContext glCreateContext(_THIS, SDL_Window *window);
-extern int glSetSwapInterval(_THIS, int interval);
-extern int glSwapWindow(_THIS, SDL_Window *window);
-extern int glMakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
-extern void glDeleteContext(_THIS, SDL_GLContext context);
+extern int glGetConfig(EGLConfig *pconf,int *pformat);
+extern int glLoadLibrary(_THIS,const char *name);
+void *glGetProcAddress(_THIS,const char *proc);
+extern SDL_GLContext glCreateContext(_THIS,SDL_Window *window);
+extern int glSetSwapInterval(_THIS,int interval);
+extern int glSwapWindow(_THIS,SDL_Window *window);
+extern int glMakeCurrent(_THIS,SDL_Window *window,SDL_GLContext context);
+extern void glDeleteContext(_THIS,SDL_GLContext context);
 extern void glUnloadLibrary(_THIS);
-
 #endif

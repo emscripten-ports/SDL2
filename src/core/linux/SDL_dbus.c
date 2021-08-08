@@ -20,7 +20,6 @@
 */
 #include "../../SDL_internal.h"
 #include "SDL_dbus.h"
-
 #if SDL_USE_LIBDBUS
 /* we never link directly to libdbus. */
 #include "SDL_loadso.h"
@@ -32,10 +31,10 @@ static SDL_DBusContext dbus;
 static int
 LoadDBUSSyms(void)
 {
-    #define SDL_DBUS_SYM2(x, y) \
+#define SDL_DBUS_SYM2(x, y) \
         if (!(dbus.x = SDL_LoadFunction(dbus_handle, #y))) return -1
-        
-    #define SDL_DBUS_SYM(x) \
+
+#define SDL_DBUS_SYM(x) \
         SDL_DBUS_SYM2(x, dbus_##x)
 
     SDL_DBUS_SYM(bus_get_private);
@@ -73,8 +72,8 @@ LoadDBUSSyms(void)
     SDL_DBUS_SYM(free_string_array);
     SDL_DBUS_SYM(shutdown);
 
-    #undef SDL_DBUS_SYM
-    #undef SDL_DBUS_SYM2
+#undef SDL_DBUS_SYM
+#undef SDL_DBUS_SYM2
 
     return 0;
 }

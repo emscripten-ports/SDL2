@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_render.h"
 #include "SDL_system.h"
-
 #if SDL_VIDEO_RENDER_D3D && !SDL_RENDER_DISABLED
 
 #include "../../core/windows/SDL_windows.h"

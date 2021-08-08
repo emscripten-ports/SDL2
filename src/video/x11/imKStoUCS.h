@@ -1,6 +1,5 @@
 #ifndef _imKStoUCS_h
 #define _imKStoUCS_h
-
 /*
 Copyright (C) 2003-2006,2008 Jamey Sharp, Josh Triplett
 Copyright Â© 2009 Red Hat, Inc.
@@ -28,5 +27,4 @@ DEALINGS IN THE SOFTWARE.
 */
 
 extern unsigned int X11_KeySymToUcs4(KeySym keysym);
-
 #endif /* _imKStoUCS_h */

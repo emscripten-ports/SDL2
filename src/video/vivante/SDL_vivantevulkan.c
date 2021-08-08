@@ -26,7 +26,6 @@
  */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_VULKAN && SDL_VIDEO_DRIVER_VIVANTE
 
 #include "SDL_vivantevideo.h"

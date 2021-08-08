@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_DIRECTFB
 
 #include "SDL_DirectFB_video.h"
@@ -149,7 +148,7 @@ DirectFB_GL_LoadLibrary(_THIS, const char *path)
 static void
 DirectFB_GL_UnloadLibrary(_THIS)
 {
- #if 0
+#if 0
     int ret = GL_UnloadObject(_this->gl_config.dll_handle);
     if (ret)
         SDL_DFB_ERR("Error #%d trying to unload library.\n", ret);

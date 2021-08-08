@@ -19,12 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_naclevents_c_h_
 #define SDL_naclevents_c_h_
-
 #include "SDL_naclvideo.h"
-
 extern void NACL_PumpEvents(_THIS);
-
 #endif /* SDL_naclevents_c_h_ */

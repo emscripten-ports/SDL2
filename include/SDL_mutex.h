@@ -30,7 +30,6 @@
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -57,7 +56,6 @@ extern "C" {
 /* The SDL mutex structure, defined in SDL_sysmutex.c */
 struct SDL_mutex;
 typedef struct SDL_mutex SDL_mutex;
-
 /**
  *  Create a mutex, initialized unlocked.
  */
@@ -69,14 +67,13 @@ extern DECLSPEC SDL_mutex *SDLCALL SDL_CreateMutex(void);
  *  \return 0, or -1 on error.
  */
 #define SDL_mutexP(m)   SDL_LockMutex(m)
-extern DECLSPEC int SDLCALL SDL_LockMutex(SDL_mutex * mutex);
-
+extern DECLSPEC int SDLCALL SDL_LockMutex(SDL_mutex *mutex);
 /**
  *  Try to lock the mutex
  *
  *  \return 0, SDL_MUTEX_TIMEDOUT, or -1 on error
  */
-extern DECLSPEC int SDLCALL SDL_TryLockMutex(SDL_mutex * mutex);
+extern DECLSPEC int SDLCALL SDL_TryLockMutex(SDL_mutex *mutex);
 
 /**
  *  Unlock the mutex.
@@ -87,12 +84,11 @@ extern DECLSPEC int SDLCALL SDL_TryLockMutex(SDL_mutex * mutex);
  *           the current thread, and doing so results in undefined behavior.
  */
 #define SDL_mutexV(m)   SDL_UnlockMutex(m)
-extern DECLSPEC int SDLCALL SDL_UnlockMutex(SDL_mutex * mutex);
-
+extern DECLSPEC int SDLCALL SDL_UnlockMutex(SDL_mutex *mutex);
 /**
  *  Destroy a mutex.
  */
-extern DECLSPEC void SDLCALL SDL_DestroyMutex(SDL_mutex * mutex);
+extern DECLSPEC void SDLCALL SDL_DestroyMutex(SDL_mutex *mutex);
 
 /* @} *//* Mutex functions */
 
@@ -105,32 +101,27 @@ extern DECLSPEC void SDLCALL SDL_DestroyMutex(SDL_mutex * mutex);
 /* The SDL semaphore structure, defined in SDL_syssem.c */
 struct SDL_semaphore;
 typedef struct SDL_semaphore SDL_sem;
-
 /**
  *  Create a semaphore, initialized with value, returns NULL on failure.
  */
 extern DECLSPEC SDL_sem *SDLCALL SDL_CreateSemaphore(Uint32 initial_value);
-
 /**
  *  Destroy a semaphore.
  */
-extern DECLSPEC void SDLCALL SDL_DestroySemaphore(SDL_sem * sem);
-
+extern DECLSPEC void SDLCALL SDL_DestroySemaphore(SDL_sem *sem);
 /**
  *  This function suspends the calling thread until the semaphore pointed
  *  to by \c sem has a positive count. It then atomically decreases the
  *  semaphore count.
  */
-extern DECLSPEC int SDLCALL SDL_SemWait(SDL_sem * sem);
-
+extern DECLSPEC int SDLCALL SDL_SemWait(SDL_sem *sem);
 /**
  *  Non-blocking variant of SDL_SemWait().
  *
  *  \return 0 if the wait succeeds, ::SDL_MUTEX_TIMEDOUT if the wait would
  *          block, and -1 on error.
  */
-extern DECLSPEC int SDLCALL SDL_SemTryWait(SDL_sem * sem);
-
+extern DECLSPEC int SDLCALL SDL_SemTryWait(SDL_sem *sem);
 /**
  *  Variant of SDL_SemWait() with a timeout in milliseconds.
  *
@@ -140,19 +131,17 @@ extern DECLSPEC int SDLCALL SDL_SemTryWait(SDL_sem * sem);
  *  \warning On some platforms this function is implemented by looping with a
  *           delay of 1 ms, and so should be avoided if possible.
  */
-extern DECLSPEC int SDLCALL SDL_SemWaitTimeout(SDL_sem * sem, Uint32 ms);
-
+extern DECLSPEC int SDLCALL SDL_SemWaitTimeout(SDL_sem *sem,Uint32 ms);
 /**
  *  Atomically increases the semaphore's count (not blocking).
  *
  *  \return 0, or -1 on error.
  */
-extern DECLSPEC int SDLCALL SDL_SemPost(SDL_sem * sem);
-
+extern DECLSPEC int SDLCALL SDL_SemPost(SDL_sem *sem);
 /**
  *  Returns the current count of the semaphore.
  */
-extern DECLSPEC Uint32 SDLCALL SDL_SemValue(SDL_sem * sem);
+extern DECLSPEC Uint32 SDLCALL SDL_SemValue(SDL_sem *sem);
 
 /* @} *//* Semaphore functions */
 
@@ -165,7 +154,6 @@ extern DECLSPEC Uint32 SDLCALL SDL_SemValue(SDL_sem * sem);
 /* The SDL condition variable structure, defined in SDL_syscond.c */
 struct SDL_cond;
 typedef struct SDL_cond SDL_cond;
-
 /**
  *  Create a condition variable.
  *
@@ -195,26 +183,22 @@ typedef struct SDL_cond SDL_cond;
  *  mutex is locked.
  */
 extern DECLSPEC SDL_cond *SDLCALL SDL_CreateCond(void);
-
 /**
  *  Destroy a condition variable.
  */
-extern DECLSPEC void SDLCALL SDL_DestroyCond(SDL_cond * cond);
-
+extern DECLSPEC void SDLCALL SDL_DestroyCond(SDL_cond *cond);
 /**
  *  Restart one of the threads that are waiting on the condition variable.
  *
  *  \return 0 or -1 on error.
  */
-extern DECLSPEC int SDLCALL SDL_CondSignal(SDL_cond * cond);
-
+extern DECLSPEC int SDLCALL SDL_CondSignal(SDL_cond *cond);
 /**
  *  Restart all threads that are waiting on the condition variable.
  *
  *  \return 0 or -1 on error.
  */
-extern DECLSPEC int SDLCALL SDL_CondBroadcast(SDL_cond * cond);
-
+extern DECLSPEC int SDLCALL SDL_CondBroadcast(SDL_cond *cond);
 /**
  *  Wait on the condition variable, unlocking the provided mutex.
  *
@@ -224,8 +208,7 @@ extern DECLSPEC int SDLCALL SDL_CondBroadcast(SDL_cond * cond);
  *
  *  \return 0 when it is signaled, or -1 on error.
  */
-extern DECLSPEC int SDLCALL SDL_CondWait(SDL_cond * cond, SDL_mutex * mutex);
-
+extern DECLSPEC int SDLCALL SDL_CondWait(SDL_cond *cond,SDL_mutex *mutex);
 /**
  *  Waits for at most \c ms milliseconds, and returns 0 if the condition
  *  variable is signaled, ::SDL_MUTEX_TIMEDOUT if the condition is not
@@ -234,8 +217,8 @@ extern DECLSPEC int SDLCALL SDL_CondWait(SDL_cond * cond, SDL_mutex * mutex);
  *  \warning On some platforms this function is implemented by looping with a
  *           delay of 1 ms, and so should be avoided if possible.
  */
-extern DECLSPEC int SDLCALL SDL_CondWaitTimeout(SDL_cond * cond,
-                                                SDL_mutex * mutex, Uint32 ms);
+extern DECLSPEC int SDLCALL SDL_CondWaitTimeout(SDL_cond *cond,
+                                                SDL_mutex *mutex,Uint32 ms);
 
 /* @} *//* Condition variable functions */
 
@@ -245,7 +228,6 @@ extern DECLSPEC int SDLCALL SDL_CondWaitTimeout(SDL_cond * cond,
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_mutex_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

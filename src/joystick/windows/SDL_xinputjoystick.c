@@ -19,9 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "../SDL_sysjoystick.h"
-
 #if SDL_JOYSTICK_XINPUT
 
 #include "SDL_assert.h"
@@ -509,52 +507,35 @@ SDL_XINPUT_JoystickQuit(void)
 }
 
 #else /* !SDL_JOYSTICK_XINPUT */
-
 typedef struct JoyStick_DeviceData JoyStick_DeviceData;
-
-SDL_bool SDL_XINPUT_Enabled(void)
-{
-    return SDL_FALSE;
+SDL_bool SDL_XINPUT_Enabled(void){
+return SDL_FALSE;
 }
-
 int
-SDL_XINPUT_JoystickInit(void)
-{
-    return 0;
+SDL_XINPUT_JoystickInit(void){
+return 0;
 }
-
 void
-SDL_XINPUT_JoystickDetect(JoyStick_DeviceData **pContext)
-{
+SDL_XINPUT_JoystickDetect(JoyStick_DeviceData **pContext){
 }
-
 int
-SDL_XINPUT_JoystickOpen(SDL_Joystick * joystick, JoyStick_DeviceData *joystickdevice)
-{
-    return SDL_Unsupported();
+SDL_XINPUT_JoystickOpen(SDL_Joystick *joystick,JoyStick_DeviceData *joystickdevice){
+return SDL_Unsupported();
 }
-
 int
-SDL_XINPUT_JoystickRumble(SDL_Joystick * joystick, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble, Uint32 duration_ms)
-{
-    return SDL_Unsupported();
+SDL_XINPUT_JoystickRumble(SDL_Joystick *joystick,Uint16 low_frequency_rumble,Uint16 high_frequency_rumble,
+                          Uint32 duration_ms){
+return SDL_Unsupported();
 }
-
 void
-SDL_XINPUT_JoystickUpdate(SDL_Joystick * joystick)
-{
+SDL_XINPUT_JoystickUpdate(SDL_Joystick *joystick){
 }
-
 void
-SDL_XINPUT_JoystickClose(SDL_Joystick * joystick)
-{
+SDL_XINPUT_JoystickClose(SDL_Joystick *joystick){
 }
-
 void
-SDL_XINPUT_JoystickQuit(void)
-{
+SDL_XINPUT_JoystickQuit(void){
 }
-
 #endif /* SDL_JOYSTICK_XINPUT */
 
 /* vi: set ts=4 sw=4 expandtab: */

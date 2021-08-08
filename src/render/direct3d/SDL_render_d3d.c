@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_render.h"
 #include "SDL_system.h"
-
 #if SDL_VIDEO_RENDER_D3D && !SDL_RENDER_DISABLED
 
 #include "../../core/windows/SDL_windows.h"
@@ -1830,7 +1828,6 @@ SDL_RenderDriver D3D_RenderDriver = {
      0}
 };
 #endif /* SDL_VIDEO_RENDER_D3D && !SDL_RENDER_DISABLED */
-
 #ifdef __WIN32__
 /* This function needs to always exist on Windows, for the Dynamic API. */
 IDirect3DDevice9 *

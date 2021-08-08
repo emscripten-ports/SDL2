@@ -20,5 +20,4 @@
 */
 
 #include <pspkerneltypes.h>
-
 typedef SceUID SYS_ThreadHandle;

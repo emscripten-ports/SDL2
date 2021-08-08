@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_DIRECTFB
 #include "SDL_DirectFB_window.h"
 #include "SDL_DirectFB_modes.h"
@@ -712,9 +711,9 @@ DirectFB_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *
 
                 PrepareDraw(renderer, cmd);
 
-                #if (DFB_VERSION_ATLEAST(1,2,0))  /* !!! FIXME: should this be set once, somewhere else? */
+#if (DFB_VERSION_ATLEAST(1,2,0))  /* !!! FIXME: should this be set once, somewhere else? */
                 destsurf->SetRenderOptions(destsurf, DSRO_ANTIALIAS);
-                #endif
+#endif
 
                 for (i = 0; i < count - 1; i++) {
                     const int x1 = points[i].x + clip_region.x1;

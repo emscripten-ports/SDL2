@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #include "../video/SDL_sysvideo.h"
 
 /* Useful functions and variables from SDL_sysevents.c */
@@ -28,7 +27,6 @@
 /* The Haiku event loops run in a separate thread */
 #define MUST_THREAD_EVENTS
 #endif
-
 #ifdef __WIN32__              /* Windows doesn't allow a separate event thread */
 #define CANT_THREAD_EVENTS
 #endif

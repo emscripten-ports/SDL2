@@ -19,13 +19,13 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 extern int SDL_DINPUT_JoystickInit(void);
 extern void SDL_DINPUT_JoystickDetect(JoyStick_DeviceData **pContext);
-extern int SDL_DINPUT_JoystickOpen(SDL_Joystick * joystick, JoyStick_DeviceData *joystickdevice);
-extern int SDL_DINPUT_JoystickRumble(SDL_Joystick * joystick, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble, Uint32 duration_ms);
-extern void SDL_DINPUT_JoystickUpdate(SDL_Joystick * joystick);
-extern void SDL_DINPUT_JoystickClose(SDL_Joystick * joystick);
+extern int SDL_DINPUT_JoystickOpen(SDL_Joystick *joystick,JoyStick_DeviceData *joystickdevice);
+extern int SDL_DINPUT_JoystickRumble(SDL_Joystick *joystick,Uint16 low_frequency_rumble,Uint16 high_frequency_rumble,
+                                     Uint32 duration_ms);
+extern void SDL_DINPUT_JoystickUpdate(SDL_Joystick *joystick);
+extern void SDL_DINPUT_JoystickClose(SDL_Joystick *joystick);
 extern void SDL_DINPUT_JoystickQuit(void);
 
 /* vi: set ts=4 sw=4 expandtab: */

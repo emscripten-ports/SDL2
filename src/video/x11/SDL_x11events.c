@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_X11
 
 #include <sys/types.h>
@@ -1326,9 +1325,9 @@ X11_DispatchEvent(_THIS)
                     }
                     X11_XFree(property);
 
-                    #ifdef DEBUG_XEVENTS
+#ifdef DEBUG_XEVENTS
                     printf("New _NET_FRAME_EXTENTS: left=%d right=%d, top=%d, bottom=%d\n", data->border_left, data->border_right, data->border_top, data->border_bottom);
-                    #endif
+#endif
                 }
             }
         }

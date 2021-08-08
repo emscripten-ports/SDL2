@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_KMSDRM && SDL_VIDEO_OPENGL_EGL
 
 #include "SDL_log.h"

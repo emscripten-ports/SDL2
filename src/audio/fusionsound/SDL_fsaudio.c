@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_FUSIONSOUND
 
 /* !!! FIXME: why is this is SDL_FS_* instead of FUSIONSOUND_*? */

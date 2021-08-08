@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_SUNAUDIO
 
 /* Allow access to a raw mixing buffer */
@@ -288,7 +287,7 @@ SUNAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
             break;              /* try again */
 
         case AUDIO_ENCODING_LINEAR:
-            /* linear 16bit didn't work either, resort to µ-law */
+            /* linear 16bit didn't work either, resort to ï¿½-law */
             enc = AUDIO_ENCODING_ULAW;
             this->spec.channels = 1;
             this->spec.freq = 8000;

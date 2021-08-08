@@ -21,7 +21,6 @@
 #include "../../SDL_internal.h"
 #include "SDL_hints.h"
 #include "SDL_log.h"
-
 #if SDL_VIDEO_DRIVER_RPI && SDL_VIDEO_OPENGL_EGL
 
 #include "SDL_rpivideo.h"

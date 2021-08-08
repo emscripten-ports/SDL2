@@ -19,34 +19,25 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_pulseaudio_h_
 #define SDL_pulseaudio_h_
-
 #include <pulse/simple.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    char *device_name;
-
-    /* pulseaudio structures */
-    pa_mainloop *mainloop;
-    pa_context *context;
-    pa_stream *stream;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-
-    const Uint8 *capturebuf;
-    int capturelen;
+struct SDL_PrivateAudioData{
+char *device_name;
+/* pulseaudio structures */
+pa_mainloop *mainloop;
+pa_context *context;
+pa_stream *stream;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
+const Uint8 *capturebuf;
+int capturelen;
 };
-
 #endif /* SDL_pulseaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

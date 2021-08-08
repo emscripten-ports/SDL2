@@ -30,13 +30,11 @@
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  * \brief Get the number of milliseconds since the SDL library initialization.
  *
@@ -53,23 +51,19 @@ extern DECLSPEC Uint32 SDLCALL SDL_GetTicks(void);
  *      ... do work until timeout has elapsed
  *  }
  */
-#define SDL_TICKS_PASSED(A, B)  ((Sint32)((B) - (A)) <= 0)
-
+#define SDL_TICKS_PASSED(A,B)  ((Sint32)((B) - (A)) <= 0)
 /**
  * \brief Get the current value of the high resolution counter
  */
 extern DECLSPEC Uint64 SDLCALL SDL_GetPerformanceCounter(void);
-
 /**
  * \brief Get the count per second of the high resolution counter
  */
 extern DECLSPEC Uint64 SDLCALL SDL_GetPerformanceFrequency(void);
-
 /**
  * \brief Wait a specified number of milliseconds before returning.
  */
 extern DECLSPEC void SDLCALL SDL_Delay(Uint32 ms);
-
 /**
  *  Function prototype for the timer callback function.
  *
@@ -78,13 +72,11 @@ extern DECLSPEC void SDLCALL SDL_Delay(Uint32 ms);
  *  passed in, the periodic alarm continues, otherwise a new alarm is
  *  scheduled.  If the callback returns 0, the periodic alarm is cancelled.
  */
-typedef Uint32 (SDLCALL * SDL_TimerCallback) (Uint32 interval, void *param);
-
+typedef Uint32 (SDLCALL *SDL_TimerCallback)(Uint32 interval,void *param);
 /**
  * Definition of the timer ID type.
  */
 typedef int SDL_TimerID;
-
 /**
  * \brief Add a new timer to the pool of timers already running.
  *
@@ -93,7 +85,6 @@ typedef int SDL_TimerID;
 extern DECLSPEC SDL_TimerID SDLCALL SDL_AddTimer(Uint32 interval,
                                                  SDL_TimerCallback callback,
                                                  void *param);
-
 /**
  * \brief Remove a timer knowing its ID.
  *
@@ -109,7 +100,6 @@ extern DECLSPEC SDL_bool SDLCALL SDL_RemoveTimer(SDL_TimerID id);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_timer_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

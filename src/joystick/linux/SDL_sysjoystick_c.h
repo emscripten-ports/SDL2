@@ -21,54 +21,41 @@
 
 #ifndef SDL_sysjoystick_c_h_
 #define SDL_sysjoystick_c_h_
-
 #include <linux/input.h>
-
 struct SDL_joylist_item;
-
 /* The private structure used to keep track of a joystick */
-struct joystick_hwdata
-{
-    int fd;
-    struct SDL_joylist_item *item;
-    SDL_JoystickGUID guid;
-    char *fname;                /* Used in haptic subsystem */
+struct joystick_hwdata{
+int fd;
+struct SDL_joylist_item *item;
+SDL_JoystickGUID guid;
+char *fname;                /* Used in haptic subsystem */
 
-    SDL_bool ff_rumble;
-    SDL_bool ff_sine;
-    struct ff_effect effect;
-
-    /* The current Linux joystick driver maps hats to two axes */
-    struct hwdata_hat
-    {
-        int axis[2];
-    } *hats;
-    /* The current Linux joystick driver maps balls to two axes */
-    struct hwdata_ball
-    {
-        int axis[2];
-    } *balls;
-
-    /* Support for the Linux 2.4 unified input interface */
-    Uint8 key_map[KEY_MAX];
-    Uint8 abs_map[ABS_MAX];
-    struct axis_correct
-    {
-        int used;
-        int coef[3];
-    } abs_correct[ABS_MAX];
-
-    int fresh;
-
-    /* Steam Controller support */
-    SDL_bool m_bSteamController;
-    /* 4 = (ABS_HAT3X-ABS_HAT0X)/2 (see input-event-codes.h in kernel) */
-    int hats_indices[4];
-
-    /* Set when gamepad is pending removal due to ENODEV read error */
-    SDL_bool gone;
+SDL_bool ff_rumble;
+SDL_bool ff_sine;
+struct ff_effect effect;
+/* The current Linux joystick driver maps hats to two axes */
+struct hwdata_hat{
+int axis[2];
+}*hats;
+/* The current Linux joystick driver maps balls to two axes */
+struct hwdata_ball{
+int axis[2];
+}*balls;
+/* Support for the Linux 2.4 unified input interface */
+Uint8 key_map[KEY_MAX];
+Uint8 abs_map[ABS_MAX];
+struct axis_correct{
+int used;
+int coef[3];
+}abs_correct[ABS_MAX];
+int fresh;
+/* Steam Controller support */
+SDL_bool m_bSteamController;
+/* 4 = (ABS_HAT3X-ABS_HAT0X)/2 (see input-event-codes.h in kernel) */
+int hats_indices[4];
+/* Set when gamepad is pending removal due to ENODEV read error */
+SDL_bool gone;
 };
-
 #endif /* SDL_sysjoystick_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

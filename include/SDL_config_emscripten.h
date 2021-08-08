@@ -21,7 +21,6 @@
 
 #ifndef _SDL_config_emscripten_h_
 #define _SDL_config_emscripten_h_
-
 #include "SDL_platform.h"
 
 /**
@@ -159,7 +158,6 @@
 
 /* Enable various video drivers */
 #define SDL_VIDEO_DRIVER_EMSCRIPTEN 1
-
 #define SDL_VIDEO_RENDER_OGL_ES2 1
 
 /* Enable OpenGL support */
@@ -179,5 +177,4 @@
 
 /* Enable system filesystem support */
 #define SDL_FILESYSTEM_EMSCRIPTEN 1
-
 #endif /* _SDL_config_emscripten_h_ */

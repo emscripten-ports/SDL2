@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_ANDROID
 
 #ifndef SDL_sysjoystick_c_h_

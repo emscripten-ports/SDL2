@@ -22,9 +22,7 @@
 
 #ifndef SDL_directfb_opengl_h_
 #define SDL_directfb_opengl_h_
-
 #include "SDL_DirectFB_video.h"
-
 #if SDL_DIRECTFB_OPENGL
 
 #include "SDL_opengl.h"
@@ -58,7 +56,6 @@ extern void DirectFB_GL_ReAllocWindowContexts(_THIS, SDL_Window * window);
 extern void DirectFB_GL_DestroyWindowContexts(_THIS, SDL_Window * window);
 
 #endif /* SDL_DIRECTFB_OPENGL */
-
 #endif /* SDL_directfb_opengl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -25,73 +25,58 @@
 #include "SDL_events.h"
 #include "SDL_events_c.h"
 #include "SDL_dropevents_c.h"
-
 #include "../video/SDL_sysvideo.h"  /* for SDL_Window internals. */
-
-
 static int
-SDL_SendDrop(SDL_Window *window, const SDL_EventType evtype, const char *data)
-{
-    static SDL_bool app_is_dropping = SDL_FALSE;
-    int posted = 0;
+SDL_SendDrop(SDL_Window *window,const SDL_EventType evtype,const char *data){
+static SDL_bool app_is_dropping=SDL_FALSE;
+int posted=0;
 
-    /* Post the event, if desired */
-    if (SDL_GetEventState(evtype) == SDL_ENABLE) {
-        const SDL_bool need_begin = window ? !window->is_dropping : !app_is_dropping;
-        SDL_Event event;
-
-        if (need_begin) {
-            SDL_zero(event);
-            event.type = SDL_DROPBEGIN;
-
-            if (window) {
-                event.drop.windowID = window->id;
-            }
-
-            posted = (SDL_PushEvent(&event) > 0);
-            if (!posted) {
-                return 0;
-            }
-            if (window) {
-                window->is_dropping = SDL_TRUE;
-            } else {
-                app_is_dropping = SDL_TRUE;
-            }
-        }
-
-        SDL_zero(event);
-        event.type = evtype;
-        event.drop.file = data ? SDL_strdup(data) : NULL;
-        event.drop.windowID = window ? window->id : 0;
-        posted = (SDL_PushEvent(&event) > 0);
-
-        if (posted && (evtype == SDL_DROPCOMPLETE)) {
-            if (window) {
-                window->is_dropping = SDL_FALSE;
-            } else {
-                app_is_dropping = SDL_FALSE;
-            }
-        }
-    }
-    return posted;
+/* Post the event, if desired */
+if(SDL_GetEventState(evtype) == SDL_ENABLE){
+const SDL_bool need_begin=window ? !window->is_dropping : !app_is_dropping;
+SDL_Event event;
+if(need_begin){
+SDL_zero(event);
+event.type=SDL_DROPBEGIN;
+if(window){
+event.drop.windowID=window->id;
 }
-
-int
-SDL_SendDropFile(SDL_Window *window, const char *file)
-{
-    return SDL_SendDrop(window, SDL_DROPFILE, file);
+posted=(SDL_PushEvent(&event) > 0);
+if(!posted){
+return 0;
 }
-
-int
-SDL_SendDropText(SDL_Window *window, const char *text)
-{
-    return SDL_SendDrop(window, SDL_DROPTEXT, text);
+if(window){
+window->is_dropping=SDL_TRUE;
+} else{
+app_is_dropping=SDL_TRUE;
 }
-
+}
+SDL_zero(event);
+event.type=evtype;
+event.drop.file=data ? SDL_strdup(data) : NULL;
+event.drop.windowID=window ? window->id : 0;
+posted=(SDL_PushEvent(&event) > 0);
+if(posted && (evtype == SDL_DROPCOMPLETE)){
+if(window){
+window->is_dropping=SDL_FALSE;
+} else{
+app_is_dropping=SDL_FALSE;
+}
+}
+}
+return posted;
+}
 int
-SDL_SendDropComplete(SDL_Window *window)
-{
-    return SDL_SendDrop(window, SDL_DROPCOMPLETE, NULL);
+SDL_SendDropFile(SDL_Window *window,const char *file){
+return SDL_SendDrop(window,SDL_DROPFILE,file);
+}
+int
+SDL_SendDropText(SDL_Window *window,const char *text){
+return SDL_SendDrop(window,SDL_DROPTEXT,text);
+}
+int
+SDL_SendDropComplete(SDL_Window *window){
+return SDL_SendDrop(window,SDL_DROPCOMPLETE,NULL);
 }
 
 

@@ -19,14 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_cocoaevents_h_
 #define SDL_cocoaevents_h_
-
 extern void Cocoa_RegisterApp(void);
 extern void Cocoa_PumpEvents(_THIS);
 extern void Cocoa_SuspendScreenSaver(_THIS);
-
 #endif /* SDL_cocoaevents_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

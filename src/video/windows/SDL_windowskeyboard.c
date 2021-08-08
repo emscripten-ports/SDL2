@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_WINDOWS
 
 #include "SDL_windowsvideo.h"
@@ -586,7 +585,7 @@ IME_GetId(SDL_VideoData *videodata, UINT uIndex)
         return dwRet[uIndex];
     }
     if (!videodata->GetReadingString) {
-        #define LCID_INVARIANT MAKELCID(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), SORT_DEFAULT)
+#define LCID_INVARIANT MAKELCID(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), SORT_DEFAULT)
         if (CompareStringA(LCID_INVARIANT, NORM_IGNORECASE, szTemp, -1, CHT_IMEFILENAME1, -1) != 2
             && CompareStringA(LCID_INVARIANT, NORM_IGNORECASE, szTemp, -1, CHT_IMEFILENAME2, -1) != 2
             && CompareStringA(LCID_INVARIANT, NORM_IGNORECASE, szTemp, -1, CHT_IMEFILENAME3, -1) != 2
@@ -595,14 +594,14 @@ IME_GetId(SDL_VideoData *videodata, UINT uIndex)
             dwRet[0] = dwRet[1] = 0;
             return dwRet[uIndex];
         }
-        #undef LCID_INVARIANT
+#undef LCID_INVARIANT
         dwVerSize = GetFileVersionInfoSizeA(szTemp, &dwVerHandle);
         if (dwVerSize) {
             lpVerBuffer = SDL_malloc(dwVerSize);
             if (lpVerBuffer) {
                 if (GetFileVersionInfoA(szTemp, dwVerHandle, dwVerSize, lpVerBuffer)) {
                     if (VerQueryValueA(lpVerBuffer, "\\", &lpVerData, &cbVerData)) {
-                        #define pVerFixedInfo   ((VS_FIXEDFILEINFO FAR*)lpVerData)
+#define pVerFixedInfo   ((VS_FIXEDFILEINFO FAR*)lpVerData)
                         DWORD dwVer = pVerFixedInfo->dwFileVersionMS;
                         dwVer = (dwVer & 0x00ff0000) << 8 | (dwVer & 0x000000ff) << 16;
                         if ((videodata->GetReadingString) ||
@@ -624,7 +623,7 @@ IME_GetId(SDL_VideoData *videodata, UINT uIndex)
                             SDL_free(lpVerBuffer);
                             return dwRet[0];
                         }
-                        #undef pVerFixedInfo
+#undef pVerFixedInfo
                     }
                 }
             }

@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_ALSA
 
 #ifndef SDL_ALSA_NON_BLOCKING
@@ -704,11 +703,11 @@ ALSA_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
         SDL_memset(this->hidden->mixbuf, this->spec.silence, this->hidden->mixlen);
     }
 
-    #if !SDL_ALSA_NON_BLOCKING
+#if !SDL_ALSA_NON_BLOCKING
     if (!iscapture) {
         ALSA_snd_pcm_nonblock(pcm_handle, 0);
     }
-    #endif
+#endif
 
     /* We're ready to rock and roll. :-) */
     return 0;

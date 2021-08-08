@@ -1,16 +1,20 @@
 From: https://github.com/descampsa/yuv2rgb
+
 # yuv2rgb
+
 C library for fast image conversion between yuv420p and rgb24.
 
-This is a simple library for optimized image conversion between YUV420p and rgb24.
-It was done mainly as an exercise to learn to use sse intrinsics, so there may still be room for optimization.
+This is a simple library for optimized image conversion between YUV420p and rgb24. It was done mainly as an exercise to
+learn to use sse intrinsics, so there may still be room for optimization.
 
-For each conversion, a standard c optimized function and two sse function (with aligned and unaligned memory) are implemented.
-The sse version requires only SSE2, which is available on any reasonably recent CPU.
-The library also supports the three different YUV (YCrCb to be correct) color spaces that exist (see comments in code), and others can be added simply.
+For each conversion, a standard c optimized function and two sse function (with aligned and unaligned memory) are
+implemented. The sse version requires only SSE2, which is available on any reasonably recent CPU. The library also
+supports the three different YUV (YCrCb to be correct) color spaces that exist (see comments in code), and others can be
+added simply.
 
-There is a simple test program, that convert a raw YUV file to rgb ppm format, and measure computation time.
-Optionally, it also compares the result and computation time with the ffmpeg implementation (that uses MMX), and with the IPP functions.
+There is a simple test program, that convert a raw YUV file to rgb ppm format, and measure computation time. Optionally,
+it also compares the result and computation time with the ffmpeg implementation (that uses MMX), and with the IPP
+functions.
 
 To compile, simply do :
 
@@ -19,8 +23,8 @@ To compile, simply do :
     cmake -DCMAKE_BUILD_TYPE=Release ..
     make
 
-The test program only support raw YUV files for the YUV420 format, and ppm for the RGB24 format.
-To generate a raw yuv file, you can use avconv:
+The test program only support raw YUV files for the YUV420 format, and ppm for the RGB24 format. To generate a raw yuv
+file, you can use avconv:
 
     avconv -i example.jpg -c:v rawvideo -pix_fmt yuv420p example.yuv
 
@@ -31,8 +35,10 @@ To generate the rgb file, you can use the ImageMagick convert program:
 Then, for YUV420 to RGB24 conversion, use the test program like that:
 
     ./test_yuv_rgb yuv2rgb image.yuv 4096 2160 image
-  
-The second and third parameters are image width and height (that are needed because not available in the raw YUV file), and fourth parameter is the output filename template (several output files will be generated, named for example output_sse.ppm, output_av.ppm, etc.)
+
+The second and third parameters are image width and height (that are needed because not available in the raw YUV file),
+and fourth parameter is the output filename template (several output files will be generated, named for example
+output_sse.ppm, output_av.ppm, etc.)
 
 Similarly, for RGB24 to YUV420 conversion:
 

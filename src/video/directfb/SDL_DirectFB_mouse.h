@@ -21,24 +21,17 @@
 
 #ifndef SDL_DirectFB_mouse_h_
 #define SDL_DirectFB_mouse_h_
-
 #include <directfb.h>
-
 #include "../SDL_sysvideo.h"
-
 typedef struct _DFB_CursorData DFB_CursorData;
-struct _DFB_CursorData
-{
-    IDirectFBSurface *surf;
-    int             hotx;
-    int             hoty;
+struct _DFB_CursorData{
+IDirectFBSurface *surf;
+int hotx;
+int hoty;
 };
-
 #define SDL_DFB_CURSORDATA(curs)  DFB_CursorData *curdata = (DFB_CursorData *) ((curs) ? (curs)->driverdata : NULL)
-
 extern void DirectFB_InitMouse(_THIS);
 extern void DirectFB_QuitMouse(_THIS);
-
 #endif /* SDL_DirectFB_mouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -35,7 +35,6 @@
 
 #ifndef SDL_test_h_arness_h
 #define SDL_test_h_arness_h
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -59,45 +58,38 @@ extern "C" {
 #define TEST_RESULT_NO_ASSERT           2
 #define TEST_RESULT_SKIPPED             3
 #define TEST_RESULT_SETUP_FAILURE       4
-
 /* !< Function pointer to a test case setup function (run before every test) */
 typedef void (*SDLTest_TestCaseSetUpFp)(void *arg);
-
 /* !< Function pointer to a test case function */
 typedef int (*SDLTest_TestCaseFp)(void *arg);
-
 /* !< Function pointer to a test case teardown function (run after every test) */
 typedef void  (*SDLTest_TestCaseTearDownFp)(void *arg);
-
 /**
  * Holds information about a single test case.
  */
-typedef struct SDLTest_TestCaseReference {
-    /* !< Func2Stress */
-    SDLTest_TestCaseFp testCase;
-    /* !< Short name (or function name) "Func2Stress" */
-    char *name;
-    /* !< Long name or full description "This test pushes func2() to the limit." */
-    char *description;
-    /* !< Set to TEST_ENABLED or TEST_DISABLED (test won't be run) */
-    int enabled;
-} SDLTest_TestCaseReference;
-
+typedef struct SDLTest_TestCaseReference{
+/* !< Func2Stress */
+SDLTest_TestCaseFp testCase;
+/* !< Short name (or function name) "Func2Stress" */
+char *name;
+/* !< Long name or full description "This test pushes func2() to the limit." */
+char *description;
+/* !< Set to TEST_ENABLED or TEST_DISABLED (test won't be run) */
+int enabled;
+}SDLTest_TestCaseReference;
 /**
  * Holds information about a test suite (multiple test cases).
  */
-typedef struct SDLTest_TestSuiteReference {
-    /* !< "PlatformSuite" */
-    char *name;
-    /* !< The function that is run before each test. NULL skips. */
-    SDLTest_TestCaseSetUpFp testSetUp;
-    /* !< The test cases that are run as part of the suite. Last item should be NULL. */
-    const SDLTest_TestCaseReference **testCases;
-    /* !< The function that is run after each test. NULL skips. */
-    SDLTest_TestCaseTearDownFp testTearDown;
-} SDLTest_TestSuiteReference;
-
-
+typedef struct SDLTest_TestSuiteReference{
+/* !< "PlatformSuite" */
+char *name;
+/* !< The function that is run before each test. NULL skips. */
+SDLTest_TestCaseSetUpFp testSetUp;
+/* !< The test cases that are run as part of the suite. Last item should be NULL. */
+const SDLTest_TestCaseReference **testCases;
+/* !< The function that is run after each test. NULL skips. */
+SDLTest_TestCaseTearDownFp testTearDown;
+}SDLTest_TestSuiteReference;
 /**
  * \brief Generates a random run seed string for the harness. The generated seed will contain alphanumeric characters (0-9A-Z).
  *
@@ -108,7 +100,6 @@ typedef struct SDLTest_TestSuiteReference {
  * \returns The generated seed string
  */
 char *SDLTest_GenerateRunSeed(const int length);
-
 /**
  * \brief Execute a test suite using the given run seed and execution key.
  *
@@ -120,7 +111,8 @@ char *SDLTest_GenerateRunSeed(const int length);
  *
  * \returns Test run result; 0 when all tests passed, 1 if any tests failed.
  */
-int SDLTest_RunSuites(SDLTest_TestSuiteReference *testSuites[], const char *userRunSeed, Uint64 userExecKey, const char *filter, int testIterations);
+int SDLTest_RunSuites(SDLTest_TestSuiteReference *testSuites[],const char *userRunSeed,Uint64 userExecKey,
+                      const char *filter,int testIterations);
 
 
 /* Ends C function definitions when using C++ */
@@ -128,7 +120,6 @@ int SDLTest_RunSuites(SDLTest_TestSuiteReference *testSuites[], const char *user
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_h_arness_h */
 
 /* vi: set ts=4 sw=4 expandtab: */

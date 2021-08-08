@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_RENDER_OGL_ES2 && !SDL_RENDER_DISABLED
 
 #include "SDL_video.h"
@@ -281,7 +280,7 @@ static const Uint8 GLES2_FragmentSrc_TextureNV21BT709Src_[] = \
 
 /* Custom Android video format texture */
 static const Uint8 GLES2_FragmentSrc_TextureExternalOESSrc_[] = " \
-    #extension GL_OES_EGL_image_external : require\n\
+#extension GL_OES_EGL_image_external : require\n\
     precision mediump float; \
     uniform samplerExternalOES u_texture; \
     uniform vec4 u_color; \

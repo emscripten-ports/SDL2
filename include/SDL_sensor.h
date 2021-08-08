@@ -28,10 +28,8 @@
 
 #ifndef SDL_sensor_h_
 #define SDL_sensor_h_
-
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -39,7 +37,6 @@
 extern "C" {
 /* *INDENT-ON* */
 #endif
-
 /**
  *  \brief SDL_sensor.h
  *
@@ -50,7 +47,6 @@ extern "C" {
 
 struct _SDL_Sensor;
 typedef struct _SDL_Sensor SDL_Sensor;
-
 /**
  * This is a unique ID for a sensor for the time it is connected to the system,
  * and is never reused for the lifetime of the application.
@@ -58,7 +54,6 @@ typedef struct _SDL_Sensor SDL_Sensor;
  * The ID value starts at 0 and increments from there. The value -1 is an invalid ID.
  */
 typedef Sint32 SDL_SensorID;
-
 /* The different sensors defined by SDL
  *
  * Additional sensors may be available, using platform dependent semantics.
@@ -66,13 +61,12 @@ typedef Sint32 SDL_SensorID;
  * Hare are the additional Android sensors:
  * https://developer.android.com/reference/android/hardware/SensorEvent.html#values
  */
-typedef enum
-{
-    SDL_SENSOR_INVALID = -1,    /**< Returned for an invalid sensor */
-    SDL_SENSOR_UNKNOWN,         /**< Unknown sensor type */
-    SDL_SENSOR_ACCEL,           /**< Accelerometer */
-    SDL_SENSOR_GYRO             /**< Gyroscope */
-} SDL_SensorType;
+typedef enum{
+SDL_SENSOR_INVALID=-1,    /**< Returned for an invalid sensor */
+SDL_SENSOR_UNKNOWN,         /**< Unknown sensor type */
+SDL_SENSOR_ACCEL,           /**< Accelerometer */
+SDL_SENSOR_GYRO             /**< Gyroscope */
+}SDL_SensorType;
 
 /**
  * Accelerometer sensor
@@ -125,7 +119,6 @@ typedef enum
  *  \brief Count the number of sensors attached to the system right now
  */
 extern DECLSPEC int SDLCALL SDL_NumSensors(void);
-
 /**
  *  \brief Get the implementation dependent name of a sensor.
  *
@@ -134,7 +127,6 @@ extern DECLSPEC int SDLCALL SDL_NumSensors(void);
  *  \return The sensor name, or NULL if device_index is out of range.
  */
 extern DECLSPEC const char *SDLCALL SDL_SensorGetDeviceName(int device_index);
-
 /**
  *  \brief Get the type of a sensor.
  *
@@ -143,7 +135,6 @@ extern DECLSPEC const char *SDLCALL SDL_SensorGetDeviceName(int device_index);
  *  \return The sensor type, or SDL_SENSOR_INVALID if device_index is out of range.
  */
 extern DECLSPEC SDL_SensorType SDLCALL SDL_SensorGetDeviceType(int device_index);
-
 /**
  *  \brief Get the platform dependent type of a sensor.
  *
@@ -152,7 +143,6 @@ extern DECLSPEC SDL_SensorType SDLCALL SDL_SensorGetDeviceType(int device_index)
  *  \return The sensor platform dependent type, or -1 if device_index is out of range.
  */
 extern DECLSPEC int SDLCALL SDL_SensorGetDeviceNonPortableType(int device_index);
-
 /**
  *  \brief Get the instance ID of a sensor.
  *
@@ -161,7 +151,6 @@ extern DECLSPEC int SDLCALL SDL_SensorGetDeviceNonPortableType(int device_index)
  *  \return The sensor instance ID, or -1 if device_index is out of range.
  */
 extern DECLSPEC SDL_SensorID SDLCALL SDL_SensorGetDeviceInstanceID(int device_index);
-
 /**
  *  \brief Open a sensor for use.
  *
@@ -170,19 +159,16 @@ extern DECLSPEC SDL_SensorID SDLCALL SDL_SensorGetDeviceInstanceID(int device_in
  *  \return A sensor identifier, or NULL if an error occurred.
  */
 extern DECLSPEC SDL_Sensor *SDLCALL SDL_SensorOpen(int device_index);
-
 /**
  * Return the SDL_Sensor associated with an instance id.
  */
 extern DECLSPEC SDL_Sensor *SDLCALL SDL_SensorFromInstanceID(SDL_SensorID instance_id);
-
 /**
  *  \brief Get the implementation dependent name of a sensor.
  *
  *  \return The sensor name, or NULL if the sensor is NULL.
  */
 extern DECLSPEC const char *SDLCALL SDL_SensorGetName(SDL_Sensor *sensor);
-
 /**
  *  \brief Get the type of a sensor.
  *
@@ -191,7 +177,6 @@ extern DECLSPEC const char *SDLCALL SDL_SensorGetName(SDL_Sensor *sensor);
  *  \return The sensor type, or SDL_SENSOR_INVALID if the sensor is NULL.
  */
 extern DECLSPEC SDL_SensorType SDLCALL SDL_SensorGetType(SDL_Sensor *sensor);
-
 /**
  *  \brief Get the platform dependent type of a sensor.
  *
@@ -200,7 +185,6 @@ extern DECLSPEC SDL_SensorType SDLCALL SDL_SensorGetType(SDL_Sensor *sensor);
  *  \return The sensor platform dependent type, or -1 if the sensor is NULL.
  */
 extern DECLSPEC int SDLCALL SDL_SensorGetNonPortableType(SDL_Sensor *sensor);
-
 /**
  *  \brief Get the instance ID of a sensor.
  *
@@ -209,7 +193,6 @@ extern DECLSPEC int SDLCALL SDL_SensorGetNonPortableType(SDL_Sensor *sensor);
  *  \return The sensor instance ID, or -1 if the sensor is NULL.
  */
 extern DECLSPEC SDL_SensorID SDLCALL SDL_SensorGetInstanceID(SDL_Sensor *sensor);
-
 /**
  *  Get the current state of an opened sensor.
  *
@@ -221,13 +204,11 @@ extern DECLSPEC SDL_SensorID SDLCALL SDL_SensorGetInstanceID(SDL_Sensor *sensor)
  *
  *  \return 0 or -1 if an error occurred.
  */
-extern DECLSPEC int SDLCALL SDL_SensorGetData(SDL_Sensor * sensor, float *data, int num_values);
-
+extern DECLSPEC int SDLCALL SDL_SensorGetData(SDL_Sensor *sensor,float *data,int num_values);
 /**
  *  Close a sensor previously opened with SDL_SensorOpen()
  */
-extern DECLSPEC void SDLCALL SDL_SensorClose(SDL_Sensor * sensor);
-
+extern DECLSPEC void SDLCALL SDL_SensorClose(SDL_Sensor *sensor);
 /**
  *  Update the current state of the open sensors.
  *
@@ -245,7 +226,6 @@ extern DECLSPEC void SDLCALL SDL_SensorUpdate(void);
 /* *INDENT-ON* */
 #endif
 #include "close_code.h"
-
 #endif /* SDL_sensor_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

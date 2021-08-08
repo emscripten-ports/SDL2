@@ -19,29 +19,23 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_directsound_h_
 #define SDL_directsound_h_
-
 #include "../../core/windows/SDL_directx.h"
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
 /* The DirectSound objects */
-struct SDL_PrivateAudioData
-{
-    LPDIRECTSOUND sound;
-    LPDIRECTSOUNDBUFFER mixbuf;
-    LPDIRECTSOUNDCAPTURE capture;
-    LPDIRECTSOUNDCAPTUREBUFFER capturebuf;
-    int num_buffers;
-    DWORD lastchunk;
-    Uint8 *locked_buf;
+struct SDL_PrivateAudioData{
+LPDIRECTSOUND sound;
+LPDIRECTSOUNDBUFFER mixbuf;
+LPDIRECTSOUNDCAPTURE capture;
+LPDIRECTSOUNDCAPTUREBUFFER capturebuf;
+int num_buffers;
+DWORD lastchunk;
+Uint8 *locked_buf;
 };
-
 #endif /* SDL_directsound_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

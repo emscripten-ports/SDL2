@@ -21,24 +21,18 @@
 
 #ifndef SDL_BKEYBOARD_H
 #define SDL_BKEYBOARD_H
-
 #include <SupportDefs.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include "../../../include/SDL_keyboard.h"
-
 extern void HAIKU_InitOSKeymap(void);
 extern SDL_Scancode HAIKU_GetScancodeFromBeKey(int32 bkey);
 extern int8 HAIKU_GetKeyState(int32 bkey);
-extern void HAIKU_SetKeyState(int32 bkey, int8 state);
-
+extern void HAIKU_SetKeyState(int32 bkey,int8 state);
 #ifdef __cplusplus
 }
 #endif
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

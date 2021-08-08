@@ -19,67 +19,52 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_x11modes_h_
 #define SDL_x11modes_h_
-
-typedef struct
-{
-    int screen;
-    Visual *visual;
-    int depth;
-    int scanline_pad;
-    int x;
-    int y;
-    float ddpi;
-    float hdpi;
-    float vdpi;
-
-    int use_xinerama;
-    int use_xrandr;
-    int use_vidmode;
-
+typedef struct{
+int screen;
+Visual *visual;
+int depth;
+int scanline_pad;
+int x;
+int y;
+float ddpi;
+float hdpi;
+float vdpi;
+int use_xinerama;
+int use_xrandr;
+int use_vidmode;
 #if SDL_VIDEO_DRIVER_X11_XINERAMA
-    XineramaScreenInfo xinerama_info;
-    int xinerama_screen;
+XineramaScreenInfo xinerama_info;
+int xinerama_screen;
 #endif
-
 #if SDL_VIDEO_DRIVER_X11_XRANDR
-    RROutput xrandr_output;
+RROutput xrandr_output;
 #endif
-
 #if SDL_VIDEO_DRIVER_X11_XVIDMODE
-    int vidmode_screen;
+int vidmode_screen;
 #endif
-
-} SDL_DisplayData;
-
-typedef struct
-{
+}SDL_DisplayData;
+typedef struct{
 #if SDL_VIDEO_DRIVER_X11_XRANDR
-    RRMode xrandr_mode;
+RRMode xrandr_mode;
 #endif
-
 #if SDL_VIDEO_DRIVER_X11_XVIDMODE
-    XF86VidModeModeInfo vm_mode;
+XF86VidModeModeInfo vm_mode;
 #endif
-
-} SDL_DisplayModeData;
-
+}SDL_DisplayModeData;
 extern int X11_InitModes(_THIS);
-extern void X11_GetDisplayModes(_THIS, SDL_VideoDisplay * display);
-extern int X11_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode);
+extern void X11_GetDisplayModes(_THIS,SDL_VideoDisplay *display);
+extern int X11_SetDisplayMode(_THIS,SDL_VideoDisplay *display,SDL_DisplayMode *mode);
 extern void X11_QuitModes(_THIS);
-
 /* Some utility functions for working with visuals */
-extern int X11_GetVisualInfoFromVisual(Display * display, Visual * visual,
-                                       XVisualInfo * vinfo);
-extern Uint32 X11_GetPixelFormatFromVisualInfo(Display * display,
-                                               XVisualInfo * vinfo);
-extern int X11_GetDisplayBounds(_THIS, SDL_VideoDisplay * sdl_display, SDL_Rect * rect);
-extern int X11_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * sdl_display, SDL_Rect * rect);
-extern int X11_GetDisplayDPI(_THIS, SDL_VideoDisplay * sdl_display, float * ddpi, float * hdpi, float * vdpi);
-
+extern int X11_GetVisualInfoFromVisual(Display *display,Visual *visual,
+                                       XVisualInfo *vinfo);
+extern Uint32 X11_GetPixelFormatFromVisualInfo(Display *display,
+                                               XVisualInfo *vinfo);
+extern int X11_GetDisplayBounds(_THIS,SDL_VideoDisplay *sdl_display,SDL_Rect *rect);
+extern int X11_GetDisplayUsableBounds(_THIS,SDL_VideoDisplay *sdl_display,SDL_Rect *rect);
+extern int X11_GetDisplayDPI(_THIS,SDL_VideoDisplay *sdl_display,float *ddpi,float *hdpi,float *vdpi);
 #endif /* SDL_x11modes_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -20,10 +20,8 @@
 */
 
 #include "../../SDL_internal.h"
-
 #include "SDL_assert.h"
 #include "SDL_poll.h"
-
 #ifdef HAVE_POLL
 #include <poll.h>
 #else
@@ -32,56 +30,47 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-
-
 int
-SDL_IOReady(int fd, SDL_bool forWrite, int timeoutMS)
-{
-    int result;
+SDL_IOReady(int fd,SDL_bool forWrite,int timeoutMS){
+int result;
 
-    /* Note: We don't bother to account for elapsed time if we get EINTR */
-    do
-    {
+/* Note: We don't bother to account for elapsed time if we get EINTR */
+do{
 #ifdef HAVE_POLL
-        struct pollfd info;
+struct pollfd info;
 
-        info.fd = fd;
-        if (forWrite) {
-            info.events = POLLOUT;
-        } else {
-            info.events = POLLIN | POLLPRI;
-        }
-        result = poll(&info, 1, timeoutMS);
+info.fd = fd;
+if (forWrite) {
+    info.events = POLLOUT;
+} else {
+    info.events = POLLIN | POLLPRI;
+}
+result = poll(&info, 1, timeoutMS);
 #else
-        fd_set rfdset, *rfdp = NULL;
-        fd_set wfdset, *wfdp = NULL;
-        struct timeval tv, *tvp = NULL;
+fd_set rfdset,*rfdp=NULL;
+fd_set wfdset,*wfdp=NULL;
+struct timeval tv,*tvp=NULL;
 
-        /* If this assert triggers we'll corrupt memory here */
-        SDL_assert(fd >= 0 && fd < FD_SETSIZE);
-
-        if (forWrite) {
-            FD_ZERO(&wfdset);
-            FD_SET(fd, &wfdset);
-            wfdp = &wfdset;
-        } else {
-            FD_ZERO(&rfdset);
-            FD_SET(fd, &rfdset);
-            rfdp = &rfdset;
-        }
-
-        if (timeoutMS >= 0) {
-            tv.tv_sec = timeoutMS / 1000;
-            tv.tv_usec = (timeoutMS % 1000) * 1000;
-            tvp = &tv;
-        }
-
-        result = select(fd + 1, rfdp, wfdp, NULL, tvp);
+/* If this assert triggers we'll corrupt memory here */
+SDL_assert(fd >= 0 && fd < FD_SETSIZE);
+if(forWrite){
+FD_ZERO(&wfdset);
+FD_SET(fd,&wfdset);
+wfdp=&wfdset;
+} else{
+FD_ZERO(&rfdset);
+FD_SET(fd,&rfdset);
+rfdp=&rfdset;
+}
+if(timeoutMS >= 0){
+tv.tv_sec=timeoutMS / 1000;
+tv.tv_usec=(timeoutMS % 1000) * 1000;
+tvp=&tv;
+}
+result=select(fd+1,rfdp,wfdp,NULL,tvp);
 #endif /* HAVE_POLL */
-
-    } while ( result < 0 && errno == EINTR );
-
-    return result;
+} while (result < 0 && errno == EINTR);
+return result;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

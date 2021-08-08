@@ -21,53 +21,44 @@
 
 #ifndef SDL_yuv_sw_c_h_
 #define SDL_yuv_sw_c_h_
-
 #include "../SDL_internal.h"
-
 #include "SDL_video.h"
-
 /* This is the software implementation of the YUV texture support */
 
-struct SDL_SW_YUVTexture
-{
-    Uint32 format;
-    Uint32 target_format;
-    int w, h;
-    Uint8 *pixels;
-
-    /* These are just so we don't have to allocate them separately */
-    Uint16 pitches[3];
-    Uint8 *planes[3];
-
-    /* This is a temporary surface in case we have to stretch copy */
-    SDL_Surface *stretch;
-    SDL_Surface *display;
+struct SDL_SW_YUVTexture{
+Uint32 format;
+Uint32 target_format;
+int w,h;
+Uint8 *pixels;
+/* These are just so we don't have to allocate them separately */
+Uint16 pitches[3];
+Uint8 *planes[3];
+/* This is a temporary surface in case we have to stretch copy */
+SDL_Surface *stretch;
+SDL_Surface *display;
 };
-
 typedef struct SDL_SW_YUVTexture SDL_SW_YUVTexture;
-
-SDL_SW_YUVTexture *SDL_SW_CreateYUVTexture(Uint32 format, int w, int h);
-int SDL_SW_QueryYUVTexturePixels(SDL_SW_YUVTexture * swdata, void **pixels,
+SDL_SW_YUVTexture *SDL_SW_CreateYUVTexture(Uint32 format,int w,int h);
+int SDL_SW_QueryYUVTexturePixels(SDL_SW_YUVTexture *swdata,void **pixels,
                                  int *pitch);
-int SDL_SW_UpdateYUVTexture(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
-                            const void *pixels, int pitch);
-int SDL_SW_UpdateYUVTexturePlanar(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
-                                  const Uint8 *Yplane, int Ypitch,
-                                  const Uint8 *Uplane, int Upitch,
-                                  const Uint8 *Vplane, int Vpitch);
-int SDL_SW_LockYUVTexture(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
-                          void **pixels, int *pitch);
-void SDL_SW_UnlockYUVTexture(SDL_SW_YUVTexture * swdata);
-int SDL_SW_CopyYUVToRGB(SDL_SW_YUVTexture * swdata, const SDL_Rect * srcrect,
-                        Uint32 target_format, int w, int h, void *pixels,
+int SDL_SW_UpdateYUVTexture(SDL_SW_YUVTexture *swdata,const SDL_Rect *rect,
+                            const void *pixels,int pitch);
+int SDL_SW_UpdateYUVTexturePlanar(SDL_SW_YUVTexture *swdata,const SDL_Rect *rect,
+                                  const Uint8 *Yplane,int Ypitch,
+                                  const Uint8 *Uplane,int Upitch,
+                                  const Uint8 *Vplane,int Vpitch);
+int SDL_SW_LockYUVTexture(SDL_SW_YUVTexture *swdata,const SDL_Rect *rect,
+                          void **pixels,int *pitch);
+void SDL_SW_UnlockYUVTexture(SDL_SW_YUVTexture *swdata);
+int SDL_SW_CopyYUVToRGB(SDL_SW_YUVTexture *swdata,const SDL_Rect *srcrect,
+                        Uint32 target_format,int w,int h,void *pixels,
                         int pitch);
-void SDL_SW_DestroyYUVTexture(SDL_SW_YUVTexture * swdata);
+void SDL_SW_DestroyYUVTexture(SDL_SW_YUVTexture *swdata);
 
 /* FIXME: This breaks on various versions of GCC and should be rewritten using intrinsics */
 #if 0 /* (__GNUC__ > 2) && defined(__i386__) && __OPTIMIZE__ && SDL_ASSEMBLY_ROUTINES && !defined(__clang__) */
 #define USE_MMX_ASSEMBLY 1
 #endif
-
 #endif /* SDL_yuv_sw_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

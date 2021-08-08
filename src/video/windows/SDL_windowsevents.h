@@ -19,18 +19,19 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_windowsevents_h_
 #define SDL_windowsevents_h_
-
 extern LPTSTR SDL_Appname;
 extern Uint32 SDL_Appstyle;
 extern HINSTANCE SDL_Instance;
-
-extern LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam,
-                                       LPARAM lParam);
+extern LRESULT CALLBACK
+WIN_WindowProc(HWND
+hwnd,
+UINT msg,WPARAM
+wParam,
+LPARAM lParam
+);
 extern void WIN_PumpEvents(_THIS);
-
 #endif /* SDL_windowsevents_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -19,14 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_androidclipboard_h_
 #define SDL_androidclipboard_h_
-
-extern int Android_SetClipboardText(_THIS, const char *text);
+extern int Android_SetClipboardText(_THIS,const char *text);
 extern char *Android_GetClipboardText(_THIS);
 extern SDL_bool Android_HasClipboardText(_THIS);
-
 #endif /* SDL_androidclipboard_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

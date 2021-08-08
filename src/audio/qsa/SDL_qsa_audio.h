@@ -20,38 +20,28 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef __SDL_QSA_AUDIO_H__
 #define __SDL_QSA_AUDIO_H__
-
 #include <sys/asoundlib.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS SDL_AudioDevice* this
-
-struct SDL_PrivateAudioData
-{
-    /* SDL capture state */
-    SDL_bool iscapture;
-
-    /* The audio device handle */
-    int cardno;
-    int deviceno;
-    snd_pcm_t *audio_handle;
-
-    /* The audio file descriptor */
-    int audio_fd;
-
-    /* Select timeout status */
-    uint32_t timeout_on_wait;
-
-    /* Raw mixing buffer */
-    Uint8 *pcm_buf;
-    Uint32 pcm_len;
+struct SDL_PrivateAudioData{
+/* SDL capture state */
+SDL_bool iscapture;
+/* The audio device handle */
+int cardno;
+int deviceno;
+snd_pcm_t *audio_handle;
+/* The audio file descriptor */
+int audio_fd;
+/* Select timeout status */
+uint32_t timeout_on_wait;
+/* Raw mixing buffer */
+Uint8 *pcm_buf;
+Uint32 pcm_len;
 };
-
 #endif /* __SDL_QSA_AUDIO_H__ */
 
 /* vi: set ts=4 sw=4 expandtab: */

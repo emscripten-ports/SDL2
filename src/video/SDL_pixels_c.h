@@ -21,26 +21,21 @@
 
 #ifndef SDL_pixels_c_h_
 #define SDL_pixels_c_h_
-
 #include "../SDL_internal.h"
 
 /* Useful functions and variables from SDL_pixel.c */
 
 #include "SDL_blit.h"
-
 /* Pixel format functions */
-extern int SDL_InitFormat(SDL_PixelFormat * format, Uint32 pixel_format);
-
+extern int SDL_InitFormat(SDL_PixelFormat *format,Uint32 pixel_format);
 /* Blit mapping functions */
 extern SDL_BlitMap *SDL_AllocBlitMap(void);
-extern void SDL_InvalidateMap(SDL_BlitMap * map);
-extern int SDL_MapSurface(SDL_Surface * src, SDL_Surface * dst);
-extern void SDL_FreeBlitMap(SDL_BlitMap * map);
-
+extern void SDL_InvalidateMap(SDL_BlitMap *map);
+extern int SDL_MapSurface(SDL_Surface *src,SDL_Surface *dst);
+extern void SDL_FreeBlitMap(SDL_BlitMap *map);
 /* Miscellaneous functions */
-extern void SDL_DitherColors(SDL_Color * colors, int bpp);
-extern Uint8 SDL_FindColor(SDL_Palette * pal, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-
+extern void SDL_DitherColors(SDL_Color *colors,int bpp);
+extern Uint8 SDL_FindColor(SDL_Palette *pal,Uint8 r,Uint8 g,Uint8 b,Uint8 a);
 #endif /* SDL_pixels_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

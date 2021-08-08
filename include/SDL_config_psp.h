@@ -22,17 +22,11 @@
 #ifndef SDL_config_psp_h_
 #define SDL_config_psp_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
-
-
-
 #ifdef __GNUC__
 #define HAVE_GCC_SYNC_LOCK_TEST_AND_SET 1
 #endif
-
 #define HAVE_GCC_ATOMICS    1
-
 #define STDC_HEADERS    1
 #define HAVE_ALLOCA_H       1
 #define HAVE_CTYPE_H    1
@@ -148,7 +142,6 @@
 
 /* PSP render driver */
 #define SDL_VIDEO_RENDER_PSP   1
-
 #define SDL_POWER_PSP          1
 
 /* !!! FIXME: what does PSP do for filesystem stuff? */
@@ -159,6 +152,4 @@
 
 /* PSP can't load shared object (src/loadso/dummy/\*.c) */
 #define SDL_LOADSO_DISABLED    1
-
-
 #endif /* SDL_config_psp_h_ */

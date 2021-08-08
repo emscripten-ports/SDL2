@@ -19,22 +19,17 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 #ifndef SDL_winrtmouse_h_
 #define SDL_winrtmouse_h_
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 extern void WINRT_InitMouse(_THIS);
 extern void WINRT_QuitMouse(_THIS);
 extern SDL_bool WINRT_UsingRelativeMouseMode;
-
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* SDL_winrtmouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

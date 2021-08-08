@@ -22,7 +22,6 @@
    Code and logic contributed by Valve Corporation under the SDL zlib license.
 */
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_HIDAPI
 
 #include "SDL_hints.h"
@@ -133,7 +132,7 @@ typedef struct
     Uint8 ucSubcommandAck;
     Uint8 ucSubcommandID;
 
-    #define k_unSubcommandDataBytes 35
+#define k_unSubcommandDataBytes 35
     union {
         Uint8 rgucSubcommandData[ k_unSubcommandDataBytes ];
 

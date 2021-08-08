@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_HIDAPI
 
 #include "SDL_hints.h"

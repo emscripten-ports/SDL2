@@ -19,31 +19,23 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_sndioaudio_h_
 #define SDL_sndioaudio_h_
-
 #include <poll.h>
 #include <sndio.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    /* The audio device handle */
-    struct sio_hdl *dev;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-
-    /* Polling structures for non-blocking sndio devices */
-    struct pollfd *pfd;
+struct SDL_PrivateAudioData{
+/* The audio device handle */
+struct sio_hdl *dev;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
+/* Polling structures for non-blocking sndio devices */
+struct pollfd *pfd;
 };
-
 #endif /* SDL_sndioaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

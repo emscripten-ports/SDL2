@@ -21,17 +21,14 @@
 
 #ifndef SDL_audio_c_h_
 #define SDL_audio_c_h_
-
 #include "../SDL_internal.h"
-
 #ifndef DEBUG_CONVERT
 #define DEBUG_CONVERT 0
 #endif
-
 #if DEBUG_CONVERT
 #define LOG_DEBUG_CONVERT(from, to) fprintf(stderr, "Converting %s to %s.\n", from, to);
 #else
-#define LOG_DEBUG_CONVERT(from, to)
+#define LOG_DEBUG_CONVERT(from,to)
 #endif
 
 /* Functions and variables exported from SDL_audio.c for SDL_sysaudio.c */
@@ -46,17 +43,13 @@ extern int (*SRC_src_reset)(SRC_STATE *state);
 extern SRC_STATE* (*SRC_src_delete)(SRC_STATE *state);
 extern const char* (*SRC_src_strerror)(int error);
 #endif
-
 /* Functions to get a list of "close" audio formats */
 extern SDL_AudioFormat SDL_FirstAudioFormat(SDL_AudioFormat format);
 extern SDL_AudioFormat SDL_NextAudioFormat(void);
-
 /* Function to calculate the size and silence for a SDL_AudioSpec */
-extern void SDL_CalculateAudioSpec(SDL_AudioSpec * spec);
-
+extern void SDL_CalculateAudioSpec(SDL_AudioSpec *spec);
 /* Choose the audio filter functions below */
 extern void SDL_ChooseAudioConverters(void);
-
 /* These pointers get set during SDL_ChooseAudioConverters() to various SIMD implementations. */
 extern SDL_AudioFilter SDL_Convert_S8_to_F32;
 extern SDL_AudioFilter SDL_Convert_U8_to_F32;
@@ -68,12 +61,10 @@ extern SDL_AudioFilter SDL_Convert_F32_to_U8;
 extern SDL_AudioFilter SDL_Convert_F32_to_S16;
 extern SDL_AudioFilter SDL_Convert_F32_to_U16;
 extern SDL_AudioFilter SDL_Convert_F32_to_S32;
-
 /* You need to call SDL_PrepareResampleFilter() before using the internal resampler.
    SDL_AudioQuit() calls SDL_FreeResamplerFilter(), you should never call it yourself. */
 extern int SDL_PrepareResampleFilter(void);
 extern void SDL_FreeResampleFilter(void);
-
 #endif /* SDL_audio_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

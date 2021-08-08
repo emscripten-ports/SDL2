@@ -25,7 +25,6 @@
  */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_VULKAN && SDL_VIDEO_DRIVER_ANDROID
 
 #include "SDL_androidvideo.h"

@@ -19,32 +19,23 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_fsaudio_h_
 #define SDL_fsaudio_h_
-
 #include <fusionsound/fusionsound.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    /* Interface */
-    IFusionSound *fs;
-
-    /* The stream interface for the audio device */
-    IFusionSoundStream *stream;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-    int mixsamples;
-
+struct SDL_PrivateAudioData{
+/* Interface */
+IFusionSound *fs;
+/* The stream interface for the audio device */
+IFusionSoundStream *stream;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
+int mixsamples;
 };
-
 #endif /* SDL_fsaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

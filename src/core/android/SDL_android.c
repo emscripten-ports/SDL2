@@ -25,7 +25,6 @@
 #include "SDL_log.h"
 #include "SDL_main.h"
 #include "SDL_timer.h"
-
 #ifdef __ANDROID__
 
 #include "SDL_system.h"

@@ -19,34 +19,22 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "../SDL_sysjoystick.h"
 #include "../SDL_joystick_c.h"
 #include "SDL_steamcontroller.h"
-
-
 void SDL_InitSteamControllers(SteamControllerConnectedCallback_t connectedCallback,
-                              SteamControllerDisconnectedCallback_t disconnectedCallback)
-{
+                              SteamControllerDisconnectedCallback_t disconnectedCallback){
 }
-
-void SDL_GetSteamControllerInputs(int *nbuttons, int *naxes, int *nhats)
-{
-    *nbuttons = 0;
-    *naxes = 0;
-    *nhats = 0;
+void SDL_GetSteamControllerInputs(int *nbuttons,int *naxes,int *nhats){
+*nbuttons=0;
+*naxes=0;
+*nhats=0;
 }
-
-void SDL_UpdateSteamControllers(void)
-{
+void SDL_UpdateSteamControllers(void){
 }
-
-void SDL_UpdateSteamController(SDL_Joystick *joystick)
-{
+void SDL_UpdateSteamController(SDL_Joystick *joystick){
 }
-
-void SDL_QuitSteamControllers(void)
-{
+void SDL_QuitSteamControllers(void){
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

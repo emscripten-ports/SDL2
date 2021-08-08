@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_ANDROID
 
 /* Output audio to Android */
@@ -58,8 +57,8 @@ ANDROIDAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
     test_format = SDL_FirstAudioFormat(this->spec.format);
     while (test_format != 0) { /* no "UNKNOWN" constant */
         if ((test_format == AUDIO_U8) ||
-			(test_format == AUDIO_S16) ||
-			(test_format == AUDIO_F32)) {
+            (test_format == AUDIO_S16) ||
+            (test_format == AUDIO_F32)) {
             this->spec.format = test_format;
             break;
         }
@@ -200,11 +199,9 @@ void ANDROIDAUDIO_ResumeDevices(void)
     }
 }
 
-#else 
-
-void ANDROIDAUDIO_ResumeDevices(void) {}
-void ANDROIDAUDIO_PauseDevices(void) {}
-
+#else
+void ANDROIDAUDIO_ResumeDevices(void){}
+void ANDROIDAUDIO_PauseDevices(void){}
 #endif /* SDL_AUDIO_DRIVER_ANDROID */
 
 /* vi: set ts=4 sw=4 expandtab: */

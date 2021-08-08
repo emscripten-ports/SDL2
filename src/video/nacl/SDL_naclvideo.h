@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_naclvideo_h_
 #define SDL_naclvideo_h_
-
 #include "../SDL_sysvideo.h"
 #include "ppapi_simple/ps_interface.h"
 #include "ppapi/c/pp_input_event.h"
@@ -30,38 +28,31 @@
 
 /* Hidden "this" pointer for the video functions */
 #define _THIS  SDL_VideoDevice *_this
-
-
 /* Private display data */
 
-typedef struct SDL_VideoData {
-  Uint32 format;
-  int w, h;
-  SDL_Window *window;
+typedef struct SDL_VideoData{
+Uint32 format;
+int w,h;
+SDL_Window *window;
+const PPB_Graphics3D *ppb_graphics;
+const PPB_MessageLoop *ppb_message_loop;
+const PPB_Core *ppb_core;
+const PPB_Fullscreen *ppb_fullscreen;
+const PPB_Instance *ppb_instance;
+const PPB_ImageData *ppb_image_data;
+const PPB_View *ppb_view;
+const PPB_Var *ppb_var;
+const PPB_InputEvent *ppb_input_event;
+const PPB_KeyboardInputEvent *ppb_keyboard_input_event;
+const PPB_MouseInputEvent *ppb_mouse_input_event;
+const PPB_WheelInputEvent *ppb_wheel_input_event;
+const PPB_TouchInputEvent *ppb_touch_input_event;
+PP_Resource message_loop;
+PP_Instance instance;
 
-  const PPB_Graphics3D *ppb_graphics;
-  const PPB_MessageLoop *ppb_message_loop;
-  const PPB_Core *ppb_core;
-  const PPB_Fullscreen *ppb_fullscreen;
-  const PPB_Instance *ppb_instance;
-  const PPB_ImageData *ppb_image_data;
-  const PPB_View *ppb_view;
-  const PPB_Var *ppb_var;
-  const PPB_InputEvent *ppb_input_event;
-  const PPB_KeyboardInputEvent *ppb_keyboard_input_event;
-  const PPB_MouseInputEvent *ppb_mouse_input_event;
-  const PPB_WheelInputEvent *ppb_wheel_input_event;
-  const PPB_TouchInputEvent *ppb_touch_input_event;
-      
-  PP_Resource message_loop;
-  PP_Instance instance;
-  
-  /* FIXME: Check threading issues...otherwise use a hardcoded _this->context across all threads */
-  /* PP_Resource context; */
+/* FIXME: Check threading issues...otherwise use a hardcoded _this->context across all threads */
+/* PP_Resource context; */
 
-} SDL_VideoData;
-
-extern void NACL_SetScreenResolution(int width, int height, Uint32 format);
-
-
+}SDL_VideoData;
+extern void NACL_SetScreenResolution(int width,int height,Uint32 format);
 #endif /* SDL_naclvideo_h_ */

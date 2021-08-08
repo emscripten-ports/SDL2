@@ -19,15 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 extern "C" {
 #include "SDL_thread.h"
 #include "SDL_systhread_c.h"
 #include "SDL_log.h"
 }
-
 #include <system_error>
-
 #include "SDL_sysmutex_c.h"
 #include <Windows.h>
 
@@ -35,77 +32,68 @@ extern "C" {
 /* Create a mutex */
 extern "C"
 SDL_mutex *
-SDL_CreateMutex(void)
-{
-    /* Allocate and initialize the mutex */
-    try {
-        SDL_mutex * mutex = new SDL_mutex;
-        return mutex;
-    } catch (std::system_error & ex) {
-        SDL_SetError("unable to create a C++ mutex: code=%d; %s", ex.code(), ex.what());
-        return NULL;
-    } catch (std::bad_alloc &) {
-        SDL_OutOfMemory();
-        return NULL;
-    }
+SDL_CreateMutex(void){
+/* Allocate and initialize the mutex */
+try{
+SDL_mutex *mutex=new SDL_mutex;
+return mutex;
+} catch (std::system_error &ex){
+SDL_SetError("unable to create a C++ mutex: code=%d; %s",ex.code(),ex.what());
+return NULL;
+} catch (std::bad_alloc &){
+SDL_OutOfMemory();
+return NULL;
+}
 }
 
 /* Free the mutex */
 extern "C"
 void
-SDL_DestroyMutex(SDL_mutex * mutex)
-{
-    if (mutex) {
-        delete mutex;
-    }
+SDL_DestroyMutex(SDL_mutex *mutex){
+if(mutex){
+delete mutex;
+}
 }
 
 /* Lock the semaphore */
 extern "C"
 int
-SDL_mutexP(SDL_mutex * mutex)
-{
-    if (mutex == NULL) {
-        SDL_SetError("Passed a NULL mutex");
-        return -1;
-    }
-
-    try {
-        mutex->cpp_mutex.lock();
-        return 0;
-    } catch (std::system_error & ex) {
-        SDL_SetError("unable to lock a C++ mutex: code=%d; %s", ex.code(), ex.what());
-        return -1;
-    }
+SDL_mutexP(SDL_mutex *mutex){
+if(mutex == NULL){
+SDL_SetError("Passed a NULL mutex");
+return -1;
 }
-
+try{
+mutex->cpp_mutex.lock();
+return 0;
+} catch (std::system_error &ex){
+SDL_SetError("unable to lock a C++ mutex: code=%d; %s",ex.code(),ex.what());
+return -1;
+}
+}
 /* TryLock the mutex */
 int
-SDL_TryLockMutex(SDL_mutex * mutex)
-{
-    int retval = 0;
-    if (mutex == NULL) {
-        return SDL_SetError("Passed a NULL mutex");
-    }
-
-    if (mutex->cpp_mutex.try_lock() == false) {
-        retval = SDL_MUTEX_TIMEDOUT;
-    }
-    return retval;
+SDL_TryLockMutex(SDL_mutex *mutex){
+int retval=0;
+if(mutex == NULL){
+return SDL_SetError("Passed a NULL mutex");
+}
+if(mutex->cpp_mutex.try_lock() == false){
+retval=SDL_MUTEX_TIMEDOUT;
+}
+return retval;
 }
 
 /* Unlock the mutex */
 extern "C"
 int
-SDL_mutexV(SDL_mutex * mutex)
-{
-    if (mutex == NULL) {
-        SDL_SetError("Passed a NULL mutex");
-        return -1;
-    }
-
-    mutex->cpp_mutex.unlock();
-    return 0;
+SDL_mutexV(SDL_mutex *mutex){
+if(mutex == NULL){
+SDL_SetError("Passed a NULL mutex");
+return -1;
+}
+mutex->cpp_mutex.unlock();
+return 0;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

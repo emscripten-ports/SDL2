@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 extern "C" {
 #include "../SDL_sysvideo.h"
 }
@@ -31,10 +30,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 extern void WINRT_InitTouch(_THIS);
 extern void WINRT_PumpEvents(_THIS);
-
 #ifdef __cplusplus
 }
 #endif

@@ -27,7 +27,6 @@
 
 #ifndef SDL_platform_h_
 #define SDL_platform_h_
-
 #if defined(_AIX)
 #undef __AIX__
 #define __AIX__     1
@@ -65,7 +64,6 @@
 #undef __LINUX__ /* do we need to do this? */
 #define __ANDROID__ 1
 #endif
-
 #if defined(__APPLE__)
 /* lets us know what version of Mac OS X we're compiling on */
 #include "AvailabilityMacros.h"
@@ -88,7 +86,6 @@
 #endif /* MAC_OS_X_VERSION_MIN_REQUIRED < 1060 */
 #endif /* TARGET_OS_IPHONE */
 #endif /* defined(__APPLE__) */
-
 #if defined(__NetBSD__)
 #undef __NETBSD__
 #define __NETBSD__  1
@@ -117,7 +114,6 @@
 #undef __SOLARIS__
 #define __SOLARIS__ 1
 #endif
-
 #if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
 /* Try to find out if we're compiling for WinRT or non-WinRT */
 #if defined(_MSC_VER) && defined(__has_include)
@@ -149,7 +145,6 @@
 #define __WINDOWS__ 1
 #endif
 #endif /* defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) */
-
 #if defined(__WINDOWS__)
 #undef __WIN32__
 #define __WIN32__ 1
@@ -174,25 +169,21 @@
 /* PNACL with newlib supports static linking only */
 #define __SDL_NOGETPROCADDR__
 #endif
-
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *  \brief Gets the name of the platform.
  */
-extern DECLSPEC const char * SDLCALL SDL_GetPlatform (void);
+extern DECLSPEC const char *SDLCALL SDL_GetPlatform(void);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_platform_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

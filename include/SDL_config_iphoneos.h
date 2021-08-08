@@ -22,17 +22,13 @@
 #ifndef SDL_config_iphoneos_h_
 #define SDL_config_iphoneos_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
-
 #ifdef __LP64__
 #define SIZEOF_VOIDP 8
 #else
 #define SIZEOF_VOIDP 4
 #endif
-
 #define HAVE_GCC_ATOMICS    1
-
 #define STDC_HEADERS    1
 #define HAVE_ALLOCA_H       1
 #define HAVE_CTYPE_H    1
@@ -170,13 +166,11 @@
 #if !TARGET_OS_SIMULATOR && !TARGET_CPU_ARM && ((__IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (__TV_OS_VERSION_MIN_REQUIRED >= 90000))
 #define SDL_PLATFORM_SUPPORTS_METAL	1
 #else
-#define SDL_PLATFORM_SUPPORTS_METAL	0
+#define SDL_PLATFORM_SUPPORTS_METAL    0
 #endif
-
 #if SDL_PLATFORM_SUPPORTS_METAL
 #define SDL_VIDEO_RENDER_METAL  1
 #endif
-
 #if SDL_PLATFORM_SUPPORTS_METAL
 #define SDL_VIDEO_VULKAN 1
 #endif
@@ -197,5 +191,4 @@
 
 /* enable filesystem support */
 #define SDL_FILESYSTEM_COCOA   1
-
 #endif /* SDL_config_iphoneos_h_ */

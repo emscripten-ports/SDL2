@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_x11opengl_h_
 #define SDL_x11opengl_h_
-
 #if SDL_VIDEO_OPENGL_GLX
 #include "SDL_opengl.h"
 #include <GL/glx.h>
@@ -78,7 +76,6 @@ extern int X11_GL_SwapWindow(_THIS, SDL_Window * window);
 extern void X11_GL_DeleteContext(_THIS, SDL_GLContext context);
 
 #endif /* SDL_VIDEO_OPENGL_GLX */
-
 #endif /* SDL_x11opengl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -21,36 +21,28 @@
 
 #ifndef SDL_directfb_wm_h_
 #define SDL_directfb_wm_h_
-
 #include "SDL_DirectFB_video.h"
-
 typedef struct _DFB_Theme DFB_Theme;
-struct _DFB_Theme
-{
-    int left_size;
-    int right_size;
-    int top_size;
-    int bottom_size;
-    DFBColor frame_color;
-    int caption_size;
-    DFBColor caption_color;
-    int font_size;
-    DFBColor font_color;
-    char *font;
-    DFBColor close_color;
-    DFBColor max_color;
+struct _DFB_Theme{
+int left_size;
+int right_size;
+int top_size;
+int bottom_size;
+DFBColor frame_color;
+int caption_size;
+DFBColor caption_color;
+int font_size;
+DFBColor font_color;
+char *font;
+DFBColor close_color;
+DFBColor max_color;
 };
-
-extern void DirectFB_WM_AdjustWindowLayout(SDL_Window * window, int flags, int w, int h);
-extern void DirectFB_WM_RedrawLayout(_THIS, SDL_Window * window);
-
-extern int DirectFB_WM_ProcessEvent(_THIS, SDL_Window * window,
-                                    DFBWindowEvent * evt);
-
-extern DFBResult DirectFB_WM_GetClientSize(_THIS, SDL_Window * window,
-                                           int *cw, int *ch);
-
-
+extern void DirectFB_WM_AdjustWindowLayout(SDL_Window *window,int flags,int w,int h);
+extern void DirectFB_WM_RedrawLayout(_THIS,SDL_Window *window);
+extern int DirectFB_WM_ProcessEvent(_THIS,SDL_Window *window,
+                                    DFBWindowEvent *evt);
+extern DFBResult DirectFB_WM_GetClientSize(_THIS,SDL_Window *window,
+                                           int *cw,int *ch);
 #endif /* SDL_directfb_wm_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

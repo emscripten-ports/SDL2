@@ -5,7 +5,6 @@
 
 /* Include the SDL main definition header */
 #include "SDL_main.h"
-
 #ifdef main
 #undef main
 int
@@ -17,11 +16,9 @@ main(int argc, char *argv[])
 /* Nothing to do on this platform */
 int
 SDL_main_stub_symbol(void);
-
 int
-SDL_main_stub_symbol(void)
-{
-    return 0;
+SDL_main_stub_symbol(void){
+return 0;
 }
 #endif
 

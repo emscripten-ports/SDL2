@@ -20,24 +20,18 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_naclaudio_h_
 #define SDL_naclaudio_h_
-
 #include "SDL_audio.h"
 #include "../SDL_sysaudio.h"
 #include "SDL_mutex.h"
-
 #include "ppapi/c/ppb_audio.h"
-
 #define _THIS  SDL_AudioDevice *_this
 #define private _this->hidden
-
-typedef struct SDL_PrivateAudioData {
-  SDL_mutex* mutex;
-  PP_Resource audio;
-} SDL_PrivateAudioData;
-
+typedef struct SDL_PrivateAudioData{
+SDL_mutex *mutex;
+PP_Resource audio;
+}SDL_PrivateAudioData;
 #endif /* SDL_naclaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

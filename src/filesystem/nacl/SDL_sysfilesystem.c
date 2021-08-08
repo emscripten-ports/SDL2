@@ -21,7 +21,6 @@
 #include "../../SDL_internal.h"
 #include "SDL_error.h"
 #include "SDL_filesystem.h"
-
 #ifdef SDL_FILESYSTEM_NACL
 
 char *

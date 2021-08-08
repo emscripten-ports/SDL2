@@ -19,12 +19,9 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #include "SDL_video.h"
 #include "SDL_blit.h"
 #include "SDL_blit_copy.h"
-
-
 #ifdef __SSE__
 /* This assumes 16-byte aligned src and dst */
 static SDL_INLINE void
@@ -51,7 +48,6 @@ SDL_memcpySSE(Uint8 * dst, const Uint8 * src, int len)
         SDL_memcpy(dst, src, len & 63);
 }
 #endif /* __SSE__ */
-
 #ifdef __MMX__
 #ifdef _MSC_VER
 #pragma warning(disable:4799)
@@ -86,77 +82,71 @@ SDL_memcpyMMX(Uint8 * dst, const Uint8 * src, int len)
     }
 }
 #endif /* __MMX__ */
-
 void
-SDL_BlitCopy(SDL_BlitInfo * info)
-{
-    SDL_bool overlap;
-    Uint8 *src, *dst;
-    int w, h;
-    int srcskip, dstskip;
+SDL_BlitCopy(SDL_BlitInfo *info){
+SDL_bool overlap;
+Uint8 *src,*dst;
+int w,h;
+int srcskip,dstskip;
+w=info->dst_w * info->dst_fmt->BytesPerPixel;
+h=info->dst_h;
+src=info->src;
+dst=info->dst;
+srcskip=info->src_pitch;
+dstskip=info->dst_pitch;
 
-    w = info->dst_w * info->dst_fmt->BytesPerPixel;
-    h = info->dst_h;
-    src = info->src;
-    dst = info->dst;
-    srcskip = info->src_pitch;
-    dstskip = info->dst_pitch;
-
-    /* Properly handle overlapping blits */
-    if (src < dst) {
-        overlap = (dst < (src + h*srcskip));
-    } else {
-        overlap = (src < (dst + h*dstskip));
-    }
-    if (overlap) {
-        if ( dst < src ) {
-                while ( h-- ) {
-                        SDL_memmove(dst, src, w);
-                        src += srcskip;
-                        dst += dstskip;
-                }
-        } else {
-                src += ((h-1) * srcskip);
-                dst += ((h-1) * dstskip);
-                while ( h-- ) {
-                        SDL_memmove(dst, src, w);
-                        src -= srcskip;
-                        dst -= dstskip;
-                }
-        }
-        return;
-    }
-
+/* Properly handle overlapping blits */
+if(src < dst){
+overlap=(dst < (src+h * srcskip));
+} else{
+overlap=(src < (dst+h * dstskip));
+}
+if(overlap){
+if(dst < src){
+while (h--){
+SDL_memmove(dst,src,w);
+src+=srcskip;
+dst+=dstskip;
+}
+} else{
+src+=((h-1) * srcskip);
+dst+=((h-1) * dstskip);
+while (h--){
+SDL_memmove(dst,src,w);
+src-=srcskip;
+dst-=dstskip;
+}
+}
+return;
+}
 #ifdef __SSE__
-    if (SDL_HasSSE() &&
-        !((uintptr_t) src & 15) && !(srcskip & 15) &&
-        !((uintptr_t) dst & 15) && !(dstskip & 15)) {
-        while (h--) {
-            SDL_memcpySSE(dst, src, w);
-            src += srcskip;
-            dst += dstskip;
-        }
-        return;
-    }
-#endif
-
-#ifdef __MMX__
-    if (SDL_HasMMX() && !(srcskip & 7) && !(dstskip & 7)) {
-        while (h--) {
-            SDL_memcpyMMX(dst, src, w);
-            src += srcskip;
-            dst += dstskip;
-        }
-        _mm_empty();
-        return;
-    }
-#endif
-
+if (SDL_HasSSE() &&
+    !((uintptr_t) src & 15) && !(srcskip & 15) &&
+    !((uintptr_t) dst & 15) && !(dstskip & 15)) {
     while (h--) {
-        SDL_memcpy(dst, src, w);
+        SDL_memcpySSE(dst, src, w);
         src += srcskip;
         dst += dstskip;
     }
+    return;
+}
+#endif
+#ifdef __MMX__
+if (SDL_HasMMX() && !(srcskip & 7) && !(dstskip & 7)) {
+    while (h--) {
+        SDL_memcpyMMX(dst, src, w);
+        src += srcskip;
+        dst += dstskip;
+    }
+    _mm_empty();
+    return;
+}
+#endif
+while (h--){
+SDL_memcpy(dst,src,w);
+src+=srcskip;
+dst+=dstskip;
+}
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

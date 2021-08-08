@@ -28,7 +28,6 @@
 
 #ifndef SDL_h_
 #define SDL_h_
-
 #include "SDL_main.h"
 #include "SDL_stdinc.h"
 #include "SDL_assert.h"
@@ -58,7 +57,6 @@
 #include "SDL_timer.h"
 #include "SDL_version.h"
 #include "SDL_video.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -93,7 +91,6 @@ extern "C" {
  *  This function initializes  the subsystems specified by \c flags
  */
 extern DECLSPEC int SDLCALL SDL_Init(Uint32 flags);
-
 /**
  *  This function initializes specific SDL subsystems
  *
@@ -104,12 +101,10 @@ extern DECLSPEC int SDLCALL SDL_Init(Uint32 flags);
  *  increase the ref-count and return.
  */
 extern DECLSPEC int SDLCALL SDL_InitSubSystem(Uint32 flags);
-
 /**
  *  This function cleans up specific SDL subsystems
  */
 extern DECLSPEC void SDLCALL SDL_QuitSubSystem(Uint32 flags);
-
 /**
  *  This function returns a mask of the specified subsystems which have
  *  previously been initialized.
@@ -117,7 +112,6 @@ extern DECLSPEC void SDLCALL SDL_QuitSubSystem(Uint32 flags);
  *  If \c flags is 0, it returns a mask of all initialized subsystems.
  */
 extern DECLSPEC Uint32 SDLCALL SDL_WasInit(Uint32 flags);
-
 /**
  *  This function cleans up all initialized subsystems. You should
  *  call it upon all exit conditions.
@@ -129,7 +123,6 @@ extern DECLSPEC void SDLCALL SDL_Quit(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -21,7 +21,6 @@
 
 #ifndef SDL_BOPENGL_H
 #define SDL_BOPENGL_H
-
 #if SDL_VIDEO_DRIVER_HAIKU && SDL_VIDEO_OPENGL
 
 #ifdef __cplusplus
@@ -49,7 +48,6 @@ extern void HAIKU_GL_RebootContexts(_THIS);
 #endif
 
 #endif /* SDL_VIDEO_DRIVER_HAIKU && SDL_VIDEO_OPENGL */
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

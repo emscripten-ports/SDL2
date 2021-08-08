@@ -21,14 +21,12 @@
 
 #ifndef SDL_events_c_h_
 #define SDL_events_c_h_
-
 #include "../SDL_internal.h"
 
 /* Useful functions and variables from SDL_events.c */
 #include "SDL_events.h"
 #include "SDL_thread.h"
 #include "../video/SDL_sysvideo.h"
-
 #include "SDL_clipboardevents_c.h"
 #include "SDL_displayevents_c.h"
 #include "SDL_dropevents_c.h"
@@ -37,26 +35,19 @@
 #include "SDL_mouse_c.h"
 #include "SDL_touch_c.h"
 #include "SDL_windowevents_c.h"
-
 /* Start and stop the event processing loop */
 extern int SDL_StartEventLoop(void);
 extern void SDL_StopEventLoop(void);
 extern void SDL_QuitInterrupt(void);
-
 extern int SDL_SendAppEvent(SDL_EventType eventType);
-extern int SDL_SendSysWMEvent(SDL_SysWMmsg * message);
+extern int SDL_SendSysWMEvent(SDL_SysWMmsg *message);
 extern int SDL_SendKeymapChangedEvent(void);
-
 extern int SDL_SendQuit(void);
-
 extern int SDL_EventsInit(void);
 extern void SDL_EventsQuit(void);
-
 extern void SDL_SendPendingSignalEvents(void);
-
 extern int SDL_QuitInit(void);
 extern void SDL_QuitQuit(void);
-
 #endif /* SDL_events_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

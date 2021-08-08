@@ -40,23 +40,19 @@
 
 #ifndef SDL_loadso_h_
 #define SDL_loadso_h_
-
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *  This function dynamically loads a shared object and returns a pointer
  *  to the object handle (or NULL if there was an error).
  *  The 'sofile' parameter is a system dependent name of the object file.
  */
 extern DECLSPEC void *SDLCALL SDL_LoadObject(const char *sofile);
-
 /**
  *  Given an object handle, this function looks up the address of the
  *  named function in the shared object and returns it.  This address
@@ -64,7 +60,6 @@ extern DECLSPEC void *SDLCALL SDL_LoadObject(const char *sofile);
  */
 extern DECLSPEC void *SDLCALL SDL_LoadFunction(void *handle,
                                                const char *name);
-
 /**
  *  Unload a shared object from memory.
  */
@@ -75,7 +70,6 @@ extern DECLSPEC void SDLCALL SDL_UnloadObject(void *handle);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_loadso_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

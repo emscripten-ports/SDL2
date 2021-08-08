@@ -19,29 +19,23 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_sunaudio_h_
 #define SDL_sunaudio_h_
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    /* The file descriptor for the audio device */
-    int audio_fd;
-
-    SDL_AudioFormat audio_fmt;  /* The app audio format */
-    Uint8 *mixbuf;              /* The app mixing buffer */
-    int ulaw_only;              /* Flag -- does hardware only output U-law? */
-    Uint8 *ulaw_buf;            /* The U-law mixing buffer */
-    Sint32 written;             /* The number of samples written */
-    int fragsize;               /* The audio fragment size in samples */
-    int frequency;              /* The audio frequency in KHz */
+struct SDL_PrivateAudioData{
+/* The file descriptor for the audio device */
+int audio_fd;
+SDL_AudioFormat audio_fmt;  /* The app audio format */
+Uint8 *mixbuf;              /* The app mixing buffer */
+int ulaw_only;              /* Flag -- does hardware only output U-law? */
+Uint8 *ulaw_buf;            /* The U-law mixing buffer */
+Sint32 written;             /* The number of samples written */
+int fragsize;               /* The audio fragment size in samples */
+int frequency;              /* The audio frequency in KHz */
 };
-
 #endif /* SDL_sunaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

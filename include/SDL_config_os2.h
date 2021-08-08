@@ -22,12 +22,9 @@
 #ifndef SDL_config_os2_h_
 #define SDL_config_os2_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
-
 #define SDL_AUDIO_DRIVER_DUMMY 1
 #define SDL_AUDIO_DRIVER_DISK 1
-
 #define SDL_POWER_DISABLED  1
 #define SDL_JOYSTICK_DISABLED 1
 #define SDL_HAPTIC_DISABLED 1
@@ -56,7 +53,6 @@
 /* #undef SDL_LIBSAMPLERATE_DYNAMIC */
 
 #define HAVE_LIBC 1
-
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_STDIO_H 1
 #define STDC_HEADERS 1
@@ -75,7 +71,6 @@
 #define HAVE_MATH_H 1
 #define HAVE_FLOAT_H 1
 #define HAVE_SIGNAL_H 1
-
 #define HAVE_MALLOC 1
 #define HAVE_CALLOC 1
 #define HAVE_REALLOC 1

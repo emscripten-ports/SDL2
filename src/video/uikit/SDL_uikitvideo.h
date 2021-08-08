@@ -20,9 +20,7 @@
 */
 #ifndef SDL_uikitvideo_h_
 #define SDL_uikitvideo_h_
-
 #include "../SDL_sysvideo.h"
-
 #ifdef __OBJC__
 
 #include <UIKit/UIKit.h>
@@ -36,13 +34,9 @@
 CGRect UIKit_ComputeViewFrame(SDL_Window *window, UIScreen *screen);
 
 #endif /* __OBJC__ */
-
 void UIKit_SuspendScreenSaver(_THIS);
-
 void UIKit_ForceUpdateHomeIndicator(void);
-
 SDL_bool UIKit_IsSystemVersionAtLeast(double version);
-
 #endif /* SDL_uikitvideo_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

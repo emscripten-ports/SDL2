@@ -19,39 +19,28 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_emscriptenvideo_h_
 #define SDL_emscriptenvideo_h_
-
 #include "../SDL_sysvideo.h"
 #include "../../events/SDL_touch_c.h"
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
-
 #if SDL_VIDEO_OPENGL_EGL
 #include <EGL/egl.h>
 #endif
-
-typedef struct SDL_WindowData
-{
+typedef struct SDL_WindowData{
 #if SDL_VIDEO_OPENGL_EGL
-    EGLSurface egl_surface;
+EGLSurface egl_surface;
 #endif
-    SDL_Window *window;
-    SDL_Surface *surface;
-
-    char *canvas_id;
-
-    float pixel_ratio;
-
-    SDL_bool external_size;
-
-    int requested_fullscreen_mode;
-    SDL_bool fullscreen_resize;
-
-    SDL_bool has_pointer_lock;
-} SDL_WindowData;
-
+SDL_Window *window;
+SDL_Surface *surface;
+char *canvas_id;
+float pixel_ratio;
+SDL_bool external_size;
+int requested_fullscreen_mode;
+SDL_bool fullscreen_resize;
+SDL_bool has_pointer_lock;
+}SDL_WindowData;
 #endif /* SDL_emscriptenvideo_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

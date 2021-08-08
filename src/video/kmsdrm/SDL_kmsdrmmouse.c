@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_KMSDRM
 
 #include "SDL_kmsdrmvideo.h"

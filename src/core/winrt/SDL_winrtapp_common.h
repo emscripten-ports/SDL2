@@ -19,13 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 #ifndef SDL_winrtapp_common_h_
 #define SDL_winrtapp_common_h_
-
 /* A pointer to the app's C-style main() function (which is a different
    function than the WinRT app's actual entry point).
  */
-extern int (*WINRT_SDLAppEntryPoint)(int, char **);
-
+extern int (*WINRT_SDLAppEntryPoint)(int,char **);
 #endif // SDL_winrtapp_common_h_

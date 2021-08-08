@@ -27,16 +27,13 @@
 
 #ifndef SDL_filesystem_h_
 #define SDL_filesystem_h_
-
 #include "SDL_stdinc.h"
-
 #include "begin_code.h"
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  * \brief Get the path where the application resides.
  *
@@ -61,7 +58,6 @@ extern "C" {
  * \sa SDL_GetPrefPath
  */
 extern DECLSPEC char *SDLCALL SDL_GetBasePath(void);
-
 /**
  * \brief Get the user-and-app-specific path where files can be written.
  *
@@ -123,14 +119,13 @@ extern DECLSPEC char *SDLCALL SDL_GetBasePath(void);
  *
  * \sa SDL_GetBasePath
  */
-extern DECLSPEC char *SDLCALL SDL_GetPrefPath(const char *org, const char *app);
+extern DECLSPEC char *SDLCALL SDL_GetPrefPath(const char *org,const char *app);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_filesystem_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

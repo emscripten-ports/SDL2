@@ -21,7 +21,6 @@
 
 #ifndef SDL_main_h_
 #define SDL_main_h_
-
 #include "SDL_stdinc.h"
 
 /**
@@ -85,7 +84,6 @@
 
 #endif
 #endif /* SDL_MAIN_HANDLED */
-
 #ifndef SDLMAIN_DECLSPEC
 #define SDLMAIN_DECLSPEC
 #endif
@@ -108,19 +106,15 @@
 #if defined(SDL_MAIN_NEEDED) || defined(SDL_MAIN_AVAILABLE)
 #define main    SDL_main
 #endif
-
 #include "begin_code.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *  The prototype for the application's main() function
  */
-typedef int (*SDL_main_func)(int argc, char *argv[]);
-extern SDLMAIN_DECLSPEC int SDL_main(int argc, char *argv[]);
-
-
+typedef int (*SDL_main_func)(int argc,char *argv[]);
+extern SDLMAIN_DECLSPEC int SDL_main(int argc,char *argv[]);
 /**
  *  This is called by the real SDL main function to let the rest of the
  *  library know that initialization was done properly.
@@ -129,7 +123,6 @@ extern SDLMAIN_DECLSPEC int SDL_main(int argc, char *argv[]);
  *  crashes and hard to diagnose problems with your application.
  */
 extern DECLSPEC void SDLCALL SDL_SetMainReady(void);
-
 #ifdef __WIN32__
 
 /**
@@ -139,8 +132,6 @@ extern DECLSPEC int SDLCALL SDL_RegisterApp(char *name, Uint32 style, void *hIns
 extern DECLSPEC void SDLCALL SDL_UnregisterApp(void);
 
 #endif /* __WIN32__ */
-
-
 #ifdef __WINRT__
 
 /**
@@ -154,7 +145,6 @@ extern DECLSPEC void SDLCALL SDL_UnregisterApp(void);
 extern DECLSPEC int SDLCALL SDL_WinRTRunApp(SDL_main_func mainFunction, void * reserved);
 
 #endif /* __WINRT__ */
-
 #if defined(__IPHONEOS__)
 
 /**
@@ -168,13 +158,10 @@ extern DECLSPEC int SDLCALL SDL_WinRTRunApp(SDL_main_func mainFunction, void * r
 extern DECLSPEC int SDLCALL SDL_UIKitRunApp(int argc, char *argv[], SDL_main_func mainFunction);
 
 #endif /* __IPHONEOS__ */
-
-
 #ifdef __cplusplus
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_main_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -19,27 +19,21 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_winmm_h_
 #define SDL_winmm_h_
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
 #define NUM_BUFFERS 2           /* -- Don't lower this! */
-
-struct SDL_PrivateAudioData
-{
-    HWAVEOUT hout;
-    HWAVEIN hin;
-    HANDLE audio_sem;
-    Uint8 *mixbuf;              /* The raw allocated mixing buffer */
-    WAVEHDR wavebuf[NUM_BUFFERS];       /* Wave audio fragments */
-    int next_buffer;
+struct SDL_PrivateAudioData{
+HWAVEOUT hout;
+HWAVEIN hin;
+HANDLE audio_sem;
+Uint8 *mixbuf;              /* The raw allocated mixing buffer */
+WAVEHDR wavebuf[NUM_BUFFERS];       /* Wave audio fragments */
+int next_buffer;
 };
-
 #endif /* SDL_winmm_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

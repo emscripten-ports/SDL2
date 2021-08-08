@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef SDL_TIMER_WINDOWS
 
 #include "../../core/windows/SDL_windows.h"

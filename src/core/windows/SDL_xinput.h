@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_xinput_h_
 #define SDL_xinput_h_
-
 #ifdef HAVE_XINPUT_H
 
 #include "SDL_windows.h"
@@ -171,7 +169,6 @@ extern DWORD SDL_XInputVersion;  /* ((major << 16) & 0xFF00) | (minor & 0xFF) */
 #define XINPUTGETBATTERYINFORMATION   SDL_XInputGetBatteryInformation
 
 #endif /* HAVE_XINPUT_H */
-
 #endif /* SDL_xinput_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

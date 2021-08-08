@@ -29,7 +29,6 @@
 
 #ifndef SDL_test_font_h_
 #define SDL_test_font_h_
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -39,7 +38,6 @@ extern "C" {
 /* Function prototypes */
 
 #define FONT_CHARACTER_SIZE  8
-
 /**
  *  \brief Draw a string in the currently set font.
  *
@@ -50,8 +48,7 @@ extern "C" {
  *
  *  \returns Returns 0 on success, -1 on failure.
  */
-int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c);
-
+int SDLTest_DrawCharacter(SDL_Renderer *renderer,int x,int y,char c);
 /**
  *  \brief Draw a string in the currently set font.
  *
@@ -62,9 +59,7 @@ int SDLTest_DrawCharacter(SDL_Renderer *renderer, int x, int y, char c);
  *
  *  \returns Returns 0 on success, -1 on failure.
  */
-int SDLTest_DrawString(SDL_Renderer *renderer, int x, int y, const char *s);
-
-
+int SDLTest_DrawString(SDL_Renderer *renderer,int x,int y,const char *s);
 /**
  *  \brief Cleanup textures used by font drawing functions.
  */
@@ -75,7 +70,6 @@ void SDLTest_CleanupTextDrawing(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_font_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

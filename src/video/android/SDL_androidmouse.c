@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_ANDROID
 
 #include "SDL_androidmouse.h"

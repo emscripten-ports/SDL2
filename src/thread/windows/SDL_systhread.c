@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_THREAD_WINDOWS
 
 /* Win32 thread management routines for SDL */
@@ -171,7 +170,7 @@ void
 SDL_SYS_SetupThread(const char *name)
 {
     if (name != NULL) {
-        #ifndef __WINRT__   /* !!! FIXME: There's no LoadLibrary() in WinRT; don't know if SetThreadDescription is available there at all at the moment. */
+#ifndef __WINRT__   /* !!! FIXME: There's no LoadLibrary() in WinRT; don't know if SetThreadDescription is available there at all at the moment. */
         static pfnSetThreadDescription pSetThreadDescription = NULL;
         static HMODULE kernel32 = 0;
 
@@ -189,7 +188,7 @@ SDL_SYS_SetupThread(const char *name)
                 SDL_free(strw);
             }
         }
-        #endif
+#endif
 
         /* Presumably some version of Visual Studio will understand SetThreadDescription(),
            but we still need to deal with older OSes and debuggers. Set it with the arcane

@@ -28,48 +28,41 @@
 /* SDL includes: */
 #include "SDL_video.h"
 #include "SDL_events.h"
-
 #if NTDDI_VERSION >= NTDDI_WINBLUE  /* ApplicationView's functionality only becomes
                                        useful for SDL in Win[Phone] 8.1 and up.
                                        Plus, it is not available at all in WinPhone 8.0. */
 #define SDL_WINRT_USE_APPLICATIONVIEW 1
 #endif
-
 extern "C" {
 #include "../SDL_sysvideo.h"
 #include "../SDL_egl_c.h"
 }
-
 /* Private display data */
-typedef struct SDL_VideoData {
-    /* An object created by ANGLE/WinRT (OpenGL ES 2 for WinRT) that gets
-     * passed to eglGetDisplay and eglCreateWindowSurface:
-     */
-    IUnknown *winrtEglWindow;
-
-    /* Event token(s), for unregistering WinRT event handler(s).
-       These are just a struct with a 64-bit integer inside them
-    */
-    Windows::Foundation::EventRegistrationToken gameBarIsInputRedirectedToken;
-
-    /* A WinRT DisplayRequest, used for implementing SDL_*ScreenSaver() functions.
-     * This is really a pointer to a 'ABI::Windows::System::Display::IDisplayRequest *',
-     * It's casted to 'IUnknown *', to help with building SDL.
-    */
-    IUnknown *displayRequest;
-} SDL_VideoData;
-
+typedef struct SDL_VideoData{
+/* An object created by ANGLE/WinRT (OpenGL ES 2 for WinRT) that gets
+ * passed to eglGetDisplay and eglCreateWindowSurface:
+ */
+IUnknown *winrtEglWindow;
+/* Event token(s), for unregistering WinRT event handler(s).
+   These are just a struct with a 64-bit integer inside them
+*/
+Windows::Foundation::EventRegistrationToken gameBarIsInputRedirectedToken;
+/* A WinRT DisplayRequest, used for implementing SDL_*ScreenSaver() functions.
+ * This is really a pointer to a 'ABI::Windows::System::Display::IDisplayRequest *',
+ * It's casted to 'IUnknown *', to help with building SDL.
+*/
+IUnknown *displayRequest;
+}SDL_VideoData;
 /* The global, WinRT, SDL Window.
    For now, SDL/WinRT only supports one window (due to platform limitations of
    WinRT.
 */
-extern SDL_Window * WINRT_GlobalSDLWindow;
-
+extern SDL_Window *WINRT_GlobalSDLWindow;
 /* Updates one or more SDL_Window flags, by querying the OS' native windowing APIs.
    SDL_Window flags that can be updated should be specified in 'mask'.
 */
-extern void WINRT_UpdateWindowFlags(SDL_Window * window, Uint32 mask);
-extern "C" Uint32 WINRT_DetectWindowFlags(SDL_Window * window);  /* detects flags w/o applying them */
+extern void WINRT_UpdateWindowFlags(SDL_Window *window,Uint32 mask);
+extern "C" Uint32 WINRT_DetectWindowFlags(SDL_Window *window);  /* detects flags w/o applying them */
 
 /* Display mode internals */
 //typedef struct

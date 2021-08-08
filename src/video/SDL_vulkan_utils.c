@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #include "SDL_vulkan_internal.h"
 #include "SDL_error.h"
 #include "SDL_log.h"
@@ -250,7 +249,7 @@ SDL_bool SDL_Vulkan_Display_CreateSurface(void *vkGetInstanceProcAddr_,
     for(physicalDeviceIndex = 0; physicalDeviceIndex < physicalDeviceCount;
         physicalDeviceIndex++)
     {
-		VkPhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];
+        VkPhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];
         uint32_t displayPropertiesCount = 0;
         VkDisplayPropertiesKHR *displayProperties = NULL;
         uint32_t displayModePropertiesCount = 0;

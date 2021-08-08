@@ -27,15 +27,12 @@
 
 #ifndef SDL_version_h_
 #define SDL_version_h_
-
 #include "SDL_stdinc.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  *  \brief Information the version of SDL in use.
  *
@@ -48,12 +45,11 @@ extern "C" {
  *  \sa SDL_VERSION
  *  \sa SDL_GetVersion
  */
-typedef struct SDL_version
-{
-    Uint8 major;        /**< major version */
-    Uint8 minor;        /**< minor version */
-    Uint8 patch;        /**< update version */
-} SDL_version;
+typedef struct SDL_version{
+Uint8 major;        /**< major version */
+Uint8 minor;        /**< minor version */
+Uint8 patch;        /**< update version */
+}SDL_version;
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 */
@@ -91,7 +87,7 @@ typedef struct SDL_version
  *
  *  This assumes that there will never be more than 100 patchlevels.
  */
-#define SDL_VERSIONNUM(X, Y, Z)                     \
+#define SDL_VERSIONNUM(X,Y,Z)                     \
     ((X)*1000 + (Y)*100 + (Z))
 
 /**
@@ -103,9 +99,8 @@ typedef struct SDL_version
 /**
  *  This macro will evaluate to true if compiled with SDL at least X.Y.Z.
  */
-#define SDL_VERSION_ATLEAST(X, Y, Z) \
+#define SDL_VERSION_ATLEAST(X,Y,Z) \
     (SDL_COMPILEDVERSION >= SDL_VERSIONNUM(X, Y, Z))
-
 /**
  *  \brief Get the version of SDL that is linked against your program.
  *
@@ -130,8 +125,7 @@ typedef struct SDL_version
  *
  *  \sa SDL_VERSION
  */
-extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version * ver);
-
+extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version *ver);
 /**
  *  \brief Get the code revision of SDL that is linked against your program.
  *
@@ -140,7 +134,6 @@ extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version * ver);
  *  against other revisions. It is NOT an incrementing number.
  */
 extern DECLSPEC const char *SDLCALL SDL_GetRevision(void);
-
 /**
  *  \brief Get the revision number of SDL that is linked against your program.
  *
@@ -156,7 +149,6 @@ extern DECLSPEC int SDLCALL SDL_GetRevisionNumber(void);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_version_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

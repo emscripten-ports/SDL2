@@ -19,11 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_assert.h"
 #include "SDL_xinput.h"
-
-
 #ifdef HAVE_XINPUT_H
 
 XInputGetState_t SDL_XInputGetState = NULL;

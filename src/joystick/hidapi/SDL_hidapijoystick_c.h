@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_JOYSTICK_HIDAPI_H
 #define SDL_JOYSTICK_HIDAPI_H
-
 #include "../../hidapi/hidapi/hidapi.h"
 
 /* This is the full set of HIDAPI drivers available */
@@ -30,45 +28,38 @@
 #define SDL_JOYSTICK_HIDAPI_SWITCH
 #define SDL_JOYSTICK_HIDAPI_XBOX360
 #define SDL_JOYSTICK_HIDAPI_XBOXONE
-
 #ifdef __WINDOWS__
 /* On Windows, Xbox One controllers are handled by the Xbox 360 driver */
 #undef SDL_JOYSTICK_HIDAPI_XBOXONE
 /* It turns out HIDAPI for Xbox controllers doesn't allow background input */
 #undef SDL_JOYSTICK_HIDAPI_XBOX360
 #endif
-
 #ifdef __MACOSX__
 /* On Mac OS X, Xbox One controllers are handled by the Xbox 360 driver */
 #undef SDL_JOYSTICK_HIDAPI_XBOXONE
 #endif
-
-typedef struct _SDL_HIDAPI_DeviceDriver
-{
-    const char *hint;
-    SDL_bool enabled;
-    SDL_bool (*IsSupportedDevice)(Uint16 vendor_id, Uint16 product_id, Uint16 version, int interface_number);
-    const char *(*GetDeviceName)(Uint16 vendor_id, Uint16 product_id);
-    SDL_bool (*Init)(SDL_Joystick *joystick, hid_device *dev, Uint16 vendor_id, Uint16 product_id, void **context);
-    int (*Rumble)(SDL_Joystick *joystick, hid_device *dev, void *context, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble, Uint32 duration_ms);
-    SDL_bool (*Update)(SDL_Joystick *joystick, hid_device *dev, void *context);
-    void (*Quit)(SDL_Joystick *joystick, hid_device *dev, void *context);
-
-} SDL_HIDAPI_DeviceDriver;
-
+typedef struct _SDL_HIDAPI_DeviceDriver{
+const char *hint;
+SDL_bool enabled;
+SDL_bool (*IsSupportedDevice)(Uint16 vendor_id,Uint16 product_id,Uint16 version,int interface_number);
+const char *(*GetDeviceName)(Uint16 vendor_id,Uint16 product_id);
+SDL_bool (*Init)(SDL_Joystick *joystick,hid_device *dev,Uint16 vendor_id,Uint16 product_id,void **context);
+int
+(*Rumble)(SDL_Joystick *joystick,hid_device *dev,void *context,Uint16 low_frequency_rumble,Uint16 high_frequency_rumble,
+          Uint32 duration_ms);
+SDL_bool (*Update)(SDL_Joystick *joystick,hid_device *dev,void *context);
+void (*Quit)(SDL_Joystick *joystick,hid_device *dev,void *context);
+}SDL_HIDAPI_DeviceDriver;
 /* HIDAPI device support */
 extern SDL_HIDAPI_DeviceDriver SDL_HIDAPI_DriverPS4;
 extern SDL_HIDAPI_DeviceDriver SDL_HIDAPI_DriverSteam;
 extern SDL_HIDAPI_DeviceDriver SDL_HIDAPI_DriverSwitch;
 extern SDL_HIDAPI_DeviceDriver SDL_HIDAPI_DriverXbox360;
 extern SDL_HIDAPI_DeviceDriver SDL_HIDAPI_DriverXboxOne;
-
 /* Return true if a HID device is present and supported as a joystick */
-extern SDL_bool HIDAPI_IsDevicePresent(Uint16 vendor_id, Uint16 product_id, Uint16 version);
-
+extern SDL_bool HIDAPI_IsDevicePresent(Uint16 vendor_id,Uint16 product_id,Uint16 version);
 /* Return the name of an Xbox 360 or Xbox One controller */
-extern const char *HIDAPI_XboxControllerName(Uint16 vendor_id, Uint16 product_id);
-
+extern const char *HIDAPI_XboxControllerName(Uint16 vendor_id,Uint16 product_id);
 #endif /* SDL_JOYSTICK_HIDAPI_H */
 
 /* vi: set ts=4 sw=4 expandtab: */

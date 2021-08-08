@@ -21,16 +21,13 @@
 
 #include "SDL_config.h"
 #include "SDL_dynapi.h"
-
 #if SDL_DYNAMIC_API
-
 #if defined(__OS2__)
 #define INCL_DOS
 #define INCL_DOSERRORS
 #include <os2.h>
 #include <dos.h>
 #endif
-
 #include "SDL.h"
 
 /* These headers have system specific definitions, so aren't included above */
@@ -47,7 +44,6 @@
    failsafe switch for major API change decisions. Respect it and use it
    sparingly. */
 #define SDL_DYNAPI_VERSION 1
-
 static void SDL_InitDynamicAPI(void);
 
 
@@ -59,17 +55,15 @@ static void SDL_InitDynamicAPI(void);
 
 /* !!! FIXME: ...disabled...until we write it.  :) */
 #define DISABLE_JUMP_MAGIC 1
-
 #if DISABLE_JUMP_MAGIC
 /* Can't use the macro for varargs nonsense. This is atrocious. */
-#define SDL_DYNAPI_VARARGS_LOGFN(_static, name, initcall, logname, prio) \
+#define SDL_DYNAPI_VARARGS_LOGFN(_static,name,initcall,logname,prio) \
     _static void SDLCALL SDL_Log##logname##name(int category, SDL_PRINTF_FORMAT_STRING const char *fmt, ...) { \
         va_list ap; initcall; va_start(ap, fmt); \
         jump_table.SDL_LogMessageV(category, SDL_LOG_PRIORITY_##prio, fmt, ap); \
         va_end(ap); \
     }
-
-#define SDL_DYNAPI_VARARGS(_static, name, initcall) \
+#define SDL_DYNAPI_VARARGS(_static,name,initcall) \
     _static int SDLCALL SDL_SetError##name(SDL_PRINTF_FORMAT_STRING const char *fmt, ...) { \
         char buf[512]; /* !!! FIXME: dynamic allocation */ \
         va_list ap; initcall; va_start(ap, fmt); \
@@ -117,24 +111,22 @@ static void SDL_InitDynamicAPI(void);
     extern rc SDLCALL fn##_REAL params;
 #include "SDL_dynapi_procs.h"
 #undef SDL_DYNAPI_PROC
-
 /* The jump table! */
-typedef struct {
-    #define SDL_DYNAPI_PROC(rc,fn,params,args,ret) SDL_DYNAPIFN_##fn fn;
-    #include "SDL_dynapi_procs.h"
-    #undef SDL_DYNAPI_PROC
-} SDL_DYNAPI_jump_table;
+typedef struct{
+#define SDL_DYNAPI_PROC(rc,fn,params,args,ret) SDL_DYNAPIFN_##fn fn;
+#include "SDL_dynapi_procs.h"
+#undef SDL_DYNAPI_PROC
+}SDL_DYNAPI_jump_table;
 
 /* Predeclare the default functions for initializing the jump table. */
 #define SDL_DYNAPI_PROC(rc,fn,params,args,ret) static rc SDLCALL fn##_DEFAULT params;
 #include "SDL_dynapi_procs.h"
 #undef SDL_DYNAPI_PROC
-
 /* The actual jump table. */
-static SDL_DYNAPI_jump_table jump_table = {
-    #define SDL_DYNAPI_PROC(rc,fn,params,args,ret) fn##_DEFAULT,
-    #include "SDL_dynapi_procs.h"
-    #undef SDL_DYNAPI_PROC
+static SDL_DYNAPI_jump_table jump_table={
+#define SDL_DYNAPI_PROC(rc,fn,params,args,ret) fn##_DEFAULT,
+#include "SDL_dynapi_procs.h"
+#undef SDL_DYNAPI_PROC
 };
 
 /* Default functions init the function table then call right thing. */
@@ -148,7 +140,7 @@ static SDL_DYNAPI_jump_table jump_table = {
 #include "SDL_dynapi_procs.h"
 #undef SDL_DYNAPI_PROC
 #undef SDL_DYNAPI_PROC_NO_VARARGS
-SDL_DYNAPI_VARARGS(static, _DEFAULT, SDL_InitDynamicAPI())
+SDL_DYNAPI_VARARGS(static,_DEFAULT,SDL_InitDynamicAPI())
 #else
 /* !!! FIXME: need the jump magic. */
 #error Write me.
@@ -167,46 +159,46 @@ SDL_DYNAPI_VARARGS(,,)
 /* !!! FIXME: need the jump magic. */
 #error Write me.
 #endif
-
 /* we make this a static function so we can call the correct one without the
    system's dynamic linker resolving to the wrong version of this. */
 static Sint32
-initialize_jumptable(Uint32 apiver, void *table, Uint32 tablesize)
-{
-    SDL_DYNAPI_jump_table *output_jump_table = (SDL_DYNAPI_jump_table *) table;
+initialize_jumptable(Uint32 apiver,void *table,Uint32 tablesize){
+SDL_DYNAPI_jump_table *output_jump_table=(SDL_DYNAPI_jump_table *) table;
+if(apiver != SDL_DYNAPI_VERSION){
+/* !!! FIXME: can maybe handle older versions? */
+return -1;  /* not compatible. */
+} else if(tablesize > sizeof(jump_table)){
+return -1;  /* newer version of SDL with functions we can't provide. */
+}
 
-    if (apiver != SDL_DYNAPI_VERSION) {
-        /* !!! FIXME: can maybe handle older versions? */
-        return -1;  /* not compatible. */
-    } else if (tablesize > sizeof (jump_table)) {
-        return -1;  /* newer version of SDL with functions we can't provide. */
-    }
+/* Init our jump table first. */
+#define SDL_DYNAPI_PROC(rc,fn,params,args,ret) jump_table.fn = fn##_REAL;
+#include "SDL_dynapi_procs.h"
+#undef SDL_DYNAPI_PROC
 
-    /* Init our jump table first. */
-    #define SDL_DYNAPI_PROC(rc,fn,params,args,ret) jump_table.fn = fn##_REAL;
-    #include "SDL_dynapi_procs.h"
-    #undef SDL_DYNAPI_PROC
+/* Then the external table... */
+if(output_jump_table != &jump_table){
+jump_table.SDL_memcpy(output_jump_table,&jump_table,tablesize);
+}
 
-    /* Then the external table... */
-    if (output_jump_table != &jump_table) {
-        jump_table.SDL_memcpy(output_jump_table, &jump_table, tablesize);
-    }
+/* Safe to call SDL functions now; jump table is initialized! */
 
-    /* Safe to call SDL functions now; jump table is initialized! */
-
-    return 0;  /* success! */
+return 0;  /* success! */
 }
 
 
 /* Here's the exported entry point that fills in the jump table. */
 /*  Use specific types when an "int" might suffice to keep this sane. */
-typedef Sint32 (SDLCALL *SDL_DYNAPI_ENTRYFN)(Uint32 apiver, void *table, Uint32 tablesize);
-extern DECLSPEC Sint32 SDLCALL SDL_DYNAPI_entry(Uint32, void *, Uint32);
-
+typedef Sint32 (SDLCALL
+*SDL_DYNAPI_ENTRYFN)(
+Uint32 apiver,
+void *table,Uint32
+tablesize);
+extern DECLSPEC Sint32
+SDLCALL SDL_DYNAPI_entry(Uint32,void *,Uint32);
 Sint32
-SDL_DYNAPI_entry(Uint32 apiver, void *table, Uint32 tablesize)
-{
-    return initialize_jumptable(apiver, table, tablesize);
+SDL_DYNAPI_entry(Uint32 apiver,void *table,Uint32 tablesize){
+return initialize_jumptable(apiver,table,tablesize);
 }
 
 
@@ -262,71 +254,62 @@ static SDL_INLINE void *get_sdlapi_entry(const char *fname, const char *sym)
 #else
 #error Please define your platform.
 #endif
-
-
 static void
-SDL_InitDynamicAPILocked(void)
-{
-    const char *libname = SDL_getenv_REAL("SDL_DYNAMIC_API");
-    SDL_DYNAPI_ENTRYFN entry = NULL;  /* funcs from here by default. */
+SDL_InitDynamicAPILocked(void){
+const char *libname=SDL_getenv_REAL("SDL_DYNAMIC_API");
+SDL_DYNAPI_ENTRYFN entry=NULL;  /* funcs from here by default. */
 
-    if (libname) {
-        entry = (SDL_DYNAPI_ENTRYFN) get_sdlapi_entry(libname, "SDL_DYNAPI_entry");
-        if (!entry) {
-            /* !!! FIXME: fail to startup here instead? */
-            /* !!! FIXME: definitely warn user. */
-            /* Just fill in the function pointers from this library. */
-        }
-    }
-
-    if (!entry || (entry(SDL_DYNAPI_VERSION, &jump_table, sizeof (jump_table)) < 0)) {
-        /* !!! FIXME: fail to startup here instead? */
-        /* !!! FIXME: definitely warn user. */
-        /* Just fill in the function pointers from this library. */
-        if (!entry) {
-            if (!initialize_jumptable(SDL_DYNAPI_VERSION, &jump_table, sizeof (jump_table))) {
-                /* !!! FIXME: now we're screwed. Should definitely abort now. */
-            }
-        }
-    }
-
-    /* we intentionally never close the newly-loaded lib, of course. */
+if(libname){
+entry=(SDL_DYNAPI_ENTRYFN) get_sdlapi_entry(libname,"SDL_DYNAPI_entry");
+if(!entry){
+/* !!! FIXME: fail to startup here instead? */
+/* !!! FIXME: definitely warn user. */
+/* Just fill in the function pointers from this library. */
+}
+}
+if(!entry || (entry(SDL_DYNAPI_VERSION,&jump_table,sizeof(jump_table)) < 0)){
+/* !!! FIXME: fail to startup here instead? */
+/* !!! FIXME: definitely warn user. */
+/* Just fill in the function pointers from this library. */
+if(!entry){
+if(!initialize_jumptable(SDL_DYNAPI_VERSION,&jump_table,sizeof(jump_table))){
+/* !!! FIXME: now we're screwed. Should definitely abort now. */
+}
+}
 }
 
-static void
-SDL_InitDynamicAPI(void)
-{
-    /* So the theory is that every function in the jump table defaults to
-     *  calling this function, and then replaces itself with a version that
-     *  doesn't call this function anymore. But it's possible that, in an
-     *  extreme corner case, you can have a second thread hit this function
-     *  while the jump table is being initialized by the first.
-     * In this case, a spinlock is really painful compared to what spinlocks
-     *  _should_ be used for, but this would only happen once, and should be
-     *  insanely rare, as you would have to spin a thread outside of SDL (as
-     *  SDL_CreateThread() would also call this function before building the
-     *  new thread).
-     */
-    static SDL_bool already_initialized = SDL_FALSE;
-
-    /* SDL_AtomicLock calls SDL mutex functions to emulate if
-       SDL_ATOMIC_DISABLED, which we can't do here, so in such a
-       configuration, you're on your own. */
-    #if !SDL_ATOMIC_DISABLED
-    static SDL_SpinLock lock = 0;
-    SDL_AtomicLock_REAL(&lock);
-    #endif
-
-    if (!already_initialized) {
-        SDL_InitDynamicAPILocked();
-        already_initialized = SDL_TRUE;
-    }
-
-    #if !SDL_ATOMIC_DISABLED
-    SDL_AtomicUnlock_REAL(&lock);
-    #endif
+/* we intentionally never close the newly-loaded lib, of course. */
 }
+static void
+SDL_InitDynamicAPI(void){
+/* So the theory is that every function in the jump table defaults to
+ *  calling this function, and then replaces itself with a version that
+ *  doesn't call this function anymore. But it's possible that, in an
+ *  extreme corner case, you can have a second thread hit this function
+ *  while the jump table is being initialized by the first.
+ * In this case, a spinlock is really painful compared to what spinlocks
+ *  _should_ be used for, but this would only happen once, and should be
+ *  insanely rare, as you would have to spin a thread outside of SDL (as
+ *  SDL_CreateThread() would also call this function before building the
+ *  new thread).
+ */
+static SDL_bool already_initialized=SDL_FALSE;
 
+/* SDL_AtomicLock calls SDL mutex functions to emulate if
+   SDL_ATOMIC_DISABLED, which we can't do here, so in such a
+   configuration, you're on your own. */
+#if !SDL_ATOMIC_DISABLED
+static SDL_SpinLock lock=0;
+SDL_AtomicLock_REAL(&lock);
+#endif
+if(!already_initialized){
+SDL_InitDynamicAPILocked();
+already_initialized=SDL_TRUE;
+}
+#if !SDL_ATOMIC_DISABLED
+SDL_AtomicUnlock_REAL(&lock);
+#endif
+}
 #endif  /* SDL_DYNAMIC_API */
 
 /* vi: set ts=4 sw=4 expandtab: */

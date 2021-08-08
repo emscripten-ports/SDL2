@@ -22,7 +22,6 @@
 #ifndef SDL_config_macosx_h_
 #define SDL_config_macosx_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
 
 /* This gets us MAC_OS_X_VERSION_MIN_REQUIRED... */
@@ -31,9 +30,9 @@
 /* This is a set of defines to configure the SDL features */
 
 #ifdef __LP64__
-    #define SIZEOF_VOIDP 8
+#define SIZEOF_VOIDP 8
 #else
-    #define SIZEOF_VOIDP 4
+#define SIZEOF_VOIDP 4
 #endif
 
 /* Useful headers */
@@ -171,7 +170,6 @@
 #define SDL_VIDEO_DRIVER_X11_XSHAPE 1
 #define SDL_VIDEO_DRIVER_X11_XVIDMODE 1
 #define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
-
 #ifdef MAC_OS_X_VERSION_10_8
 /*
  * No matter the versions targeted, this is the 10.8 or later SDK, so you have
@@ -182,15 +180,12 @@
 #define SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS 1
 #define SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY 1
 #endif
-
 #ifndef SDL_VIDEO_RENDER_OGL
 #define SDL_VIDEO_RENDER_OGL    1
 #endif
-
 #ifndef SDL_VIDEO_RENDER_OGL_ES2
 #define SDL_VIDEO_RENDER_OGL_ES2 1
 #endif
-
 #ifndef SDL_VIDEO_RENDER_METAL
 /* Metal only supported on 64-bit architectures with 10.11+ */
 #if TARGET_CPU_X86_64 && (MAC_OS_X_VERSION_MAX_ALLOWED >= 101100)
@@ -236,5 +231,4 @@
 #ifdef __ppc__
 #define SDL_ALTIVEC_BLITTERS    1
 #endif
-
 #endif /* SDL_config_macosx_h_ */

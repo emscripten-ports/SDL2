@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_HAPTIC_DINPUT || SDL_HAPTIC_XINPUT
 
 #include "SDL_assert.h"

@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
 
 #include "SDL_hints.h"
@@ -1200,10 +1199,10 @@ GL_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *vertic
                     }
                     data->glEnd();
                 } else {
-                    #if defined(__MACOSX__) || defined(__WIN32__)
-                    #else
+#if defined(__MACOSX__) || defined(__WIN32__)
+#else
                     int x1, y1, x2, y2;
-                    #endif
+#endif
 
                     data->glBegin(GL_LINE_STRIP);
                     for (i = 0; i < count; ++i, verts += 2) {
@@ -1220,10 +1219,10 @@ GL_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *vertic
                      */
 
                     data->glBegin(GL_POINTS);
-                    #if defined(__MACOSX__) || defined(__WIN32__)
+#if defined(__MACOSX__) || defined(__WIN32__)
                     /* Mac OS X and Windows seem to always leave the last point open */
                     data->glVertex2f(verts[(count-1)*2], verts[(count*2)-1]);
-                    #else
+#else
                     /* Linux seems to leave the right-most or bottom-most point open */
                     x1 = verts[0];
                     y1 = verts[1];
@@ -1240,7 +1239,7 @@ GL_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *vertic
                     } else if (y2 > y1) {
                         data->glVertex2f(x2, y2);
                     }
-                    #endif
+#endif
                     data->glEnd();
                 }
                 break;

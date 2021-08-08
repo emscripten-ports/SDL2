@@ -26,7 +26,6 @@
  */
 
 #import "SDL_cocoametalview.h"
-
 #if SDL_VIDEO_DRIVER_COCOA && (SDL_VIDEO_VULKAN || SDL_VIDEO_RENDER_METAL)
 
 #include "SDL_assert.h"

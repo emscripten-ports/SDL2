@@ -20,27 +20,21 @@
 */
 
 #import <UIKit/UIKit.h>
-
 @interface SDLLaunchScreenController : UIViewController
-
 - (instancetype)init;
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 - (void)loadView;
 
 @end
-
-@interface SDLUIKitDelegate : NSObject<UIApplicationDelegate>
-
+@interface SDLUIKitDelegate : NSObject <UIApplicationDelegate>
 + (id)sharedAppDelegate;
 + (NSString *)getAppDelegateClassName;
-
 - (void)hideLaunchScreen;
-
 /* This property is marked as optional, and is only intended to be used when
  * the app's UI is storyboard-based. SDL is not storyboard-based, however
  * several major third-party ad APIs (e.g. Google admob) incorrectly assume this
  * property always exists, and will crash if it doesn't. */
-@property (nonatomic) UIWindow *window;
+@property(nonatomic) UIWindow *window;
 
 @end
 

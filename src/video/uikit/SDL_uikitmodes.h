@@ -19,36 +19,26 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_uikitmodes_h_
 #define SDL_uikitmodes_h_
-
 #include "SDL_uikitvideo.h"
-
 @interface SDL_DisplayData : NSObject
-
-@property (nonatomic, strong) UIScreen *uiscreen;
+@property(nonatomic,strong) UIScreen *uiscreen;
 
 @end
-
 @interface SDL_DisplayModeData : NSObject
-
-@property (nonatomic, strong) UIScreenMode *uiscreenmode;
+@property(nonatomic,strong) UIScreenMode *uiscreenmode;
 
 @end
-
 extern SDL_bool UIKit_IsDisplayLandscape(UIScreen *uiscreen);
-
 extern int UIKit_InitModes(_THIS);
-extern void UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display);
-extern int UIKit_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode);
+extern void UIKit_GetDisplayModes(_THIS,SDL_VideoDisplay *display);
+extern int UIKit_SetDisplayMode(_THIS,SDL_VideoDisplay *display,SDL_DisplayMode *mode);
 extern void UIKit_QuitModes(_THIS);
-extern int UIKit_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect);
-
+extern int UIKit_GetDisplayUsableBounds(_THIS,SDL_VideoDisplay *display,SDL_Rect *rect);
 #if !TARGET_OS_TV
 extern void SDL_OnApplicationDidChangeStatusBarOrientation(void);
 #endif
-
 #endif /* SDL_uikitmodes_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

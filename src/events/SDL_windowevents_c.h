@@ -19,13 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../SDL_internal.h"
-
 #ifndef SDL_windowevents_c_h_
 #define SDL_windowevents_c_h_
-
-extern int SDL_SendWindowEvent(SDL_Window * window, Uint8 windowevent,
-                               int data1, int data2);
-
+extern int SDL_SendWindowEvent(SDL_Window *window,Uint8 windowevent,
+                               int data1,int data2);
 #endif /* SDL_windowevents_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

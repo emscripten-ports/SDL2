@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_X11
 
 #include "SDL_hints.h"
@@ -620,11 +619,11 @@ X11_InitModes(_THIS)
        This block should be removed with the XVidMode support. */
     {
         if (SDL_GetHintBoolean("SDL_VIDEO_X11_REQUIRE_XRANDR", SDL_FALSE)) {
-            #if SDL_VIDEO_DRIVER_X11_XRANDR
+#if SDL_VIDEO_DRIVER_X11_XRANDR
             return SDL_SetError("XRandR support is required but not available");
-            #else
+#else
             return SDL_SetError("XRandR support is required but not built into SDL!");
-            #endif
+#endif
         }
     }
 

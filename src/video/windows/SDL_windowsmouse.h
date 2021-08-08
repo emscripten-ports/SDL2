@@ -19,15 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_windowsmouse_h_
 #define SDL_windowsmouse_h_
-
 extern HCURSOR SDL_cursor;
-
 extern void WIN_InitMouse(_THIS);
 extern void WIN_QuitMouse(_THIS);
-
 #endif /* SDL_windowsmouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

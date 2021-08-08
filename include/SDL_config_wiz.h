@@ -27,9 +27,7 @@
 
 /* General platform specific identifiers */
 #include "SDL_platform.h"
-
 #define SDL_BYTEORDER 1234
-
 #define STDC_HEADERS 1
 #define HAVE_ALLOCA_H 1
 #define HAVE_CTYPE_H 1
@@ -47,7 +45,6 @@
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
 #define HAVE_SYS_TYPES_H 1
-
 #define HAVE_MALLOC 1
 #define HAVE_CALLOC 1
 #define HAVE_REALLOC 1
@@ -120,27 +117,19 @@
 #define HAVE_SETJMP 1
 #define HAVE_NANOSLEEP 1
 #define HAVE_POW 1
-
 #define SDL_AUDIO_DRIVER_DUMMY 1
 #define SDL_AUDIO_DRIVER_OSS 1
-
 #define SDL_INPUT_LINUXEV 1
 #define SDL_INPUT_TSLIB 1
 #define SDL_JOYSTICK_LINUX 1
 #define SDL_HAPTIC_LINUX 1
-
 #define SDL_SENSOR_DUMMY  1
-
 #define SDL_LOADSO_DLOPEN 1
-
 #define SDL_THREAD_PTHREAD 1
 #define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP 1
-
 #define SDL_TIMER_UNIX 1
-
 #define SDL_VIDEO_DRIVER_DUMMY 1
 #define SDL_VIDEO_DRIVER_PANDORA 1
 #define SDL_VIDEO_RENDER_OGL_ES 1
 #define SDL_VIDEO_OPENGL_ES 1
-
 #endif /* SDL_config_wiz_h_ */

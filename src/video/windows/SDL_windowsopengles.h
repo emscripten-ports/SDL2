@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_winopengles_h_
 #define SDL_winopengles_h_
-
 #if SDL_VIDEO_OPENGL_EGL
 
 #include "../SDL_sysvideo.h"
@@ -43,7 +41,6 @@ extern void WIN_GLES_DeleteContext(_THIS, SDL_GLContext context);
 extern int WIN_GLES_SetupWindow(_THIS, SDL_Window * window);
 
 #endif /* SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_winopengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

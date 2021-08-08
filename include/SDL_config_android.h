@@ -22,7 +22,6 @@
 #ifndef SDL_config_android_h_
 #define SDL_config_android_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
 
 /**
@@ -32,9 +31,7 @@
  */
 
 #include <stdarg.h>
-
 #define HAVE_GCC_ATOMICS    1
-
 #define STDC_HEADERS    1
 #define HAVE_ALLOCA_H       1
 #define HAVE_CTYPE_H    1
@@ -125,7 +122,6 @@
 #define HAVE_NANOSLEEP  1
 #define HAVE_SYSCONF    1
 #define HAVE_CLOCK_GETTIME  1
-
 #define SIZEOF_VOIDP 4
 
 /* Enable various audio drivers */
@@ -174,5 +170,4 @@
 
 /* Enable the filesystem driver */
 #define SDL_FILESYSTEM_ANDROID   1
-
 #endif /* SDL_config_android_h_ */

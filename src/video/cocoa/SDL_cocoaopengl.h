@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_cocoaopengl_h_
 #define SDL_cocoaopengl_h_
-
 #if SDL_VIDEO_OPENGL_CGL
 
 #include "SDL_atomic.h"
@@ -71,7 +69,6 @@ extern void Cocoa_GL_DeleteContext(_THIS, SDL_GLContext context);
 #endif
 
 #endif /* SDL_VIDEO_OPENGL_CGL */
-
 #endif /* SDL_cocoaopengl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

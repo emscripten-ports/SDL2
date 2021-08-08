@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_JOYSTICK_PSP
 
 /* This is the PSP implementation of the SDL joystick API */

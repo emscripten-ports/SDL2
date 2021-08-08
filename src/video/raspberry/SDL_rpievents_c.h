@@ -21,11 +21,8 @@
 
 #ifndef SDL_rpievents_c_h_
 #define SDL_rpievents_c_h_
-
 #include "SDL_rpivideo.h"
-
 void RPI_PumpEvents(_THIS);
 void RPI_EventInit(_THIS);
 void RPI_EventQuit(_THIS);
-
 #endif /* SDL_rpievents_c_h_ */

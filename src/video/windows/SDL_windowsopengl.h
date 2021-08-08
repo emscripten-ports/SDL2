@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_windowsopengl_h_
 #define SDL_windowsopengl_h_
-
 #if SDL_VIDEO_OPENGL_WGL
 
 struct SDL_GLDriverData
@@ -136,7 +134,6 @@ extern SDL_bool WIN_GL_SetPixelFormatFrom(_THIS, SDL_Window * fromWindow, SDL_Wi
 #endif
 
 #endif /* SDL_VIDEO_OPENGL_WGL */
-
 #endif /* SDL_windowsopengl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

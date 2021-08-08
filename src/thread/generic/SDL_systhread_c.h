@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 /* Stub until we implement threads on this platform */
 typedef int SYS_ThreadHandle;
 

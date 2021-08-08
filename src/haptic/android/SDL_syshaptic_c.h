@@ -1,5 +1,4 @@
 #include "SDL_config.h"
-
 #ifdef SDL_HAPTIC_ANDROID
 
 

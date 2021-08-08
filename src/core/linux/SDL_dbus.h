@@ -20,10 +20,8 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_dbus_h_
 #define SDL_dbus_h_
-
 #ifdef HAVE_DBUS_DBUS_H
 #define SDL_USE_LIBDBUS 1
 #include "SDL_stdinc.h"
@@ -90,7 +88,6 @@ extern void SDL_DBus_ScreensaverTickle(void);
 extern SDL_bool SDL_DBus_ScreensaverInhibit(SDL_bool inhibit);
 
 #endif /* HAVE_DBUS_DBUS_H */
-
 #endif /* SDL_dbus_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

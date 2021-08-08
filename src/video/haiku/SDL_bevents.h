@@ -21,19 +21,14 @@
 
 #ifndef SDL_BEVENTS_H
 #define SDL_BEVENTS_H
-
 #include "../SDL_sysvideo.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 extern void HAIKU_PumpEvents(_THIS);
-
 #ifdef __cplusplus
 }
 #endif
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

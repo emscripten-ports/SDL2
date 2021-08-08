@@ -34,13 +34,10 @@
 #else
 #define SDL_VARIABLE_LENGTH_ARRAY
 #endif
-
 #define SDL_MAX_SMALL_ALLOC_STACKSIZE 128
-#define SDL_small_alloc(type, count, pisstack) ( (*(pisstack) = ((sizeof(type)*(count)) < SDL_MAX_SMALL_ALLOC_STACKSIZE)), (*(pisstack) ? SDL_stack_alloc(type, count) : (type*)SDL_malloc(sizeof(type)*(count))) )
-#define SDL_small_free(ptr, isstack) if ((isstack)) { SDL_stack_free(ptr); } else { SDL_free(ptr); }
-
+#define SDL_small_alloc(type,count,pisstack) ( (*(pisstack) = ((sizeof(type)*(count)) < SDL_MAX_SMALL_ALLOC_STACKSIZE)), (*(pisstack) ? SDL_stack_alloc(type, count) : (type*)SDL_malloc(sizeof(type)*(count))) )
+#define SDL_small_free(ptr,isstack) if ((isstack)) { SDL_stack_free(ptr); } else { SDL_free(ptr); }
 #include "dynapi/SDL_dynapi.h"
-
 #if SDL_DYNAMIC_API
 #include "dynapi/SDL_dynapi_overrides.h"
 /* force DECLSPEC and SDLCALL off...it's all internal symbols now.
@@ -48,9 +45,7 @@
 #define DECLSPEC
 #define SDLCALL
 #endif
-
 #include "SDL_config.h"
-
 #endif /* SDL_internal_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

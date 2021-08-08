@@ -38,11 +38,9 @@
 #ifdef SDL_DYNAMIC_API  /* Tried to force it on the command line? */
 #error Nope, you have to edit this file to force this off.
 #endif
-
 #ifdef __APPLE__
 #include "TargetConditionals.h"
 #endif
-
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE  /* probably not useful on iOS. */
 #define SDL_DYNAMIC_API 0
 #elif defined(__native_client__) && __native_client__  /* probably not useful on NACL. */
@@ -61,7 +59,6 @@
 #ifndef SDL_DYNAMIC_API
 #define SDL_DYNAMIC_API 1
 #endif
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

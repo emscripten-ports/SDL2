@@ -20,26 +20,19 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_KMSDRM_mouse_h_
 #define SDL_KMSDRM_mouse_h_
-
 #include <gbm.h>
-
 #define MAX_CURSOR_W 512
 #define MAX_CURSOR_H 512
-
-typedef struct _KMSDRM_CursorData
-{
-    struct gbm_bo *bo;
-    uint32_t       crtc_id;
-    int            hot_x, hot_y;
-    int            w, h;
-} KMSDRM_CursorData;
-
+typedef struct _KMSDRM_CursorData{
+struct gbm_bo *bo;
+uint32_t crtc_id;
+int hot_x,hot_y;
+int w,h;
+}KMSDRM_CursorData;
 extern void KMSDRM_InitMouse(_THIS);
 extern void KMSDRM_QuitMouse(_THIS);
-
 #endif /* SDL_KMSDRM_mouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

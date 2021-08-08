@@ -4,7 +4,6 @@
 
 import re
 
-
 filename = "SDL_gamecontrollerdb.h"
 input = open(filename)
 output = open(filename + ".new", "w")
@@ -13,16 +12,18 @@ controllers = []
 controller_guids = {}
 split_pattern = re.compile(r'([^"]*")([^,]*,)([^,]*,)([^"]*)(".*)')
 
+
 def save_controller(line):
     global controllers
     match = split_pattern.match(line)
-    entry = [ match.group(1), match.group(2), match.group(3) ]
+    entry = [match.group(1), match.group(2), match.group(3)]
     bindings = sorted(match.group(4).split(","))
     if (bindings[0] == ""):
         bindings.pop(0)
     entry.extend(",".join(bindings) + ",")
     entry.append(match.group(5))
     controllers.append(entry)
+
 
 def write_controllers():
     global controllers
@@ -42,7 +43,7 @@ def write_controllers():
 
         controller_guids[entry[1]] = entry
 
-    for entry in sorted(controllers, key=lambda entry: entry[2]+"-"+entry[1]):
+    for entry in sorted(controllers, key=lambda entry: entry[2] + "-" + entry[1]):
         line = "".join(entry) + "\n"
         line = line.replace("\t", "    ")
         if not line.endswith(",\n") and not line.endswith("*/\n"):
@@ -51,6 +52,7 @@ def write_controllers():
 
     controllers = []
     controller_guids = {}
+
 
 for line in input:
     if (parsing_controllers):

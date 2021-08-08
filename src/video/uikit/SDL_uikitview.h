@@ -20,17 +20,11 @@
 */
 
 #import <UIKit/UIKit.h>
-
 #include "../SDL_sysvideo.h"
-
 #include "SDL_touch.h"
-
 @interface SDL_uikitview : UIView
-
 - (instancetype)initWithFrame:(CGRect)frame;
-
 - (void)setSDLWindow:(SDL_Window *)window;
-
 - (CGPoint)touchLocation:(UITouch *)touch shouldNormalize:(BOOL)normalize;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;

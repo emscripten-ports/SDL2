@@ -21,24 +21,18 @@
 
 #ifndef BVIDEO_H
 #define BVIDEO_H
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include "../../main/haiku/SDL_BeApp.h"
 #include "../SDL_sysvideo.h"
-
-
 extern void HAIKU_VideoQuit(_THIS);
 extern int HAIKU_VideoInit(_THIS);
 extern void HAIKU_DeleteDevice(_THIS);
 extern int HAIKU_Available(void);
-
 #ifdef __cplusplus
 }
 #endif
-
 #endif
 
 /* vi: set ts=4 sw=4 expandtab: */

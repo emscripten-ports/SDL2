@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_DSOUND
 
 /* Allow access to a raw mixing buffer */
@@ -73,7 +72,7 @@ DSOUND_Load(void)
         SDL_SetError("DirectSound: failed to load DSOUND.DLL");
     } else {
         /* Now make sure we have DirectX 8 or better... */
-        #define DSOUNDLOAD(f) { \
+#define DSOUNDLOAD(f) { \
             p##f = (fn##f) SDL_LoadFunction(DSoundDLL, #f); \
             if (!p##f) loaded = 0; \
         }
@@ -82,7 +81,7 @@ DSOUND_Load(void)
         DSOUNDLOAD(DirectSoundEnumerateW);
         DSOUNDLOAD(DirectSoundCaptureCreate8);
         DSOUNDLOAD(DirectSoundCaptureEnumerateW);
-        #undef DSOUNDLOAD
+#undef DSOUNDLOAD
 
         if (!loaded) {
             SDL_SetError("DirectSound: System doesn't appear to have DX8.");

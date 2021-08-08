@@ -22,23 +22,16 @@
 
 #ifndef SDL_emscriptenmouse_h_
 #define SDL_emscriptenmouse_h_
-
 #include "SDL_stdinc.h"
-
 #include "SDL_stdinc.h"
-
-typedef struct _Emscripten_CursorData
-{
-    const char *system_cursor;
-    SDL_bool is_custom;
-} Emscripten_CursorData;
-
+typedef struct _Emscripten_CursorData{
+const char *system_cursor;
+SDL_bool is_custom;
+}Emscripten_CursorData;
 extern void
 Emscripten_InitMouse();
-
 extern void
 Emscripten_FiniMouse();
-
 #endif /* SDL_emscriptenmouse_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

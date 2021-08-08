@@ -26,7 +26,6 @@
 #if !SDL_DYNAMIC_API
 #error You should not be here.
 #endif
-
 #define SDL_SetError SDL_SetError_REAL
 #define SDL_Log SDL_Log_REAL
 #define SDL_LogVerbose SDL_LogVerbose_REAL

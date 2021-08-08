@@ -20,7 +20,6 @@
 */
 #include "../../SDL_internal.h"
 #include "SDL_assert.h"
-
 #if SDL_VIDEO_DRIVER_COCOA
 
 #include "SDL_cocoavideo.h"

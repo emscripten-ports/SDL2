@@ -19,12 +19,9 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_x11vulkan_h_
 #define SDL_x11vulkan_h_
-
 #include "../SDL_vulkan_internal.h"
-
 #if SDL_VIDEO_VULKAN && SDL_VIDEO_DRIVER_X11
 
 /*typedef struct xcb_connection_t xcb_connection_t;*/
@@ -42,7 +39,6 @@ SDL_bool X11_Vulkan_CreateSurface(_THIS,
                                   VkSurfaceKHR *surface);
 
 #endif
-
 #endif /* SDL_x11vulkan_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -21,15 +21,13 @@
 #include "../SDL_internal.h"
 #include "SDL_power.h"
 #include "SDL_syspower.h"
-
 /*
  * Returns SDL_TRUE if we have a definitive answer.
  * SDL_FALSE to try next implementation.
  */
 typedef SDL_bool
-    (*SDL_GetPowerInfo_Impl) (SDL_PowerState * state, int *seconds,
-                              int *percent);
-
+(*SDL_GetPowerInfo_Impl)(SDL_PowerState *state,int *seconds,
+                         int *percent);
 #ifndef SDL_POWER_DISABLED
 #ifdef SDL_POWER_HARDWIRED
 /* This is for things that _never_ have a battery */
@@ -42,75 +40,69 @@ SDL_GetPowerInfo_Hardwired(SDL_PowerState * state, int *seconds, int *percent)
     return SDL_TRUE;
 }
 #endif
-
-static SDL_GetPowerInfo_Impl implementations[] = {
+static SDL_GetPowerInfo_Impl implementations[]={
 #ifdef SDL_POWER_LINUX          /* in order of preference. More than could work. */
-    SDL_GetPowerInfo_Linux_org_freedesktop_upower,
-    SDL_GetPowerInfo_Linux_sys_class_power_supply,
-    SDL_GetPowerInfo_Linux_proc_acpi,
-    SDL_GetPowerInfo_Linux_proc_apm,
+SDL_GetPowerInfo_Linux_org_freedesktop_upower,
+SDL_GetPowerInfo_Linux_sys_class_power_supply,
+SDL_GetPowerInfo_Linux_proc_acpi,
+SDL_GetPowerInfo_Linux_proc_apm,
 #endif
 #ifdef SDL_POWER_WINDOWS        /* handles Win32, Win64, PocketPC. */
-    SDL_GetPowerInfo_Windows,
+SDL_GetPowerInfo_Windows,
 #endif
 #ifdef SDL_POWER_UIKIT          /* handles iPhone/iPad/etc */
-    SDL_GetPowerInfo_UIKit,
+SDL_GetPowerInfo_UIKit,
 #endif
 #ifdef SDL_POWER_MACOSX         /* handles Mac OS X, Darwin. */
-    SDL_GetPowerInfo_MacOSX,
+SDL_GetPowerInfo_MacOSX,
 #endif
 #ifdef SDL_POWER_HAIKU          /* with BeOS euc.jp apm driver. Does this work on Haiku? */
-    SDL_GetPowerInfo_Haiku,
+SDL_GetPowerInfo_Haiku,
 #endif
 #ifdef SDL_POWER_ANDROID        /* handles Android. */
-    SDL_GetPowerInfo_Android,
+SDL_GetPowerInfo_Android,
 #endif
 #ifdef SDL_POWER_PSP        /* handles PSP. */
-    SDL_GetPowerInfo_PSP,
+SDL_GetPowerInfo_PSP,
 #endif
 #ifdef SDL_POWER_WINRT          /* handles WinRT */
-    SDL_GetPowerInfo_WinRT,
+SDL_GetPowerInfo_WinRT,
 #endif
 #ifdef SDL_POWER_EMSCRIPTEN     /* handles Emscripten */
-    SDL_GetPowerInfo_Emscripten,
+SDL_GetPowerInfo_Emscripten,
 #endif
-
 #ifdef SDL_POWER_HARDWIRED
-    SDL_GetPowerInfo_Hardwired,
+SDL_GetPowerInfo_Hardwired,
 #endif
 };
 #endif
-
 SDL_PowerState
-SDL_GetPowerInfo(int *seconds, int *percent)
-{
+SDL_GetPowerInfo(int *seconds,int *percent){
 #ifndef SDL_POWER_DISABLED
-    const int total = sizeof(implementations) / sizeof(implementations[0]);
-    SDL_PowerState retval = SDL_POWERSTATE_UNKNOWN;
-    int i;
+const int total=sizeof(implementations) / sizeof(implementations[0]);
+SDL_PowerState retval=SDL_POWERSTATE_UNKNOWN;
+int i;
+#endif
+int _seconds,_percent;
+/* Make these never NULL for platform-specific implementations. */
+if(seconds == NULL){
+seconds=&_seconds;
+}
+if(percent == NULL){
+percent=&_percent;
+}
+#ifndef SDL_POWER_DISABLED
+for (i=0; i < total; i++){
+if(implementations[i](&retval,seconds,percent)){
+return retval;
+}
+}
 #endif
 
-    int _seconds, _percent;
-    /* Make these never NULL for platform-specific implementations. */
-    if (seconds == NULL) {
-        seconds = &_seconds;
-    }
-    if (percent == NULL) {
-        percent = &_percent;
-    }
-
-#ifndef SDL_POWER_DISABLED
-    for (i = 0; i < total; i++) {
-        if (implementations[i](&retval, seconds, percent)) {
-            return retval;
-        }
-    }
-#endif
-
-    /* nothing was definitive. */
-    *seconds = -1;
-    *percent = -1;
-    return SDL_POWERSTATE_UNKNOWN;
+/* nothing was definitive. */
+*seconds=-1;
+*percent=-1;
+return SDL_POWERSTATE_UNKNOWN;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

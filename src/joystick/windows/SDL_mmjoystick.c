@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_WINMM
 
 /* Win32 MultiMedia Joystick driver, contributed by Andrei de A. Formiga */

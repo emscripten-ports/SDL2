@@ -1,32 +1,12 @@
-/*
-  Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-*/
 
 #ifndef SDL_config_h_
 #define SDL_config_h_
 
 /**
- *  \file SDL_config.h.in
- *
- *  This is a set of defines to configure the SDL features
- */
+*  \file SDL_config.h.in
+*
+*  This is a set of defines to configure the SDL features
+*/
 
 /* General platform specific identifiers */
 #include "SDL_platform.h"
@@ -185,7 +165,6 @@
 #cmakedefine HAVE_GETAUXVAL 1
 #cmakedefine HAVE_POLL 1
 #cmakedefine HAVE__EXIT 1
-
 #elif __WIN32__
 #cmakedefine HAVE_STDARG_H 1
 #cmakedefine HAVE_STDDEF_H 1
@@ -194,7 +173,6 @@
 /* We may need some replacement for stdarg.h here */
 #include <stdarg.h>
 #endif /* HAVE_LIBC */
-
 #cmakedefine HAVE_ALTIVEC_H 1
 #cmakedefine HAVE_DBUS_DBUS_H 1
 #cmakedefine HAVE_FCITX_FRONTEND_H 1
@@ -202,7 +180,6 @@
 #cmakedefine HAVE_IMMINTRIN_H 1
 #cmakedefine HAVE_LIBSAMPLERATE_H 1
 #cmakedefine HAVE_LIBUDEV_H 1
-
 #cmakedefine HAVE_D3D_H @HAVE_D3D_H@
 #cmakedefine HAVE_D3D11_H @HAVE_D3D11_H@
 #cmakedefine HAVE_DDRAW_H @HAVE_DDRAW_H@
@@ -214,7 +191,6 @@
 #cmakedefine HAVE_ENDPOINTVOLUME_H @HAVE_ENDPOINTVOLUME_H@
 #cmakedefine HAVE_MMDEVICEAPI_H @HAVE_MMDEVICEAPI_H@
 #cmakedefine HAVE_AUDIOCLIENT_H @HAVE_AUDIOCLIENT_H@
-
 #cmakedefine HAVE_XINPUT_GAMEPAD_EX @HAVE_XINPUT_GAMEPAD_EX@
 #cmakedefine HAVE_XINPUT_STATE_EX @HAVE_XINPUT_STATE_EX@
 
@@ -330,7 +306,6 @@
 #cmakedefine SDL_VIDEO_DRIVER_RPI @SDL_VIDEO_DRIVER_RPI@
 #cmakedefine SDL_VIDEO_DRIVER_VIVANTE @SDL_VIDEO_DRIVER_VIVANTE@
 #cmakedefine SDL_VIDEO_DRIVER_VIVANTE_VDK @SDL_VIDEO_DRIVER_VIVANTE_VDK@
-
 #cmakedefine SDL_VIDEO_DRIVER_KMSDRM @SDL_VIDEO_DRIVER_KMSDRM@
 #cmakedefine SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC @SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC@
 #cmakedefine SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC_GBM @SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC_GBM@
@@ -340,7 +315,6 @@
 #cmakedefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL @SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL@
 #cmakedefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR @SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR@
 #cmakedefine SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON @SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON@
-
 #cmakedefine SDL_VIDEO_DRIVER_EMSCRIPTEN @SDL_VIDEO_DRIVER_EMSCRIPTEN@
 #cmakedefine SDL_VIDEO_DRIVER_X11 @SDL_VIDEO_DRIVER_X11@
 #cmakedefine SDL_VIDEO_DRIVER_X11_DYNAMIC @SDL_VIDEO_DRIVER_X11_DYNAMIC@
@@ -363,7 +337,6 @@
 #cmakedefine SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS @SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS@
 #cmakedefine SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY @SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY@
 #cmakedefine SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM @SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM@
-
 #cmakedefine SDL_VIDEO_RENDER_D3D @SDL_VIDEO_RENDER_D3D@
 #cmakedefine SDL_VIDEO_RENDER_D3D11 @SDL_VIDEO_RENDER_D3D11@
 #cmakedefine SDL_VIDEO_RENDER_OGL @SDL_VIDEO_RENDER_OGL@
@@ -471,5 +444,4 @@ typedef unsigned int uintptr_t;
 #    endif /* __GNUC__ || _MSC_VER */
 #  endif /* !_STDINT_H_ && !HAVE_STDINT_H */
 #endif /* __WIN32__ */
-
 #endif /* SDL_config_h_ */

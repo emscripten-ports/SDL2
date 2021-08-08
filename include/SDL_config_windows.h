@@ -22,7 +22,6 @@
 #ifndef SDL_config_windows_h_
 #define SDL_config_windows_h_
 #define SDL_config_h_
-
 #include "SDL_platform.h"
 
 /* This is a set of defines to configure the SDL features */
@@ -70,13 +69,11 @@ typedef unsigned int size_t;
 typedef unsigned int uintptr_t;
 #endif /* __GNUC__ || _MSC_VER */
 #endif /* !_STDINT_H_ && !HAVE_STDINT_H */
-
 #ifdef _WIN64
 # define SIZEOF_VOIDP 8
 #else
 # define SIZEOF_VOIDP 4
 #endif
-
 #define HAVE_DDRAW_H 1
 #define HAVE_DINPUT_H 1
 #define HAVE_DSOUND_H 1
@@ -212,7 +209,6 @@ typedef unsigned int uintptr_t;
 /* Enable various video drivers */
 #define SDL_VIDEO_DRIVER_DUMMY  1
 #define SDL_VIDEO_DRIVER_WINDOWS    1
-
 #ifndef SDL_VIDEO_RENDER_D3D
 #define SDL_VIDEO_RENDER_D3D    1
 #endif
@@ -253,5 +249,4 @@ typedef unsigned int uintptr_t;
 #ifndef _WIN64
 #define SDL_ASSEMBLY_ROUTINES   1
 #endif
-
 #endif /* SDL_config_windows_h_ */

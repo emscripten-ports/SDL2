@@ -29,7 +29,6 @@
 
 #ifndef SDL_test_h_
 #define SDL_test_h_
-
 #include "SDL.h"
 #include "SDL_test_assert.h"
 #include "SDL_test_common.h"
@@ -43,7 +42,6 @@
 #include "SDL_test_md5.h"
 #include "SDL_test_memory.h"
 #include "SDL_test_random.h"
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -63,7 +61,6 @@ extern "C" {
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

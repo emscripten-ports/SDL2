@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_X11 && SDL_VIDEO_OPENGL_EGL
 
 #include "SDL_x11video.h"
@@ -35,7 +34,7 @@ X11_GLES_LoadLibrary(_THIS, const char *path)
 
     /* If the profile requested is not GL ES, switch over to X11_GL functions  */
     if (_this->gl_config.profile_mask != SDL_GL_CONTEXT_PROFILE_ES) {
-        #if SDL_VIDEO_OPENGL_GLX
+#if SDL_VIDEO_OPENGL_GLX
         X11_GLES_UnloadLibrary(_this);
         _this->GL_LoadLibrary = X11_GL_LoadLibrary;
         _this->GL_GetProcAddress = X11_GL_GetProcAddress;
@@ -47,9 +46,9 @@ X11_GLES_LoadLibrary(_THIS, const char *path)
         _this->GL_SwapWindow = X11_GL_SwapWindow;
         _this->GL_DeleteContext = X11_GL_DeleteContext;
         return X11_GL_LoadLibrary(_this, path);
-        #else
+#else
         return SDL_SetError("SDL not configured with OpenGL/GLX support");
-        #endif
+#endif
     }
     
     return SDL_EGL_LoadLibrary(_this, path, (NativeDisplayType) data->display, 0);

@@ -19,35 +19,26 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_artsaudio_h_
 #define SDL_artsaudio_h_
-
 #include <artsc.h>
-
 #include "../SDL_sysaudio.h"
 
 /* Hidden "this" pointer for the audio functions */
 #define _THIS   SDL_AudioDevice *this
-
-struct SDL_PrivateAudioData
-{
-    /* The stream descriptor for the audio device */
-    arts_stream_t stream;
-
-    /* The parent process id, to detect when application quits */
-    pid_t parent;
-
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-
-    /* Support for audio timing using a timer, in addition to SDL_IOReady() */
-    float frame_ticks;
-    float next_frame;
+struct SDL_PrivateAudioData{
+/* The stream descriptor for the audio device */
+arts_stream_t stream;
+/* The parent process id, to detect when application quits */
+pid_t parent;
+/* Raw mixing buffer */
+Uint8 *mixbuf;
+int mixlen;
+/* Support for audio timing using a timer, in addition to SDL_IOReady() */
+float frame_ticks;
+float next_frame;
 };
 #define FUDGE_TICKS 10      /* The scheduler overhead ticks per frame */
-
 #endif /* SDL_artsaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

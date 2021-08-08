@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_x11opengles_h_
 #define SDL_x11opengles_h_
-
 #if SDL_VIDEO_OPENGL_EGL
 
 #include "../SDL_sysvideo.h"
@@ -50,7 +48,6 @@ extern int X11_GLES_SwapWindow(_THIS, SDL_Window * window);
 extern int X11_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
 
 #endif /* SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_x11opengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

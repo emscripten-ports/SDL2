@@ -25,22 +25,18 @@
 #include "SDL_events.h"
 #include "SDL_events_c.h"
 #include "SDL_clipboardevents_c.h"
-
-
 int
-SDL_SendClipboardUpdate(void)
-{
-    int posted;
+SDL_SendClipboardUpdate(void){
+int posted;
 
-    /* Post the event, if desired */
-    posted = 0;
-    if (SDL_GetEventState(SDL_CLIPBOARDUPDATE) == SDL_ENABLE) {
-        SDL_Event event;
-        event.type = SDL_CLIPBOARDUPDATE;
-
-        posted = (SDL_PushEvent(&event) > 0);
-    }
-    return (posted);
+/* Post the event, if desired */
+posted=0;
+if(SDL_GetEventState(SDL_CLIPBOARDUPDATE) == SDL_ENABLE){
+SDL_Event event;
+event.type=SDL_CLIPBOARDUPDATE;
+posted=(SDL_PushEvent(&event) > 0);
+}
+return (posted);
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -19,8 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-extern int MacHaptic_MaybeAddDevice( io_object_t device );
-extern int MacHaptic_MaybeRemoveDevice( io_object_t device );
+extern int MacHaptic_MaybeAddDevice(io_object_t device);
+extern int MacHaptic_MaybeRemoveDevice(io_object_t device);
 
 /* vi: set ts=4 sw=4 expandtab: */
 

@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_JACK
 
 #include "SDL_assert.h"

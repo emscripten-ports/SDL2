@@ -19,11 +19,9 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_error.h"
 #include "SDL_haptic.h"
 #include "../SDL_syshaptic.h"
-
 #if SDL_HAPTIC_DINPUT
 
 #include "SDL_stdinc.h"
@@ -1185,121 +1183,81 @@ SDL_DINPUT_HapticStopAll(SDL_Haptic * haptic)
 }
 
 #else /* !SDL_HAPTIC_DINPUT */
-
 typedef struct DIDEVICEINSTANCE DIDEVICEINSTANCE;
 typedef struct SDL_hapticlist_item SDL_hapticlist_item;
-
 int
-SDL_DINPUT_HapticInit(void)
-{
-    return 0;
+SDL_DINPUT_HapticInit(void){
+return 0;
 }
-
 int
-SDL_DINPUT_MaybeAddDevice(const DIDEVICEINSTANCE * pdidInstance)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_MaybeAddDevice(const DIDEVICEINSTANCE *pdidInstance){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_MaybeRemoveDevice(const DIDEVICEINSTANCE * pdidInstance)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_MaybeRemoveDevice(const DIDEVICEINSTANCE *pdidInstance){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticOpen(SDL_Haptic * haptic, SDL_hapticlist_item *item)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticOpen(SDL_Haptic *haptic,SDL_hapticlist_item *item){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_JoystickSameHaptic(SDL_Haptic * haptic, SDL_Joystick * joystick)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_JoystickSameHaptic(SDL_Haptic *haptic,SDL_Joystick *joystick){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticOpenFromJoystick(SDL_Haptic * haptic, SDL_Joystick * joystick)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticOpenFromJoystick(SDL_Haptic *haptic,SDL_Joystick *joystick){
+return SDL_Unsupported();
 }
-
 void
-SDL_DINPUT_HapticClose(SDL_Haptic * haptic)
-{
+SDL_DINPUT_HapticClose(SDL_Haptic *haptic){
 }
-
 void
-SDL_DINPUT_HapticQuit(void)
-{
+SDL_DINPUT_HapticQuit(void){
 }
-
 int
-SDL_DINPUT_HapticNewEffect(SDL_Haptic * haptic, struct haptic_effect *effect, SDL_HapticEffect * base)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticNewEffect(SDL_Haptic *haptic,struct haptic_effect *effect,SDL_HapticEffect *base){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticUpdateEffect(SDL_Haptic * haptic, struct haptic_effect *effect, SDL_HapticEffect * data)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticUpdateEffect(SDL_Haptic *haptic,struct haptic_effect *effect,SDL_HapticEffect *data){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticRunEffect(SDL_Haptic * haptic, struct haptic_effect *effect, Uint32 iterations)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticRunEffect(SDL_Haptic *haptic,struct haptic_effect *effect,Uint32 iterations){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticStopEffect(SDL_Haptic * haptic, struct haptic_effect *effect)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticStopEffect(SDL_Haptic *haptic,struct haptic_effect *effect){
+return SDL_Unsupported();
 }
-
 void
-SDL_DINPUT_HapticDestroyEffect(SDL_Haptic * haptic, struct haptic_effect *effect)
-{
+SDL_DINPUT_HapticDestroyEffect(SDL_Haptic *haptic,struct haptic_effect *effect){
 }
-
 int
-SDL_DINPUT_HapticGetEffectStatus(SDL_Haptic * haptic, struct haptic_effect *effect)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticGetEffectStatus(SDL_Haptic *haptic,struct haptic_effect *effect){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticSetGain(SDL_Haptic * haptic, int gain)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticSetGain(SDL_Haptic *haptic,int gain){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticSetAutocenter(SDL_Haptic * haptic, int autocenter)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticSetAutocenter(SDL_Haptic *haptic,int autocenter){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticPause(SDL_Haptic * haptic)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticPause(SDL_Haptic *haptic){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticUnpause(SDL_Haptic * haptic)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticUnpause(SDL_Haptic *haptic){
+return SDL_Unsupported();
 }
-
 int
-SDL_DINPUT_HapticStopAll(SDL_Haptic * haptic)
-{
-    return SDL_Unsupported();
+SDL_DINPUT_HapticStopAll(SDL_Haptic *haptic){
+return SDL_Unsupported();
 }
-
 #endif /* SDL_HAPTIC_DINPUT */
 
 /* vi: set ts=4 sw=4 expandtab: */

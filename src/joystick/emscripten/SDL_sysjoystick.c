@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifdef SDL_JOYSTICK_EMSCRIPTEN
 
 #include <stdio.h>              /* For the definition of NULL */

@@ -20,10 +20,8 @@
 */
 
 #include "../../SDL_internal.h"
-
 #ifndef SDL_udev_h_
 #define SDL_udev_h_
-
 #if HAVE_LIBUDEV_H
 
 #ifndef SDL_USE_LIBUDEV
@@ -119,7 +117,6 @@ extern void SDL_UDEV_ReleaseUdevSyms(void);
 
 
 #endif /* HAVE_LIBUDEV_H */
-
 #endif /* SDL_udev_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

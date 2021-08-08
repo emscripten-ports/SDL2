@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_JOYSTICK_DINPUT || SDL_JOYSTICK_XINPUT
 
 /* DirectInput joystick driver; written by Glenn Maynard, based on Andrei de

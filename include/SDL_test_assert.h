@@ -35,7 +35,6 @@
 
 #ifndef SDL_test_assert_h_
 #define SDL_test_assert_h_
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -51,15 +50,14 @@ extern "C" {
  * \brief Passes the assert.
  */
 #define ASSERT_PASS     1
-
 /**
  * \brief Assert that logs and break execution flow on failures.
  *
  * \param assertCondition Evaluated condition or variable to assert; fail (==0) or pass (!=0).
  * \param assertDescription Message to log with the assert describing it.
  */
-void SDLTest_Assert(int assertCondition, SDL_PRINTF_FORMAT_STRING const char *assertDescription, ...) SDL_PRINTF_VARARG_FUNC(2);
-
+void SDLTest_Assert(int assertCondition,SDL_PRINTF_FORMAT_STRING const char *assertDescription,...)
+SDL_PRINTF_VARARG_FUNC(2);
 /**
  * \brief Assert for test cases that logs but does not break execution flow on failures. Updates assertion counters.
  *
@@ -68,38 +66,33 @@ void SDLTest_Assert(int assertCondition, SDL_PRINTF_FORMAT_STRING const char *as
  *
  * \returns Returns the assertCondition so it can be used to externally to break execution flow if desired.
  */
-int SDLTest_AssertCheck(int assertCondition, SDL_PRINTF_FORMAT_STRING const char *assertDescription, ...) SDL_PRINTF_VARARG_FUNC(2);
-
+int SDLTest_AssertCheck(int assertCondition,SDL_PRINTF_FORMAT_STRING const char *assertDescription,...)
+SDL_PRINTF_VARARG_FUNC(2);
 /**
  * \brief Explicitly pass without checking an assertion condition. Updates assertion counter.
  *
  * \param assertDescription Message to log with the assert describing it.
  */
-void SDLTest_AssertPass(SDL_PRINTF_FORMAT_STRING const char *assertDescription, ...) SDL_PRINTF_VARARG_FUNC(1);
-
+void SDLTest_AssertPass(SDL_PRINTF_FORMAT_STRING const char *assertDescription,...)
+SDL_PRINTF_VARARG_FUNC(1);
 /**
  * \brief Resets the assert summary counters to zero.
  */
 void SDLTest_ResetAssertSummary(void);
-
 /**
  * \brief Logs summary of all assertions (total, pass, fail) since last reset as INFO or ERROR.
  */
 void SDLTest_LogAssertSummary(void);
-
-
 /**
  * \brief Converts the current assert summary state to a test result.
  *
  * \returns TEST_RESULT_PASSED, TEST_RESULT_FAILED, or TEST_RESULT_NO_ASSERT
  */
 int SDLTest_AssertSummaryToTestResult(void);
-
 #ifdef __cplusplus
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_test_assert_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

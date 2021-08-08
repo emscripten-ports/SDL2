@@ -20,11 +20,8 @@
 */
 #ifndef SDL_uikitevents_h_
 #define SDL_uikitevents_h_
-
 #include "../SDL_sysvideo.h"
-
 extern void UIKit_PumpEvents(_THIS);
-
 #endif /* SDL_uikitevents_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

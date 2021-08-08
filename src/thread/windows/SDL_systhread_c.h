@@ -19,14 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_systhread_c_h_
 #define SDL_systhread_c_h_
-
 #include "../../core/windows/SDL_windows.h"
-
 typedef HANDLE SYS_ThreadHandle;
-
 #endif /* SDL_systhread_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

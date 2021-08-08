@@ -27,7 +27,6 @@
 
 #ifndef SDL_cpuinfo_h_
 #define SDL_cpuinfo_h_
-
 #include "SDL_stdinc.h"
 
 /* Need to do this here because intrin.h has C++ code in it */
@@ -99,7 +98,6 @@
 #endif
 #endif /* HAVE_IMMINTRIN_H */
 #endif /* compiler version */
-
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -112,12 +110,10 @@ extern "C" {
  * We'll use the larger value to be generally safe.
  */
 #define SDL_CACHELINE_SIZE  128
-
 /**
  *  This function returns the number of CPU cores available.
  */
 extern DECLSPEC int SDLCALL SDL_GetCPUCount(void);
-
 /**
  *  This function returns the L1 cache line size of the CPU
  *
@@ -125,77 +121,62 @@ extern DECLSPEC int SDLCALL SDL_GetCPUCount(void);
  *  or SIMD prefetch sizes.
  */
 extern DECLSPEC int SDLCALL SDL_GetCPUCacheLineSize(void);
-
 /**
  *  This function returns true if the CPU has the RDTSC instruction.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasRDTSC(void);
-
 /**
  *  This function returns true if the CPU has AltiVec features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasAltiVec(void);
-
 /**
  *  This function returns true if the CPU has MMX features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasMMX(void);
-
 /**
  *  This function returns true if the CPU has 3DNow! features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_Has3DNow(void);
-
 /**
  *  This function returns true if the CPU has SSE features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasSSE(void);
-
 /**
  *  This function returns true if the CPU has SSE2 features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasSSE2(void);
-
 /**
  *  This function returns true if the CPU has SSE3 features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasSSE3(void);
-
 /**
  *  This function returns true if the CPU has SSE4.1 features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasSSE41(void);
-
 /**
  *  This function returns true if the CPU has SSE4.2 features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasSSE42(void);
-
 /**
  *  This function returns true if the CPU has AVX features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasAVX(void);
-
 /**
  *  This function returns true if the CPU has AVX2 features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasAVX2(void);
-
 /**
  *  This function returns true if the CPU has AVX-512F (foundation) features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasAVX512F(void);
-
 /**
  *  This function returns true if the CPU has NEON (ARM SIMD) features.
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_HasNEON(void);
-
 /**
  *  This function returns the amount of RAM configured in the system, in MB.
  */
 extern DECLSPEC int SDLCALL SDL_GetSystemRAM(void);
-
 /**
  * \brief Report the alignment this system needs for SIMD allocations.
  *
@@ -209,7 +190,6 @@ extern DECLSPEC int SDLCALL SDL_GetSystemRAM(void);
  *  Plan accordingly.
  */
 extern DECLSPEC size_t SDLCALL SDL_SIMDGetAlignment(void);
-
 /**
  * \brief Allocate memory in a SIMD-friendly way.
  *
@@ -243,8 +223,7 @@ extern DECLSPEC size_t SDLCALL SDL_SIMDGetAlignment(void);
  * \sa SDL_SIMDAlignment
  * \sa SDL_SIMDFree
  */
-extern DECLSPEC void * SDLCALL SDL_SIMDAlloc(const size_t len);
-
+extern DECLSPEC void *SDLCALL SDL_SIMDAlloc(const size_t len);
 /**
  * \brief Deallocate memory obtained from SDL_SIMDAlloc
  *
@@ -264,7 +243,6 @@ extern DECLSPEC void SDLCALL SDL_SIMDFree(void *ptr);
 }
 #endif
 #include "close_code.h"
-
 #endif /* SDL_cpuinfo_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

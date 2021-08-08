@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_rpiopengles_h_
 #define SDL_rpiopengles_h_
-
 #if SDL_VIDEO_DRIVER_RPI && SDL_VIDEO_OPENGL_EGL
 
 #include "../SDL_sysvideo.h"
@@ -43,7 +41,6 @@ extern int RPI_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext contex
 extern void RPI_GLES_DefaultProfileConfig(_THIS, int *mask, int *major, int *minor);
 
 #endif /* SDL_VIDEO_DRIVER_RPI && SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_rpiopengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

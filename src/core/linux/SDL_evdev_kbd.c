@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_evdev_kbd.h"
 #include "SDL_hints.h"
-
 #ifdef SDL_INPUT_LINUXKD
 
 /* This logic is adapted from drivers/tty/vt/keyboard.c in the Linux kernel source */
@@ -820,23 +818,16 @@ SDL_EVDEV_kbd_keycode(SDL_EVDEV_keyboard_state *kbd, unsigned int keycode, int d
 }
 
 #else /* !SDL_INPUT_LINUXKD */
-
 SDL_EVDEV_keyboard_state *
-SDL_EVDEV_kbd_init(void)
-{
-    return NULL;
+SDL_EVDEV_kbd_init(void){
+return NULL;
 }
-
 void
-SDL_EVDEV_kbd_keycode(SDL_EVDEV_keyboard_state *state, unsigned int keycode, int down)
-{
+SDL_EVDEV_kbd_keycode(SDL_EVDEV_keyboard_state *state,unsigned int keycode,int down){
 }
-
 void
-SDL_EVDEV_kbd_quit(SDL_EVDEV_keyboard_state *state)
-{
+SDL_EVDEV_kbd_quit(SDL_EVDEV_keyboard_state *state){
 }
-
 #endif /* SDL_INPUT_LINUXKD */
 
 /* vi: set ts=4 sw=4 expandtab: */

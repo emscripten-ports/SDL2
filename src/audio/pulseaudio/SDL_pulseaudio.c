@@ -27,7 +27,6 @@
 */
 #include "../../SDL_internal.h"
 #include "SDL_assert.h"
-
 #if SDL_AUDIO_DRIVER_PULSEAUDIO
 
 /* Allow access to a raw mixing buffer */

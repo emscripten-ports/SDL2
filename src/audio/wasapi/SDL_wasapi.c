@@ -20,7 +20,6 @@
 */
 
 #include "../../SDL_internal.h"
-
 #if SDL_AUDIO_DRIVER_WASAPI
 
 #include "../../core/windows/SDL_windows.h"
@@ -713,7 +712,7 @@ WASAPI_ThreadDeinit(_THIS)
 void
 WASAPI_BeginLoopIteration(_THIS)
 {
-	/* no-op. */
+    /* no-op. */
 }
 
 static void

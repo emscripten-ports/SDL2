@@ -21,24 +21,18 @@
 
 #ifndef SDL_sensor_c_h_
 #define SDL_sensor_c_h_
-
 #include "SDL_config.h"
-
 struct _SDL_SensorDriver;
 
 /* Useful functions and variables from SDL_sensor.c */
 #include "SDL_sensor.h"
-
 /* Function to get the next available sensor instance ID */
 extern SDL_SensorID SDL_GetNextSensorInstanceID(void);
-
 /* Initialization and shutdown functions */
 extern int SDL_SensorInit(void);
 extern void SDL_SensorQuit(void);
-
 /* Internal event queueing functions */
-extern int SDL_PrivateSensorUpdate(SDL_Sensor *sensor, float *data, int num_values);
-
+extern int SDL_PrivateSensorUpdate(SDL_Sensor *sensor,float *data,int num_values);
 #endif /* SDL_sensor_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

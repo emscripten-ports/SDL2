@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_COCOA
 
 extern int Cocoa_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid);

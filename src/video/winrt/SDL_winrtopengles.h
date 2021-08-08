@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
 #ifndef SDL_winrtopengles_h_
 #define SDL_winrtopengles_h_
-
 #if SDL_VIDEO_DRIVER_WINRT && SDL_VIDEO_OPENGL_EGL
 
 #include "../SDL_sysvideo.h"
@@ -64,7 +62,6 @@ typedef HRESULT (EGLAPIENTRY *CreateWinrtEglWindow_Old_Function)(Microsoft::WRL:
 typedef EGLDisplay (EGLAPIENTRY *eglGetPlatformDisplayEXT_Function)(EGLenum, void *, const EGLint *);
 
 #endif /* SDL_VIDEO_DRIVER_WINRT && SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_winrtopengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

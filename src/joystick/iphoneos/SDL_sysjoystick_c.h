@@ -19,40 +19,29 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_JOYSTICK_IOS_H
 #define SDL_JOYSTICK_IOS_H
-
 #include "SDL_stdinc.h"
 #include "../SDL_sysjoystick.h"
-
 @class GCController;
-
-typedef struct joystick_hwdata
-{
-    SDL_bool accelerometer;
-    SDL_bool remote;
-
-    GCController __unsafe_unretained *controller;
-    SDL_bool uses_pause_handler;
-    int num_pause_presses;
-    Uint32 pause_button_down_time;
-
-    char *name;
-    SDL_Joystick *joystick;
-    SDL_JoystickID instance_id;
-    SDL_JoystickGUID guid;
-
-    int naxes;
-    int nbuttons;
-    int nhats;
-    Uint16 button_mask;
-
-    struct joystick_hwdata *next;
-} joystick_hwdata;
-
+typedef struct joystick_hwdata{
+SDL_bool accelerometer;
+SDL_bool remote;
+GCController __unsafe_unretained *controller;
+SDL_bool uses_pause_handler;
+int num_pause_presses;
+Uint32 pause_button_down_time;
+char *name;
+SDL_Joystick *joystick;
+SDL_JoystickID instance_id;
+SDL_JoystickGUID guid;
+int naxes;
+int nbuttons;
+int nhats;
+Uint16 button_mask;
+struct joystick_hwdata *next;
+}joystick_hwdata;
 typedef joystick_hwdata SDL_JoystickDeviceItem;
-
 #endif /* SDL_JOYSTICK_IOS_H */
 
 

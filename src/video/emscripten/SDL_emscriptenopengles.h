@@ -19,10 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifndef SDL_emscriptenopengles_h_
 #define SDL_emscriptenopengles_h_
-
 #if SDL_VIDEO_DRIVER_EMSCRIPTEN && SDL_VIDEO_OPENGL_EGL
 
 #include "../SDL_sysvideo.h"
@@ -43,7 +41,6 @@ extern int Emscripten_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext
 extern void Emscripten_GLES_GetDrawableSize(_THIS, SDL_Window * window, int * w, int * h);
 
 #endif /* SDL_VIDEO_DRIVER_EMSCRIPTEN && SDL_VIDEO_OPENGL_EGL */
-
 #endif /* SDL_emscriptenopengles_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

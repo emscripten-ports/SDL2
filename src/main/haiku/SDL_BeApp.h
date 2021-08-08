@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,7 +26,6 @@ extern "C" {
 
 /* Initialize the Be Application, if it's not already started */
 extern int SDL_InitBeApp(void);
-
 /* Quit the Be Application, if there's nothing left to do */
 extern void SDL_QuitBeApp(void);
 

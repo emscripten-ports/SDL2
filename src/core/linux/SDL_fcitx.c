@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #ifdef HAVE_FCITX_FRONTEND_H
 
 #include <fcitx/frontend.h>

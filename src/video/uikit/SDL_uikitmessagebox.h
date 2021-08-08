@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #if SDL_VIDEO_DRIVER_UIKIT
 
 extern SDL_bool UIKit_ShowingMessageBox(void);

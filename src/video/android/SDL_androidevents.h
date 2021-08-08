@@ -19,9 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
-
 #include "SDL_androidvideo.h"
-
 extern void Android_PumpEvents_Blocking(_THIS);
 extern void Android_PumpEvents_NonBlocking(_THIS);
 
