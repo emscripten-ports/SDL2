@@ -68,9 +68,7 @@ loop()
         emscripten_cancel_main_loop();
 }
 
-int
-main(int argc, char *argv[])
-{
+int pl(){
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -99,5 +97,9 @@ main(int argc, char *argv[])
     close_audio();
     SDL_FreeWAV(wave.sound);
     SDL_Quit();
+    }
+int
+main(int argc, char *argv[])
+{
     return (0);
 }
