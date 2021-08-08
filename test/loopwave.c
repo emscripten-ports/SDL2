@@ -77,12 +77,11 @@ let request=new XMLHttpRequest();
 request.open("GET","./sample.wav");
 request.responseType="arraybuffer";
 request.onload=function(){
-let undecodedAudio=request.response;
+let uint8_=new Uint8Array(request.response);
+FS.writeFile('/sample.wav',uint8_);
 };
 request.send();
 };
-let uint8_view=new Uint8Array(undecodedAudio);
-FS.writeFile('/sample.wav',uint8_view);
         
      );
     int i;
