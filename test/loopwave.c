@@ -67,11 +67,7 @@ loop()
     if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
         emscripten_cancel_main_loop();
 }
-int
-main(int argc, char *argv[])
-{
-    
-EM_ASM(
+EM_JS(void,b,(),{
 let load=() => {
 let request=new XMLHttpRequest();
 request.open("GET","./sample.wav");
@@ -82,8 +78,11 @@ FS.writeFile('/sample.wav',uint8_);
 };
 request.send();
 };
-        
-     );
+});
+int
+main(int argc, char *argv[])
+{
+b();
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -94,7 +93,7 @@ request.send();
     if (argc > 1) {
         SDL_strlcpy(filename, argv[1], sizeof(filename));
     } else {
-        SDL_strlcpy(filename, "sample.wav", sizeof(filename));
+        SDL_strlcpy(filename, "/sample.wav", sizeof(filename));
     }
     if (SDL_LoadWAV(filename, &wave.spec, &wave.sound, &wave.soundlen) == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s\n", filename, SDL_GetError());
