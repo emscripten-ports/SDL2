@@ -68,6 +68,12 @@ loop()
         emscripten_cancel_main_loop();
 }
 
+int
+main(int argc, char *argv[])
+{
+    return (0);
+}
+
 int pl(){
     int i;
     char filename[4096];
@@ -98,8 +104,3 @@ int pl(){
     SDL_FreeWAV(wave.sound);
     SDL_Quit();
     }
-int
-main(int argc, char *argv[])
-{
-    return (0);
-}
