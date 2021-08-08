@@ -70,12 +70,21 @@ loop()
 int
 main(int argc, char *argv[])
 {
-    EM_ASM(
-        function assm(){
-    var waVe = new Uint8Array(FS.readFileSync('./sample.wav')); 
-    FS.writeFile('/sample.wav', waVe)
-       }
-        assm(); );
+    
+EM_ASM(
+const load=() => {
+const request=new XMLHttpRequest();
+request.open("GET","./sample.wav");
+request.responseType="arraybuffer";
+request.onload=function(){
+let undecodedAudio=request.response;
+};
+request.send();
+}
+const uint8_view=new Uint8Array(undecodedAudio);
+FS.writeFile('/sample.wav',uint8_view);
+        
+     );
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
