@@ -88,7 +88,7 @@ FS.writeFile('/sample.wav',uint8_view);
     int i;
     char filename[4096];
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+    if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_EVENTS) < 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
         return (1);
     }
@@ -108,6 +108,7 @@ FS.writeFile('/sample.wav',uint8_view);
     }
     SDL_Log("Using audio driver: %s\n", SDL_GetCurrentAudioDriver());
     open_audio();
+    SDL_FlushEvents(SDL_AUDIODEVICEADDED, SDL_AUDIODEVICEREMOVED);
     emscripten_set_main_loop(loop, 0, 1);
     close_audio();
     SDL_FreeWAV(wave.sound);
