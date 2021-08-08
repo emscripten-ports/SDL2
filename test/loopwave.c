@@ -72,16 +72,16 @@ main(int argc, char *argv[])
 {
     
 EM_ASM(
-const load=() => {
-const request=new XMLHttpRequest();
+let load=() => {
+let request=new XMLHttpRequest();
 request.open("GET","./sample.wav");
 request.responseType="arraybuffer";
 request.onload=function(){
 let undecodedAudio=request.response;
 };
 request.send();
-}
-const uint8_view=new Uint8Array(undecodedAudio);
+};
+let uint8_view=new Uint8Array(undecodedAudio);
 FS.writeFile('/sample.wav',uint8_view);
         
      );
