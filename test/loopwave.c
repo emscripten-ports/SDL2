@@ -33,8 +33,7 @@ static void reopen_audio(){
 close_audio();
 open_audio();
 }
-void SDLCALL
-fillerup(void *unused,Uint8 *stream,int len){
+void SDLCALL fillerup(void *unused,Uint8 *stream,int len){
 Uint8 *waveptr;
 int waveleft;
 waveptr=wave.sound+wave.soundpos;
