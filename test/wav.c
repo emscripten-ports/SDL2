@@ -11,6 +11,8 @@ int soundpos;
 }wave;
 static SDL_AudioDeviceID device;
 static void quit(int rc){
+  close_audio();
+SDL_FreeWAV(wave.sound);
 SDL_Quit();
 exit(rc);
 }
@@ -52,10 +54,7 @@ static int done=0;
 void loop(){
 if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
 emscripten_cancel_main_loop();
-close_audio();
-SDL_FreeWAV(wave.sound);
-SDL_Quit();
-  quit(0);
+
 }
 int main(){
 return (0);
