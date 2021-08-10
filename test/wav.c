@@ -56,7 +56,7 @@ emscripten_cancel_main_loop();
 int main(){
 return (0);
 }
-static int pl(/*int argc,char *argv[]*/){
+int pl(/*int argc,char *argv[]*/){
 int i;
 char filename[4096];
 SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
