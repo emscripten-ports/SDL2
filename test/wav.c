@@ -63,6 +63,8 @@ return (0);
 void pl(/*int argc,char *argv[]*/){
 int i;
 char filename[4096];
+  close_audio();
+  SDL_FreeWAV(wave.sound);
 SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
 if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0){
 // SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"err",SDL_GetError());
