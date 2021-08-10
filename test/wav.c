@@ -62,7 +62,7 @@ char filename[4096];
 SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
 if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0){
 // SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"err",SDL_GetError());
-return (1);
+quit (1);
 }
   
 // if(argc > 1){
@@ -81,7 +81,7 @@ emscripten_set_main_loop(loop,1,1);
 close_audio();
 SDL_FreeWAV(wave.sound);
 SDL_Quit();
-  return (1);
+  quit (1);
 // SDL_Log("Drivers:");
 // for (i=0; i < SDL_GetNumAudioDrivers(); ++i){
 // SDL_Log("%i: %s",i,SDL_GetAudioDriver(i));
