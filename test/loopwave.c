@@ -1,8 +1,8 @@
-#include <../src/SDL_config.h>
+#include <../include/SDL_config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <emscripten/emscripten.h>
-#include <../src/SDL.h>
+#include <../include/SDL.h>
 static struct{
 SDL_AudioSpec spec;
 Uint8 *sound;
