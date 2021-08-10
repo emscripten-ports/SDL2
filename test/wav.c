@@ -56,7 +56,7 @@ emscripten_cancel_main_loop();
 int main(){
 return (0);
 }
-static void pl(/*int argc,char *argv[]*/){
+static int pl(/*int argc,char *argv[]*/){
 int i;
 char filename[4096];
 SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
@@ -81,7 +81,7 @@ emscripten_set_main_loop(loop,1,1);
 close_audio();
 SDL_FreeWAV(wave.sound);
 SDL_Quit();
-  quit (1);
+  return (1);
 // SDL_Log("Drivers:");
 // for (i=0; i < SDL_GetNumAudioDrivers(); ++i){
 // SDL_Log("%i: %s",i,SDL_GetAudioDriver(i));
