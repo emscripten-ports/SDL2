@@ -52,6 +52,10 @@ static int done=0;
 void loop(){
 if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
 emscripten_cancel_main_loop();
+close_audio();
+SDL_FreeWAV(wave.sound);
+SDL_Quit();
+  quit(0);
 }
 int main(){
 return (0);
@@ -77,11 +81,8 @@ quit(1);
 wave.spec.callback=fillerup;
   open_audio();
 SDL_FlushEvents(SDL_AUDIODEVICEADDED,SDL_AUDIODEVICEREMOVED);
-emscripten_set_main_loop(loop,1,1);
-close_audio();
-SDL_FreeWAV(wave.sound);
-SDL_Quit();
-  quit (1);
+emscripten_set_main_loop(loop,1,0);
+
 // SDL_Log("Drivers:");
 // for (i=0; i < SDL_GetNumAudioDrivers(); ++i){
 // SDL_Log("%i: %s",i,SDL_GetAudioDriver(i));
