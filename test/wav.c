@@ -10,17 +10,18 @@ Uint32 soundlen;
 int soundpos;
 }wave;
 static SDL_AudioDeviceID device;
+static void close_audio(){
+if(device != 0){
+SDL_CloseAudioDevice(device);
+device=0;
+}}
 static void quit(int rc){
   close_audio();
 SDL_FreeWAV(wave.sound);
 SDL_Quit();
 exit(rc);
 }
-static void close_audio(){
-if(device != 0){
-SDL_CloseAudioDevice(device);
-device=0;
-}}
+
 static void open_audio(){
 device=SDL_OpenAudioDevice(NULL,SDL_FALSE,&wave.spec,NULL,0);
 if(!device){
