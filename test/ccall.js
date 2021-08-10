@@ -1,4 +1,4 @@
 
 document.getElementById('di').addEventListener('click',function(){
-Module.ccall("pl");
+f.ccall("pl");
 });
