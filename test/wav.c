@@ -1,8 +1,8 @@
-#include "SDL_config.h"
+#include "../include/SDL_config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <emscripten/emscripten.h>
-#include "SDL.h"
+#include "../include/SDL.h"
 static struct{SDL_AudioSpec spec;Uint8 *sound;Uint32 soundlen;int soundpos;}wave;
 static SDL_AudioDeviceID device;
 static void close_audio(){if(device != 0){SDL_CloseAudioDevice(device);device=0;}}
