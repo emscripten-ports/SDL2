@@ -15,7 +15,7 @@ SDL_memcpy(stream,waveptr,len);wave.soundpos+=len;}
 static int done=0;
 void loop(){if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))emscripten_cancel_main_loop();}
 int main(){return (0);}
-void pl(){int i;char filename[4096];close_audio();SDL_FreeWAV(wave.sound);wave.soundpos=0;
+void pl(){int i;char filename[4096];close_audio();SDL_FreeWAV(wave.sound);wave.soundpos=0;emscripten_cancel_main_loop();
 // SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
 if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0){quit (1);}
 SDL_strlcpy(filename,"/sample.wav",sizeof(filename));
