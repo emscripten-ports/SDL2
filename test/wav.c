@@ -54,15 +54,9 @@ if(done || (SDL_GetAudioDeviceStatus(device) != SDL_AUDIO_PLAYING))
 emscripten_cancel_main_loop();
 }
 int main(){
-open_audio();
-SDL_FlushEvents(SDL_AUDIODEVICEADDED,SDL_AUDIODEVICEREMOVED);
-emscripten_set_main_loop(loop,1,1);
-close_audio();
-SDL_FreeWAV(wave.sound);
-SDL_Quit();
 return (0);
 }
-int pl(/*int argc,char *argv[]*/){
+static void pl(/*int argc,char *argv[]*/){
 int i;
 char filename[4096];
 SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION,SDL_LOG_PRIORITY_INFO);
@@ -70,6 +64,7 @@ if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0){
 // SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"err",SDL_GetError());
 return (1);
 }
+  
 // if(argc > 1){
 // SDL_strlcpy(filename,argv[1],sizeof(filename));
 // } else{
@@ -80,6 +75,13 @@ if(SDL_LoadWAV(filename,&wave.spec,&wave.sound,&wave.soundlen) == NULL){
 quit(1);
 }
 wave.spec.callback=fillerup;
+  open_audio();
+SDL_FlushEvents(SDL_AUDIODEVICEADDED,SDL_AUDIODEVICEREMOVED);
+emscripten_set_main_loop(loop,1,1);
+close_audio();
+SDL_FreeWAV(wave.sound);
+SDL_Quit();
+  return (1);
 // SDL_Log("Drivers:");
 // for (i=0; i < SDL_GetNumAudioDrivers(); ++i){
 // SDL_Log("%i: %s",i,SDL_GetAudioDriver(i));
