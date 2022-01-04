@@ -1,3 +1,12 @@
+# Notice: Unused
+
+As of
+
+https://github.com/emscripten-core/emscripten/pull/15452
+
+all changes are in upstream SDL2, and so emscripten can just use that!
+
+# Old contents
 
                          Simple DirectMedia Layer
 
