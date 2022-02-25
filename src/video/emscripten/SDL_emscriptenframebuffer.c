@@ -73,6 +73,7 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
         var w = $0;
         var h = $1;
         var pixels = $2;
+        var pixel_ratio = $3;
 
         if (!Module['SDL2']) Module['SDL2'] = {};
         var SDL2 = Module['SDL2'];
@@ -80,11 +81,27 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             SDL2.ctx = Module['createContext'](Module['canvas'], false, true);
             SDL2.ctxCanvas = Module['canvas'];
         }
-        if (SDL2.w !== w || SDL2.h !== h || SDL2.imageCtx !== SDL2.ctx) {
-            SDL2.image = SDL2.ctx.createImageData(w, h);
+
+        // For HiDPI, create a second canvas/context to scale up
+        if (pixel_ratio !== 1.0) {
+            if (!SDL2.scaleCtx) {
+                SDL2.scaleCtxCanvas = document.createElement('canvas');
+                SDL2.scaleCtx = SDL2.scaleCtxCanvas.getContext('2d');
+            }
+        }
+
+        var imageCtx = pixel_ratio == 1.0 ? SDL2.ctx : SDL2.scaleCtx;
+
+        if (SDL2.w !== w || SDL2.h !== h || SDL2.imageCtx !== imageCtx) {
+            SDL2.image = imageCtx.createImageData(w, h);
             SDL2.w = w;
             SDL2.h = h;
-            SDL2.imageCtx = SDL2.ctx;
+            SDL2.imageCtx = imageCtx;
+
+            if(SDL2.scaleCtxCanvas) {
+                SDL2.scaleCtxCanvas.width = w;
+                SDL2.scaleCtxCanvas.height = h;
+            }
         }
         var data = SDL2.image.data;
         var src = pixels >> 2;
@@ -153,9 +170,16 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             }
         }
 
-        SDL2.ctx.putImageData(SDL2.image, 0, 0);
+        imageCtx.putImageData(SDL2.image, 0, 0);
+
+        // HiDPI scale, no smoothing to match what the renderer-based fallback does by default
+        if (pixel_ratio !== 1.0) {
+            SDL2.ctx.imageSmoothingEnabled = false;
+            SDL2.ctx.drawImage(SDL2.scaleCtxCanvas, 0, 0, w * pixel_ratio, h * pixel_ratio);
+        }
+
         return 0;
-    }, surface->w, surface->h, surface->pixels);
+    }, surface->w, surface->h, surface->pixels, data->pixel_ratio);
 
     if (emscripten_has_asyncify() && SDL_GetHintBoolean(SDL_HINT_EMSCRIPTEN_ASYNCIFY, SDL_TRUE)) {
         /* give back control to browser for screen refresh */
